@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>WEBGIS Desa Wisata Ponggok</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+
+font-family:'Inter',sans-serif;
+color:#dffaff;
+overflow-x:hidden;
+
+background:
+radial-gradient(circle at top left, rgba(0,255,255,0.08), transparent 35%),
+radial-gradient(circle at bottom right, rgba(0,255,255,0.08), transparent 35%),
+#02181d;
+
+background-image:
+linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+
+background-size:48px 48px;
+}
+
+/* HEADER */
+
+header{
+
+width:100%;
+height:90px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:0 70px;
+
+background:rgba(3,30,35,0.88);
+
+border-bottom:1px solid rgba(98,255,255,0.08);
+
+backdrop-filter:blur(12px);
+
+position:fixed;
+top:0;
+left:0;
+z-index:999;
+}
+
+.logo{
+
+display:flex;
+align-items:center;
+gap:18px;
+}
+
+.logo-circle{
+
+width:58px;
+height:58px;
+
+border-radius:50%;
+
+background:linear-gradient(180deg,#15d6e7,#1197a7);
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+box-shadow:0 0 25px rgba(0,255,255,0.18);
+}
+
+.logo-circle::before{
+
+content:"⬢";
+color:white;
+font-size:22px;
+}
+
+.logo-text h1{
+
+font-size:34px;
+line-height:1;
+
+color:#caffff;
+
+font-family:'Cormorant Garamond', serif;
+}
+
+.logo-text p{
+
+font-size:11px;
+
+letter-spacing:4px;
+
+color:#7faab2;
+
+margin-top:6px;
+}
+
+/* NAV */
+
+nav{
+
+display:flex;
+gap:35px;
+}
+
+nav a{
+
+color:#e4ffff;
+
+text-decoration:none;
+
+font-size:14px;
+
+font-weight:600;
+
+transition:0.3s;
+}
+
+nav a:hover{
+
+color:#6ef6ff;
+}
+
+/* HERO */
+
+.hero-center{
+
+width:100%;
+min-height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+text-align:center;
+
+padding:120px 30px 100px;
+}
+
+.hero-content{
+
+max-width:1200px;
+}
+
+.hero-badge{
+
+display:inline-block;
+
+padding:14px 28px;
+
+border-radius:50px;
+
+background:rgba(0,255,255,0.03);
+
+border:1px solid rgba(98,255,255,0.12);
+
+color:#8fefff;
+
+font-size:13px;
+
+letter-spacing:3px;
+
+margin-bottom:35px;
+}
+
+.hero-subtitle{
+
+font-size:72px;
+
+letter-spacing:12px;
+
+color:#9dc2ca;
+
+font-family:'Cormorant Garamond', serif;
+
+margin-bottom:10px;
+}
+
+.hero-title{
+
+font-size:180px;
+
+line-height:0.9;
+
+color:#88f7ff;
+
+margin-bottom:35px;
+
+font-family:'Cormorant Garamond', serif;
+
+animation:glow 3s infinite alternate;
+
+text-shadow:
+0 0 20px rgba(0,255,255,0.08),
+0 0 40px rgba(0,255,255,0.08);
+}
+
+@keyframes glow{
+
+from{
+text-shadow:
+0 0 15px rgba(0,255,255,0.12),
+0 0 30px rgba(0,255,255,0.12);
+}
+
+to{
+text-shadow:
+0 0 30px rgba(0,255,255,0.35),
+0 0 60px rgba(0,255,255,0.25);
+}
+
+}
+
+.hero-description{
+
+font-size:28px;
+
+line-height:2;
+
+color:#a8cad0;
+
+max-width:950px;
+
+margin:auto;
+}
+
+/* ONLINE STATUS */
+
+.online-status{
+display:inline-flex;
+align-items:center;
+gap:10px;
+
+margin-top:30px;
+
+padding:12px 24px;
+
+border-radius:40px;
+
+background:rgba(0,255,255,0.04);
+
+border:1px solid rgba(98,255,255,0.08);
+
+font-size:14px;
+letter-spacing:2px;
+color:#9ef9ff;
+}
+
+.online-dot{
+width:10px;
+height:10px;
+border-radius:50%;
+background:#17ff7b;
+box-shadow:0 0 15px #17ff7b;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+
+padding:80px 90px 120px;
+}
+
+.section-heading{
+
+margin-bottom:55px;
+
+text-align:center;
+}
+
+.section-heading h2{
+
+font-size:72px;
+
+color:#8ef5ff;
+
+font-family:'Cormorant Garamond', serif;
+
+margin-bottom:15px;
+}
+
+.section-heading p{
+
+color:#82adb5;
+
+font-size:20px;
+}
+
+/* INFO GRID */
+
+.info-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+
+gap:25px;
+}
+
+.info-card{
+
+background:rgba(5,30,35,0.82);
+
+border:1px solid rgba(98,255,255,0.08);
+
+border-radius:28px;
+
+padding:35px;
+
+transition:0.3s;
+}
+
+.info-card:hover{
+
+transform:translateY(-8px);
+
+border:1px solid rgba(98,255,255,0.22);
+
+box-shadow:
+0 0 40px rgba(0,255,255,0.08);
+}
+
+.info-number{
+
+font-size:62px;
+
+color:#89f5ff;
+
+font-weight:700;
+
+margin-bottom:10px;
+}
+
+/* CHART */
+
+.chart-grid{
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+margin-top:40px;
+}
+
+.chart-card{
+
+background:rgba(5,30,35,0.82);
+
+border-radius:28px;
+
+padding:30px;
+
+border:1px solid rgba(98,255,255,0.08);
+}
+
+.chart-card h3{
+
+margin-bottom:25px;
+
+color:#8ef5ff;
+
+font-size:26px;
+}
+
+/* TABLE */
+
+.table-section{
+
+margin-top:80px;
+}
+
+.data-table{
+
+width:100%;
+
+border-collapse:collapse;
+
+overflow:hidden;
+
+border-radius:24px;
+
+background:rgba(5,30,35,0.82);
+
+border:1px solid rgba(98,255,255,0.08);
+}
+
+.data-table th{
+
+background:rgba(0,255,255,0.04);
+
+color:#8ef5ff;
+
+padding:22px;
+
+text-align:left;
+
+letter-spacing:2px;
+}
+
+.data-table td{
+
+padding:20px;
+
+border-top:1px solid rgba(255,255,255,0.05);
+
+color:#c6e5ea;
+}
+
+/* FOOTER */
+
+footer{
+
+padding:40px;
+
+text-align:center;
+
+color:#7ca7af;
+
+border-top:1px solid rgba(98,255,255,0.08);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+.chart-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:768px){
+
+header{
+
+padding:20px;
+
+flex-direction:column;
+
+height:auto;
+
+gap:20px;
+}
+
+.hero-title{
+
+font-size:90px;
+}
+
+.hero-subtitle{
+
+font-size:42px;
+}
+
+.hero-description{
+
+font-size:18px;
+}
+
+.dashboard{
+
+padding:80px 25px;
+}
+
+.section-heading h2{
+
+font-size:52px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+
+<div class="logo-circle"></div>
+
+<div class="logo-text">
+<h1>Desa Wisata Ponggok</h1>
+<p>WEBGIS • KLATEN • JAWA TENGAH</p>
+</div>
+
+</div>
+
+<nav>
+
+<a href="#">
+BERANDA
+</a>
+
+<a 
+href="https://aovmn.github.io/Ponggok-Webgis/#tentang" 
+target="_blank">
+DATA SPASIAL
+</a>
+
+</nav>
+
+</header>
+
+<!-- HERO -->
+
+<section class="hero-center">
+
+<div class="hero-content">
+
+<div class="hero-badge">
+WEBGIS PORTAL • KEC. POLANHARJO • KAB. KLATEN
+</div>
+
+<h2 class="hero-subtitle">
+DESA WISATA
+</h2>
+
+<h1 class="hero-title">
+Ponggok
+</h1>
+
+<p class="hero-description">
+
+Portal infografis dan pemetaan digital resmi
+Desa Wisata Ponggok yang menyajikan data
+kependudukan, wisata, UMKM, dan informasi
+desa berbasis spasial secara interaktif.
+
+</p>
+
+<div class="online-status">
+<div class="online-dot"></div>
+PORTAL ONLINE • REALTIME DATA
+</div>
+
+</div>
+
+</section>
+
+<!-- DASHBOARD -->
+
+<section class="dashboard">
+
+<div class="section-heading">
+
+<h2>Infografis Desa Ponggok</h2>
+
+<p>
+Dashboard statistik dan informasi Desa Ponggok berbasis data BPS 2025
+</p>
+
+</div>
+
+<!-- INFO -->
+
+<div class="info-grid">
+
+<div class="info-card">
+<div class="info-number">2.157</div>
+<p>Total Penduduk</p>
+</div>
+
+<div class="info-card">
+<div class="info-number">1.072</div>
+<p>Laki-Laki</p>
+</div>
+
+<div class="info-card">
+<div class="info-number">1.085</div>
+<p>Perempuan</p>
+</div>
+
+<div class="info-card">
+<div class="info-number">0,84</div>
+<p>Luas Wilayah (km²)</p>
+</div>
+
+<div class="info-card">
+<div class="info-number">2.573</div>
+<p>Kepadatan Penduduk</p>
+</div>
+
+<div class="info-card">
+<div class="info-number">98,80</div>
+<p>Rasio Jenis Kelamin</p>
+</div>
+
+</div>
+
+<!-- CHART -->
+
+<div class="chart-grid">
+
+<div class="chart-card">
+
+<h3>Komposisi Penduduk</h3>
+
+<canvas id="genderChart"></canvas>
+
+</div>
+
+<div class="chart-card">
+
+<h3>Kelompok Umur</h3>
+
+<canvas id="ageChart"></canvas>
+
+</div>
+
+</div>
+
+<!-- TABLE -->
+
+<div class="table-section">
+
+<table class="data-table">
+
+<thead>
+
+<tr>
+<th>Kategori</th>
+<th>Jumlah</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+<td>Total Penduduk</td>
+<td>2.157 Jiwa</td>
+</tr>
+
+<tr>
+<td>Laki-Laki</td>
+<td>1.072 Jiwa</td>
+</tr>
+
+<tr>
+<td>Perempuan</td>
+<td>1.085 Jiwa</td>
+</tr>
+
+<tr>
+<td>Luas Wilayah</td>
+<td>0,84 km²</td>
+</tr>
+
+<tr>
+<td>Kepadatan Penduduk</td>
+<td>2.573 jiwa/km²</td>
+</tr>
+
+<tr>
+<td>Rasio Jenis Kelamin</td>
+<td>98,80</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<footer>
+© 2026 WEBGIS DESA WISATA PONGGOK
+</footer>
+
+<script>
+
+/* CHART GENDER */
+
+new Chart(document.getElementById('genderChart'),{
+
+type:'doughnut',
+
+data:{
+labels:['Laki-Laki','Perempuan'],
+datasets:[{
+data:[1072,1085],
+backgroundColor:[
+'#19e3ff',
+'#15e8b5'
+],
+borderWidth:0
+}]
+},
+
+options:{
+plugins:{
+legend:{
+labels:{
+color:'#dffaff'
+}
+}
+}
+}
+
+});
+
+/* AGE CHART */
+
+new Chart(document.getElementById('ageChart'),{
+
+type:'bar',
+
+data:{
+labels:[
+'0-14',
+'15-24',
+'25-44',
+'45-64',
+'65+'
+],
+
+datasets:[{
+
+label:'Jumlah Penduduk',
+
+data:[
+300,
+500,
+700,
+400,
+250
+],
+
+backgroundColor:'#19e3ff',
+borderRadius:8
+
+}]
+},
+
+options:{
+
+scales:{
+
+x:{
+ticks:{
+color:'#dffaff'
+},
+grid:{
+color:'rgba(255,255,255,0.05)'
+}
+},
+
+y:{
+ticks:{
+color:'#dffaff'
+},
+grid:{
+color:'rgba(255,255,255,0.05)'
+}
+}
+
+},
+
+plugins:{
+legend:{
+labels:{
+color:'#dffaff'
+}
+}
+}
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
