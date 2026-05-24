@@ -114,12 +114,12 @@ color:#8bb8bf;
 margin-top:3px;
 }
 
-/* NAVBAR ATAS */
+/* NAVBAR */
 
 .top-navbar{
 
 display:flex;
-gap:40px;
+gap:35px;
 align-items:center;
 }
 
@@ -302,7 +302,39 @@ background:#1aff76;
 box-shadow:0 0 12px #1aff76;
 }
 
-/* MENU TENGAH */
+/* LIVE CLOCK */
+
+.live-clock{
+
+margin-top:30px;
+
+display:flex;
+flex-direction:column;
+align-items:center;
+
+gap:10px;
+}
+
+#clock{
+
+font-size:48px;
+font-weight:700;
+
+color:#8ef5ff;
+
+text-shadow:0 0 20px rgba(0,255,255,0.4);
+}
+
+#date{
+
+font-size:16px;
+
+letter-spacing:2px;
+
+color:#cde8eb;
+}
+
+/* MENU */
 
 .menu-bar{
 
@@ -416,10 +448,6 @@ border-radius:30px;
 
 padding:35px;
 
-position:relative;
-
-overflow:hidden;
-
 transition:0.4s;
 }
 
@@ -492,6 +520,55 @@ font-size:28px;
 margin-bottom:25px;
 
 color:#8ef5ff;
+}
+
+/* QUICK INFO */
+
+.quick-info{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+gap:25px;
+
+margin-top:80px;
+}
+
+.quick-card{
+
+background:rgba(5,30,35,0.82);
+
+padding:35px;
+
+border-radius:30px;
+
+border:1px solid rgba(255,255,255,0.06);
+
+transition:0.4s;
+}
+
+.quick-card:hover{
+
+transform:translateY(-10px);
+
+box-shadow:0 0 35px rgba(0,255,255,0.12);
+}
+
+.quick-card h2{
+
+font-size:22px;
+
+margin-bottom:15px;
+
+color:#8ef5ff;
+}
+
+.quick-card p{
+
+font-size:18px;
+
+color:#d7eef2;
 }
 
 /* TABLE */
@@ -642,14 +719,24 @@ padding:80px 20px;
 
 </div>
 
+<nav class="top-navbar">
+
+<a href="#beranda">BERANDA</a>
+
+<a href="#overview">OVERVIEW</a>
+
+<a href="#grafik">GRAFIK</a>
+
+<a href="#statistik">STATISTIK</a>
+
+<a href="https://www.youtube.com/watch?v=qtT3APyW-VA" target="_blank">
+VIDEO PROFIL WILAYAH
+</a>
 
 <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank">
 DATA SPASIAL
 </a>
 
-<a href="https://www.youtube.com/watch?v=qtT3APyW-VA" target="_blank">
-VIDEO PROFIL
-</a>
 </nav>
 
 </header>
@@ -692,7 +779,13 @@ PORTAL ONLINE • REALTIME DATA
 
 </div>
 
-<!-- NAVBAR TENGAH -->
+<div class="live-clock">
+
+<div id="clock"></div>
+
+<div id="date"></div>
+
+</div>
 
 <div class="menu-bar">
 
@@ -711,17 +804,13 @@ Statistik
 <a class="menu-btn"
 href="https://www.youtube.com/watch?v=qtT3APyW-VA"
 target="_blank">
-
 Profil Wilayah
-
 </a>
 
 <a class="menu-btn"
 href="https://aovmn.github.io/Ponggok-Webgis/"
 target="_blank">
-
 Peta Spasial
-
 </a>
 
 </div>
@@ -730,11 +819,7 @@ Peta Spasial
 
 </section>
 
-<!-- DASHBOARD -->
-
 <section class="dashboard">
-
-<!-- OVERVIEW -->
 
 <div id="overview" class="section active">
 
@@ -746,8 +831,8 @@ Peta Spasial
 TOTAL PENDUDUK
 </div>
 
-<div class="stat-number">
-2.157
+<div class="stat-number counter" data-target="2157">
+0
 </div>
 
 <div class="stat-desc">
@@ -762,8 +847,8 @@ Jumlah penduduk Desa Ponggok tahun 2025.
 LAKI-LAKI
 </div>
 
-<div class="stat-number">
-1.072
+<div class="stat-number counter" data-target="1072">
+0
 </div>
 
 <div class="stat-desc">
@@ -778,8 +863,8 @@ Jumlah penduduk laki-laki Desa Ponggok.
 PEREMPUAN
 </div>
 
-<div class="stat-number">
-1.085
+<div class="stat-number counter" data-target="1085">
+0
 </div>
 
 <div class="stat-desc">
@@ -807,8 +892,6 @@ Luas administratif Desa Ponggok dalam kilometer persegi.
 </div>
 
 </div>
-
-<!-- GRAFIK -->
 
 <div id="grafik-section" class="section">
 
@@ -849,8 +932,6 @@ Luas administratif Desa Ponggok dalam kilometer persegi.
 </div>
 
 </div>
-
-<!-- STATISTIK -->
 
 <div id="statistik-section" class="section">
 
@@ -920,6 +1001,30 @@ Luas administratif Desa Ponggok dalam kilometer persegi.
 
 </div>
 
+<div class="quick-info">
+
+<div class="quick-card">
+<h2>Wisata Unggulan</h2>
+<p>Umbul Ponggok</p>
+</div>
+
+<div class="quick-card">
+<h2>Kecamatan</h2>
+<p>Polanharjo</p>
+</div>
+
+<div class="quick-card">
+<h2>Kabupaten</h2>
+<p>Klaten</p>
+</div>
+
+<div class="quick-card">
+<h2>Provinsi</h2>
+<p>Jawa Tengah</p>
+</div>
+
+</div>
+
 </section>
 
 <footer>
@@ -929,8 +1034,6 @@ Luas administratif Desa Ponggok dalam kilometer persegi.
 </footer>
 
 <script>
-
-/* MENU SECTION */
 
 function showSection(id, btn){
 
@@ -950,7 +1053,66 @@ btn.classList.add('active');
 
 }
 
-/* CHART 1 */
+/* CLOCK */
+
+function updateClock(){
+
+const now = new Date();
+
+const time = now.toLocaleTimeString('id-ID');
+
+const date = now.toLocaleDateString('id-ID',{
+weekday:'long',
+year:'numeric',
+month:'long',
+day:'numeric'
+});
+
+document.getElementById('clock').innerHTML = time;
+
+document.getElementById('date').innerHTML = date;
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
+
+/* COUNTER */
+
+const counters = document.querySelectorAll('.counter');
+
+counters.forEach(counter => {
+
+counter.innerText = '0';
+
+const updateCounter = () => {
+
+const target = +counter.getAttribute('data-target');
+
+const c = +counter.innerText;
+
+const increment = target / 100;
+
+if(c < target){
+
+counter.innerText = `${Math.ceil(c + increment)}`;
+
+setTimeout(updateCounter,20);
+
+}else{
+
+counter.innerText = target;
+
+}
+
+};
+
+updateCounter();
+
+});
+
+/* CHARTS */
 
 new Chart(document.getElementById('genderChart'),{
 
@@ -973,27 +1135,9 @@ borderWidth:0
 
 }]
 
-},
-
-options:{
-
-plugins:{
-
-legend:{
-
-labels:{
-color:'#dffaff'
-}
-
-}
-
-}
-
 }
 
 });
-
-/* CHART 2 */
 
 new Chart(document.getElementById('ageChart'),{
 
@@ -1001,25 +1145,13 @@ type:'bar',
 
 data:{
 
-labels:[
-'0-14',
-'15-24',
-'25-44',
-'45-64',
-'65+'
-],
+labels:['0-14','15-24','25-44','45-64','65+'],
 
 datasets:[{
 
 label:'Jumlah Penduduk',
 
-data:[
-300,
-500,
-700,
-450,
-250
-],
+data:[300,500,700,450,250],
 
 backgroundColor:'#19e3ff',
 
@@ -1027,35 +1159,9 @@ borderRadius:10
 
 }]
 
-},
-
-options:{
-
-scales:{
-
-x:{
-ticks:{color:'#dffaff'},
-grid:{color:'rgba(255,255,255,0.05)'}
-},
-
-y:{
-ticks:{color:'#dffaff'},
-grid:{color:'rgba(255,255,255,0.05)'}
-}
-
-},
-
-plugins:{
-legend:{
-labels:{color:'#dffaff'}
-}
-}
-
 }
 
 });
-
-/* CHART 3 */
 
 new Chart(document.getElementById('populationChart'),{
 
@@ -1081,35 +1187,9 @@ tension:0.4
 
 }]
 
-},
-
-options:{
-
-plugins:{
-legend:{
-labels:{color:'#dffaff'}
-}
-},
-
-scales:{
-
-x:{
-ticks:{color:'#dffaff'},
-grid:{color:'rgba(255,255,255,0.05)'}
-},
-
-y:{
-ticks:{color:'#dffaff'},
-grid:{color:'rgba(255,255,255,0.05)'}
-}
-
-}
-
 }
 
 });
-
-/* CHART 4 */
 
 new Chart(document.getElementById('densityChart'),{
 
@@ -1117,23 +1197,13 @@ type:'radar',
 
 data:{
 
-labels:[
-'Penduduk',
-'Kepadatan',
-'Wilayah',
-'Rasio JK'
-],
+labels:['Penduduk','Kepadatan','Wilayah','Rasio JK'],
 
 datasets:[{
 
 label:'Indikator Desa',
 
-data:[
-2157,
-2573,
-84,
-98
-],
+data:[2157,2573,84,98],
 
 backgroundColor:'rgba(25,227,255,0.2)',
 
@@ -1142,25 +1212,6 @@ borderColor:'#19e3ff',
 pointBackgroundColor:'#19e3ff'
 
 }]
-
-},
-
-options:{
-
-plugins:{
-legend:{
-labels:{color:'#dffaff'}
-}
-},
-
-scales:{
-r:{
-grid:{color:'rgba(255,255,255,0.08)'},
-angleLines:{color:'rgba(255,255,255,0.08)'},
-pointLabels:{color:'#dffaff'},
-ticks:{display:false}
-}
-}
 
 }
 
