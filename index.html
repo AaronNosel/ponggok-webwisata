@@ -1,277 +1,68 @@
-/* FEATURE */
+<!DOCTYPE html>
 
-.feature-section{
-
-padding:100px 90px;
+data:{
+labels:['Laki-Laki','Perempuan'],
+datasets:[{
+data:[1072,1085],
+backgroundColor:['#19e3ff','#14c7b7'],
+borderWidth:0
+}]
 }
 
-.feature-header{
+});
 
-text-align:center;
+new Chart(document.getElementById('ageChart'),{
 
-margin-bottom:60px;
+type:'bar',
+
+data:{
+labels:['0-14','15-24','25-44','45-64','65+'],
+datasets:[{
+label:'Jumlah Penduduk',
+data:[300,500,700,450,250],
+backgroundColor:'#19e3ff',
+borderRadius:10
+}]
 }
 
-.feature-header h2{
+});
 
-font-size:65px;
+new Chart(document.getElementById('populationChart'),{
 
-font-family:'Cormorant Garamond', serif;
+type:'line',
 
-color:#8ef5ff;
-
-margin-bottom:15px;
+data:{
+labels:['Laki-Laki','Perempuan','Total'],
+datasets:[{
+label:'Data Penduduk',
+data:[1072,1085,2157],
+borderColor:'#19e3ff',
+backgroundColor:'rgba(25,227,255,0.15)',
+fill:true,
+tension:0.4
+}]
 }
 
-.feature-header p{
+});
 
-font-size:20px;
+new Chart(document.getElementById('densityChart'),{
 
-color:#a6c6cc;
+type:'radar',
+
+data:{
+labels:['Penduduk','Kepadatan','Wilayah','Rasio JK'],
+datasets:[{
+label:'Indikator Desa',
+data:[2157,2573,84,98],
+backgroundColor:'rgba(25,227,255,0.2)',
+borderColor:'#19e3ff',
+pointBackgroundColor:'#19e3ff'
+}]
 }
 
-.feature-grid{
+});
 
-display:grid;
+</script>
 
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-
-gap:25px;
-}
-
-.feature-card{
-
-background:rgba(5,30,35,0.82);
-
-padding:40px;
-
-border-radius:30px;
-
-border:1px solid rgba(255,255,255,0.06);
-
-transition:0.4s;
-}
-
-.feature-card:hover{
-
-transform:translateY(-10px);
-
-box-shadow:0 0 40px rgba(0,255,255,0.15);
-}
-
-.feature-icon{
-
-font-size:45px;
-
-margin-bottom:20px;
-}
-
-.feature-card h3{
-
-font-size:28px;
-
-margin-bottom:15px;
-
-color:#8ef5ff;
-}
-
-.feature-card p{
-
-font-size:16px;
-
-line-height:1.9;
-
-color:#d5ebee;
-}
-
-/* VISI MISI */
-
-.vision-section{
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:25px;
-
-padding:40px 90px;
-}
-
-.vision-card{
-
-background:rgba(5,30,35,0.82);
-
-padding:45px;
-
-border-radius:30px;
-
-border:1px solid rgba(255,255,255,0.06);
-}
-
-.vision-card h2{
-
-font-size:42px;
-
-margin-bottom:20px;
-
-color:#8ef5ff;
-}
-
-.vision-card p,
-.vision-card li{
-
-font-size:17px;
-
-line-height:2;
-
-color:#d5ebee;
-}
-
-/* PROGRESS */
-
-.progress-section{
-
-padding:100px 90px;
-}
-
-.progress-section h2{
-
-font-size:65px;
-
-text-align:center;
-
-margin-bottom:60px;
-
-font-family:'Cormorant Garamond', serif;
-
-color:#8ef5ff;
-}
-
-.progress-container{
-
-display:grid;
-
-gap:30px;
-}
-
-.progress-title{
-
-display:flex;
-justify-content:space-between;
-
-margin-bottom:15px;
-
-font-size:18px;
-
-color:#dffaff;
-}
-
-.progress-bar{
-
-height:16px;
-
-background:rgba(255,255,255,0.08);
-
-border-radius:20px;
-
-overflow:hidden;
-}
-
-.progress-fill{
-
-height:100%;
-
-border-radius:20px;
-
-background:linear-gradient(90deg,#00d2ff,#3aefc6);
-}
-
-.fill1{width:92%;}
-.fill2{width:88%;}
-.fill3{width:95%;}
-.fill4{width:85%;}
-
-/* GALERI */
-
-.gallery-section{
-
-padding:100px 90px;
-}
-
-.gallery-section h2{
-
-font-size:65px;
-
-text-align:center;
-
-margin-bottom:60px;
-
-font-family:'Cormorant Garamond', serif;
-
-color:#8ef5ff;
-}
-
-.gallery-grid{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-
-gap:25px;
-}
-
-.gallery-card{
-
-overflow:hidden;
-
-border-radius:30px;
-
-height:320px;
-
-border:1px solid rgba(255,255,255,0.06);
-}
-
-.gallery-card img{
-
-width:100%;
-height:100%;
-
-object-fit:cover;
-
-transition:0.5s;
-}
-
-.gallery-card:hover img{
-
-transform:scale(1.1);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:900px){
-
-.vision-section{
-
-grid-template-columns:1fr;
-}
-
-}
-
-@media(max-width:768px){
-
-.feature-section,
-.progress-section,
-.gallery-section,
-.vision-section{
-
-padding:80px 20px;
-}
-
-.feature-header h2,
-.progress-section h2,
-.gallery-section h2{
-
-font-size:45px;
-}
-
-}
+</body>
+</html>
