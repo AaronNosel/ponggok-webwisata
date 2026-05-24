@@ -1,1178 +1,1687 @@
+cat > /mnt/user-data/outputs/webgis-ponggok.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>WEBGIS Desa Wisata Ponggok</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+/* ===== CSS VARIABLES ===== */
+:root{
+  --teal-dark: #0a2e2a;
+  --teal-mid: #0f4a3c;
+  --teal-light: #1a7a5e;
+  --green-accent: #2ec97e;
+  --gold: #e8c96a;
+  --gold-light: #f5e4a8;
+  --cream: #faf6ee;
+  --cream-dark: #ede5d4;
+  --text-dark: #1a2e26;
+  --text-mid: #3d5c4e;
+  --text-light: #7a9e8e;
+  --white: #ffffff;
+  --shadow-green: rgba(46,201,126,0.18);
+  --shadow-gold: rgba(232,201,106,0.18);
 }
 
-html{
-scroll-behavior:smooth;
-}
-
+/* ===== RESET & BASE ===== */
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
 body{
-
-font-family:'Inter',sans-serif;
-overflow-x:hidden;
-color:white;
-
-background:
-radial-gradient(circle at top left, rgba(0,255,255,0.10), transparent 30%),
-radial-gradient(circle at bottom right, rgba(0,255,255,0.08), transparent 35%),
-#03181d;
-
-background-image:
-linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-
-background-size:50px 50px;
+  font-family:'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text-dark);
+  overflow-x: hidden;
 }
 
-/* HEADER */
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{ width:6px; }
+::-webkit-scrollbar-track{ background: var(--cream-dark); }
+::-webkit-scrollbar-thumb{ background: var(--teal-light); border-radius:10px; }
 
+/* ===== TICKER ===== */
+.ticker-bar{
+  background: var(--teal-dark);
+  color: var(--gold-light);
+  padding: 10px 0;
+  overflow: hidden;
+  border-bottom: 2px solid var(--green-accent);
+  position: relative;
+  z-index: 1000;
+}
+.ticker-inner{
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.ticker-label{
+  background: var(--green-accent);
+  color: var(--teal-dark);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 4px 18px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticker-track{
+  overflow: hidden;
+  flex: 1;
+  position: relative;
+}
+.ticker-content{
+  display: inline-flex;
+  gap: 80px;
+  animation: ticker 40s linear infinite;
+  white-space: nowrap;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding-left: 40px;
+}
+.ticker-content span::before{
+  content: '◆';
+  margin-right: 12px;
+  color: var(--gold);
+  font-size: 8px;
+}
+@keyframes ticker{
+  from{ transform: translateX(0); }
+  to{ transform: translateX(-50%); }
+}
+
+/* ===== HEADER ===== */
 header{
-
-position:fixed;
-top:0;
-left:0;
-
-width:100%;
-height:95px;
-
-display:flex;
-justify-content:space-between;
-align-items:center;
-
-padding:0 70px;
-
-background:rgba(2,22,27,0.88);
-
-backdrop-filter:blur(14px);
-
-border-bottom:1px solid rgba(255,255,255,0.05);
-
-z-index:999;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: var(--white);
+  border-bottom: 2px solid var(--cream-dark);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
 }
-
+.header-inner{
+  max-width: 1300px;
+  margin: auto;
+  padding: 0 40px;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .logo{
-
-display:flex;
-align-items:center;
-gap:18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
-
-.logo-circle{
-
-width:60px;
-height:60px;
-
-border-radius:50%;
-
-background:linear-gradient(180deg,#19e3ff,#14c7b7);
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-font-size:22px;
-font-weight:700;
-
-box-shadow:0 0 30px rgba(0,255,255,0.3);
+.logo-emblem{
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal-light));
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 4px 16px var(--shadow-green);
+  flex-shrink: 0;
 }
-
 .logo-text h1{
-
-font-size:34px;
-
-font-family:'Cormorant Garamond', serif;
-
-color:#c9ffff;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--teal-dark);
+  line-height: 1.1;
 }
-
 .logo-text p{
-
-font-size:11px;
-
-letter-spacing:4px;
-
-color:#8bb8bf;
-
-margin-top:3px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--text-light);
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+nav{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+nav a{
+  text-decoration: none;
+  color: var(--text-mid);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-radius: 50px;
+  transition: all 0.25s;
+  border: 1.5px solid transparent;
+}
+nav a:hover{
+  background: var(--cream);
+  color: var(--teal-light);
+  border-color: var(--cream-dark);
+}
+nav a.cta{
+  background: var(--teal-mid);
+  color: var(--white);
+  border-color: var(--teal-mid);
+}
+nav a.cta:hover{
+  background: var(--teal-light);
+  border-color: var(--teal-light);
 }
 
-/* NAVBAR ATAS */
-
-.top-navbar{
-
-display:flex;
-gap:40px;
-align-items:center;
+/* ===== CLOCK WIDGET (fixed) ===== */
+.clock-widget{
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--teal-dark);
+  color: var(--white);
+  border-radius: 20px;
+  padding: 18px 24px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  z-index: 900;
+  min-width: 160px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+}
+.clock-time{
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  color: var(--green-accent);
+  line-height: 1;
+  letter-spacing: 2px;
+}
+.clock-date{
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  margin-top: 6px;
+  letter-spacing: 1px;
+}
+.clock-day{
+  font-size: 13px;
+  color: var(--gold);
+  margin-top: 2px;
+  font-weight: 600;
+}
+.clock-label{
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 8px;
+  text-transform: uppercase;
 }
 
-.top-navbar a{
-
-text-decoration:none;
-color:white;
-
-font-size:16px;
-font-weight:700;
-
-transition:0.3s;
-position:relative;
-}
-
-.top-navbar a:hover{
-
-color:#63f7ff;
-}
-
-.top-navbar a::after{
-
-content:'';
-
-position:absolute;
-left:0;
-bottom:-8px;
-
-width:0%;
-height:3px;
-
-background:#3ff6ff;
-
-transition:0.3s;
-
-border-radius:10px;
-}
-
-.top-navbar a:hover::after{
-
-width:100%;
-}
-
-/* HERO */
-
+/* ===== HERO ===== */
 .hero{
-
-min-height:100vh;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-padding:120px 30px 100px;
-
-text-align:center;
+  min-height: 92vh;
+  background:
+    linear-gradient(160deg, var(--teal-dark) 0%, var(--teal-mid) 50%, var(--teal-light) 100%);
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 60px 40px;
 }
-
-.hero-content{
-
-max-width:1200px;
+.hero::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(46,201,126,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(232,201,106,0.10) 0%, transparent 50%);
 }
-
+.hero-bg-text{
+  position: absolute;
+  bottom: -30px;
+  right: -20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 280px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.025);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+.hero-inner{
+  max-width: 1300px;
+  margin: auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
 .hero-badge{
-
-display:inline-block;
-
-padding:14px 30px;
-
-border-radius:50px;
-
-background:rgba(0,255,255,0.04);
-
-border:1px solid rgba(255,255,255,0.08);
-
-font-size:13px;
-
-letter-spacing:3px;
-
-color:#8ef5ff;
-
-margin-bottom:35px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(46,201,126,0.15);
+  border: 1px solid rgba(46,201,126,0.35);
+  color: var(--green-accent);
+  font-size: 11px;
+  letter-spacing: 3px;
+  padding: 8px 20px;
+  border-radius: 50px;
+  margin-bottom: 28px;
+  text-transform: uppercase;
 }
-
-.hero-subtitle{
-
-font-size:70px;
-
-font-family:'Cormorant Garamond', serif;
-
-letter-spacing:10px;
-
-color:#9fbfc7;
+.hero-badge::before{
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--green-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--green-accent);
+  animation: pulse 2s infinite;
 }
-
+@keyframes pulse{
+  0%,100%{ opacity:1; transform: scale(1); }
+  50%{ opacity:0.5; transform: scale(1.4); }
+}
+.hero-tagline{
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  letter-spacing: 5px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
 .hero-title{
-
-font-size:190px;
-
-line-height:0.9;
-
-font-family:'Cormorant Garamond', serif;
-
-color:#87f5ff;
-
-margin-bottom:30px;
-
-text-shadow:
-0 0 20px rgba(0,255,255,0.1),
-0 0 50px rgba(0,255,255,0.1);
-
-animation:glow 3s infinite alternate;
+  font-family: 'Playfair Display', serif;
+  font-size: 88px;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 0.9;
+  margin-bottom: 8px;
+}
+.hero-title span{
+  color: var(--gold);
+  display: block;
+}
+.hero-sub{
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 28px;
+  font-style: italic;
+}
+.hero-desc{
+  font-size: 16px;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.70);
+  max-width: 520px;
+  margin-bottom: 40px;
+}
+.hero-actions{
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.btn-primary{
+  padding: 16px 36px;
+  background: var(--green-accent);
+  color: var(--teal-dark);
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  transition: all 0.3s;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 24px rgba(46,201,126,0.35);
+}
+.btn-primary:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(46,201,126,0.45);
+}
+.btn-secondary{
+  padding: 16px 36px;
+  background: transparent;
+  color: var(--white);
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-secondary:hover{
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.6);
 }
 
-@keyframes glow{
-
-from{
-
-text-shadow:
-0 0 20px rgba(0,255,255,0.1),
-0 0 50px rgba(0,255,255,0.1);
-
+/* HERO STATS CARD */
+.hero-stats{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.hero-stat-card{
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 22px;
+  padding: 28px 24px;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+.hero-stat-card::after{
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-accent), var(--gold));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+  transform-origin: left;
+}
+.hero-stat-card:hover::after{ transform: scaleX(1); }
+.hero-stat-card:hover{
+  background: rgba(255,255,255,0.10);
+  transform: translateY(-4px);
+}
+.hsc-icon{
+  font-size: 28px;
+  margin-bottom: 14px;
+}
+.hsc-num{
+  font-family: 'Playfair Display', serif;
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.hsc-num.counter{ color: var(--green-accent); }
+.hsc-label{
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
-to{
-
-text-shadow:
-0 0 35px rgba(0,255,255,0.4),
-0 0 80px rgba(0,255,255,0.25);
-
+/* ===== DIVIDER ===== */
+.wave-divider{
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  margin-top: -2px;
+}
+.wave-divider svg{
+  display: block;
+  width: 100%;
 }
 
+/* ===== SECTION HEADING ===== */
+.section-heading{
+  text-align: center;
+  margin-bottom: 56px;
+}
+.section-tag{
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--teal-light);
+  background: rgba(26,122,94,0.08);
+  border: 1px solid rgba(26,122,94,0.2);
+  padding: 6px 20px;
+  border-radius: 50px;
+  margin-bottom: 18px;
+}
+.section-title{
+  font-family: 'Playfair Display', serif;
+  font-size: 54px;
+  color: var(--teal-dark);
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.section-subtitle{
+  font-size: 17px;
+  color: var(--text-light);
+  max-width: 550px;
+  margin: auto;
+  line-height: 1.8;
 }
 
-.hero-description{
+/* ===== DAYA TARIK / HIGHLIGHT CARDS ===== */
+.highlights{
+  padding: 100px 40px;
+  background: var(--cream);
+}
+.highlight-grid{
+  max-width: 1300px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 24px;
+}
+.hl-card{
+  background: var(--white);
+  border-radius: 28px;
+  padding: 40px 32px;
+  border: 1.5px solid var(--cream-dark);
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+.hl-card::before{
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--teal-light), var(--green-accent));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+  transform-origin: left;
+}
+.hl-card:hover::before{ transform: scaleX(1); }
+.hl-card:hover{
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  border-color: transparent;
+}
+.hl-icon{
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal-light));
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 20px var(--shadow-green);
+}
+.hl-title{
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: var(--teal-dark);
+  margin-bottom: 12px;
+}
+.hl-desc{
+  font-size: 15px;
+  color: var(--text-light);
+  line-height: 1.8;
+}
+.hl-link{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  color: var(--teal-light);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: gap 0.3s;
+}
+.hl-link:hover{ gap: 10px; }
 
-font-size:24px;
+/* ===== STATISTIK SECTION ===== */
+.statistik{
+  padding: 100px 40px;
+  background: var(--teal-dark);
+  position: relative;
+  overflow: hidden;
+}
+.statistik::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 10% 50%, rgba(46,201,126,0.08), transparent 40%),
+    radial-gradient(circle at 90% 30%, rgba(232,201,106,0.06), transparent 40%);
+}
+.statistik .section-title{ color: var(--white); }
+.statistik .section-tag{
+  color: var(--green-accent);
+  background: rgba(46,201,126,0.1);
+  border-color: rgba(46,201,126,0.25);
+}
+.statistik .section-subtitle{ color: rgba(255,255,255,0.5); }
 
-line-height:2;
-
-color:#a9c8cf;
-
-max-width:950px;
-
-margin:auto;
+.stat-cards{
+  max-width: 1300px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+.sc{
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 26px;
+  padding: 40px 28px;
+  text-align: center;
+  transition: all 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+.sc:hover{
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.sc-icon{
+  font-size: 40px;
+  margin-bottom: 18px;
+  display: block;
+}
+.sc-num{
+  font-family: 'Playfair Display', serif;
+  font-size: 56px;
+  font-weight: 700;
+  color: var(--green-accent);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.sc-unit{
+  font-size: 20px;
+  color: var(--gold);
+  font-weight: 600;
+}
+.sc-label{
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+.sc-desc{
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  margin-top: 10px;
+  line-height: 1.6;
 }
 
-.online-status{
-
-display:inline-flex;
-align-items:center;
-gap:10px;
-
-margin-top:35px;
-
-padding:14px 26px;
-
-border-radius:50px;
-
-background:rgba(0,255,255,0.04);
-
-border:1px solid rgba(255,255,255,0.06);
-
-font-size:14px;
-
-letter-spacing:2px;
-
-color:#aefaff;
+/* ===== CHARTS ===== */
+.charts-section{
+  padding: 100px 40px;
+  background: var(--cream);
 }
-
-.online-dot{
-
-width:10px;
-height:10px;
-
-border-radius:50%;
-
-background:#1aff76;
-
-box-shadow:0 0 12px #1aff76;
+.charts-inner{
+  max-width: 1300px;
+  margin: auto;
 }
-
-/* MENU TENGAH */
-
-.menu-bar{
-
-display:flex;
-justify-content:center;
-gap:22px;
-
-flex-wrap:wrap;
-
-margin-top:60px;
+.chart-tabs{
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
 }
-
-.menu-btn{
-
-padding:18px 38px;
-
-border-radius:50px;
-
-border:none;
-
-background:rgba(0,0,0,0.25);
-
-border:1px solid rgba(0,255,255,0.15);
-
-color:#8eefff;
-
-font-size:18px;
-font-weight:600;
-
-cursor:pointer;
-
-transition:0.3s ease;
-
-backdrop-filter:blur(10px);
+.chart-tab{
+  padding: 10px 28px;
+  border-radius: 50px;
+  border: 1.5px solid var(--cream-dark);
+  background: var(--white);
+  color: var(--text-mid);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
 }
-
-.menu-btn:hover{
-
-transform:translateY(-4px);
-
-background:rgba(0,255,255,0.08);
-
-box-shadow:0 0 20px rgba(0,255,255,0.25);
+.chart-tab.active, .chart-tab:hover{
+  background: var(--teal-mid);
+  color: var(--white);
+  border-color: var(--teal-mid);
+  box-shadow: 0 4px 16px var(--shadow-green);
 }
-
-.menu-btn.active{
-
-background:linear-gradient(90deg,#00d2ff,#3aefc6);
-
-color:white;
-
-box-shadow:0 0 30px rgba(0,255,255,0.4);
+.chart-panels > div{ display: none; }
+.chart-panels > div.active{ display: grid; }
+.chart-grid-2{
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
 }
-
-.menu-bar a{
-text-decoration:none;
-display:flex;
-align-items:center;
-justify-content:center;
+.chart-grid-1{
+  grid-template-columns: 1fr;
 }
-
-/* DASHBOARD */
-
-.dashboard{
-
-padding:50px 90px 120px;
-}
-
-/* SECTION */
-
-.section{
-display:none;
-animation:fade 0.5s ease;
-}
-
-.section.active{
-display:block;
-}
-
-@keyframes fade{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-/* STATS */
-
-.stats-grid{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-
-gap:25px;
-
-margin-bottom:60px;
-}
-
-.stat-card{
-
-background:rgba(5,30,35,0.82);
-
-border:1px solid rgba(255,255,255,0.05);
-
-border-radius:30px;
-
-padding:35px;
-
-position:relative;
-
-overflow:hidden;
-
-transition:0.4s;
-}
-
-.stat-card:hover{
-
-transform:translateY(-8px);
-
-box-shadow:0 0 40px rgba(0,255,255,0.12);
-}
-
-.stat-title{
-
-font-size:15px;
-
-letter-spacing:3px;
-
-color:#8fb3bb;
-
-margin-bottom:18px;
-}
-
-.stat-number{
-
-font-size:60px;
-
-font-weight:700;
-
-color:#8ef5ff;
-
-margin-bottom:10px;
-}
-
-.stat-desc{
-
-font-size:15px;
-
-line-height:1.8;
-
-color:#c6dfe3;
-}
-
-/* CHART */
-
-.chart-grid{
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:25px;
-
-margin-top:40px;
-}
-
 .chart-card{
-
-background:rgba(5,30,35,0.82);
-
-padding:35px;
-
-border-radius:30px;
-
-border:1px solid rgba(255,255,255,0.05);
+  background: var(--white);
+  border-radius: 28px;
+  padding: 36px;
+  border: 1.5px solid var(--cream-dark);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+.chart-card h4{
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--teal-dark);
+  margin-bottom: 6px;
+}
+.chart-card p{
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 24px;
+}
+.chart-card canvas{
+  max-height: 300px;
 }
 
-.chart-card h3{
-
-font-size:28px;
-
-margin-bottom:25px;
-
-color:#8ef5ff;
+/* ===== TABEL DATA ===== */
+.data-section{
+  padding: 100px 40px;
+  background: var(--white);
+}
+.data-inner{
+  max-width: 1300px;
+  margin: auto;
+}
+.data-table-wrap{
+  overflow-x: auto;
+  border-radius: 24px;
+  border: 1.5px solid var(--cream-dark);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+}
+table.dt{
+  width: 100%;
+  border-collapse: collapse;
+}
+table.dt thead{
+  background: linear-gradient(90deg, var(--teal-dark), var(--teal-mid));
+}
+table.dt th{
+  padding: 20px 28px;
+  text-align: left;
+  color: rgba(255,255,255,0.85);
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+table.dt tbody tr{
+  border-bottom: 1px solid var(--cream-dark);
+  transition: background 0.2s;
+}
+table.dt tbody tr:hover{ background: rgba(26,122,94,0.04); }
+table.dt tbody tr:last-child{ border-bottom: none; }
+table.dt td{
+  padding: 20px 28px;
+  font-size: 15px;
+  color: var(--text-mid);
+}
+table.dt td:first-child{
+  font-weight: 600;
+  color: var(--teal-dark);
+}
+table.dt td:nth-child(2){
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--teal-light);
+}
+.badge-bps{
+  display: inline-block;
+  background: rgba(46,201,126,0.1);
+  color: var(--teal-light);
+  font-size: 12px;
+  padding: 4px 14px;
+  border-radius: 50px;
+  font-weight: 600;
+  border: 1px solid rgba(46,201,126,0.2);
 }
 
-/* TABLE */
-
-.table-section{
-
-margin-top:80px;
+/* ===== GALERI ===== */
+.galeri-section{
+  padding: 100px 40px;
+  background: var(--cream);
+}
+.galeri-inner{
+  max-width: 1300px;
+  margin: auto;
+}
+.galeri-grid{
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+.galeri-item{
+  border-radius: 22px;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 4/3;
+  background: var(--teal-mid);
+  cursor: pointer;
+  transition: transform 0.4s;
+}
+.galeri-item:hover{ transform: scale(1.02); }
+.galeri-item:first-child{
+  grid-column: span 2;
+  aspect-ratio: 16/9;
+}
+.galeri-img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s;
+}
+.galeri-item:hover .galeri-img{ transform: scale(1.08); }
+.galeri-overlay{
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 50%);
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.galeri-item:hover .galeri-overlay{ opacity: 1; }
+.galeri-overlay-text{
+  color: var(--white);
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
 }
 
-.table-section h3{
+/* Placeholder gradient for galeri */
+.galeri-placeholder{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+  border-radius: 22px;
+}
+.g1{ background: linear-gradient(135deg,#0f4a3c,#2ec97e); }
+.g2{ background: linear-gradient(135deg,#1a7a5e,#e8c96a); }
+.g3{ background: linear-gradient(135deg,#0a2e2a,#1a7a5e); }
+.g4{ background: linear-gradient(135deg,#2ec97e,#0f4a3c); }
+.g5{ background: linear-gradient(135deg,#e8c96a,#1a7a5e); }
+.g6{ background: linear-gradient(135deg,#0f4a3c,#0a2e2a); }
 
-font-size:60px;
-
-font-family:'Cormorant Garamond', serif;
-
-margin-bottom:25px;
-
-text-align:center;
-
-color:#8ef5ff;
+/* ===== MAP ===== */
+.peta-section{
+  padding: 100px 40px;
+  background: var(--white);
+}
+.peta-inner{
+  max-width: 1300px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+#map{
+  height: 480px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 2px solid var(--cream-dark);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+.peta-info{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.peta-info-card{
+  background: var(--cream);
+  border-radius: 20px;
+  padding: 24px 28px;
+  border: 1.5px solid var(--cream-dark);
+}
+.peta-info-card h5{
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--teal-dark);
+  margin-bottom: 10px;
+}
+.peta-info-card p{
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+.coord-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--teal-dark);
+  color: var(--green-accent);
+  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-weight: 600;
+  margin-top: 8px;
+  font-family: monospace;
+  letter-spacing: 0.5px;
 }
 
-.data-table{
-
-width:100%;
-
-border-collapse:collapse;
-
-overflow:hidden;
-
-border-radius:28px;
-
-background:rgba(5,30,35,0.82);
-
-border:1px solid rgba(255,255,255,0.05);
-}
-
-.data-table th{
-
-padding:24px;
-
-background:rgba(0,255,255,0.05);
-
-color:#8ef5ff;
-
-font-size:15px;
-
-letter-spacing:2px;
-
-text-align:left;
-}
-
-.data-table td{
-
-padding:22px;
-
-border-top:1px solid rgba(255,255,255,0.05);
-
-color:#d7eef2;
-}
-
-/* FOOTER */
-
+/* ===== FOOTER ===== */
 footer{
-
-padding:45px;
-
-text-align:center;
-
-border-top:1px solid rgba(255,255,255,0.05);
-
-color:#82a9b0;
+  background: var(--teal-dark);
+  color: rgba(255,255,255,0.55);
+  padding: 60px 40px 40px;
+}
+.footer-inner{
+  max-width: 1300px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 50px;
+}
+.footer-brand h3{
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: var(--white);
+  margin-bottom: 14px;
+}
+.footer-brand p{
+  font-size: 14px;
+  line-height: 1.8;
+  max-width: 380px;
+}
+.footer-col h4{
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.footer-col a, .footer-col p{
+  display: block;
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 10px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-col a:hover{ color: var(--green-accent); }
+.footer-bottom{
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+.footer-bottom a{
+  color: var(--green-accent);
+  text-decoration: none;
 }
 
-/* RESPONSIVE */
-
-@media(max-width:1000px){
-
-.chart-grid{
-grid-template-columns:1fr;
+/* ===== SCROLL TO TOP ===== */
+.scroll-top{
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  width: 48px;
+  height: 48px;
+  background: var(--green-accent);
+  color: var(--teal-dark);
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px var(--shadow-green);
+  transition: all 0.3s;
+  opacity: 0;
+  transform: translateY(20px);
+  z-index: 900;
+}
+.scroll-top.visible{
+  opacity: 1;
+  transform: translateY(0);
+}
+.scroll-top:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px var(--shadow-green);
 }
 
-.hero-title{
-font-size:120px;
+/* ===== PROGRESS BAR ===== */
+.progress-bar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-accent), var(--gold));
+  z-index: 9999;
+  transition: width 0.1s;
 }
 
+/* ===== ANIMATIONS ===== */
+.reveal{
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
+.reveal.visible{
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1{ transition-delay: 0.1s; }
+.reveal-delay-2{ transition-delay: 0.2s; }
+.reveal-delay-3{ transition-delay: 0.3s; }
+.reveal-delay-4{ transition-delay: 0.4s; }
 
+/* ===== RESPONSIVE ===== */
+@media(max-width:1100px){
+  .hero-inner{ grid-template-columns: 1fr; text-align: center; }
+  .hero-stats{ max-width: 500px; margin: auto; }
+  .hero-title{ font-size: 70px; }
+  .hero-desc{ margin: auto auto 40px; }
+  .hero-actions{ justify-content: center; }
+  .stat-cards{ grid-template-columns: repeat(2,1fr); }
+  .highlight-grid{ grid-template-columns: 1fr 1fr; }
+  .peta-inner{ grid-template-columns: 1fr; }
+  .footer-inner{ grid-template-columns: 1fr 1fr; }
+}
 @media(max-width:768px){
-
-header{
-
-padding:20px;
-
-flex-direction:column;
-
-height:auto;
-
-gap:20px;
+  .header-inner{ padding: 0 20px; }
+  nav{ display: none; }
+  .hero-title{ font-size: 54px; }
+  .hero-stats{ grid-template-columns: 1fr 1fr; }
+  .hsc-num{ font-size: 32px; }
+  .highlight-grid, .chart-grid-2, .galeri-grid{ grid-template-columns: 1fr; }
+  .galeri-item:first-child{ grid-column: span 1; aspect-ratio: 4/3; }
+  .section-title{ font-size: 38px; }
+  .stat-cards{ grid-template-columns: 1fr 1fr; }
+  .footer-inner{ grid-template-columns: 1fr; gap: 30px; }
+  .clock-widget{ bottom: 14px; right: 14px; padding: 14px 18px; }
+  .clock-time{ font-size: 24px; }
 }
-
-.top-navbar{
-
-flex-wrap:wrap;
-justify-content:center;
-gap:20px;
-}
-
-.hero-title{
-font-size:80px;
-}
-
-.hero-subtitle{
-font-size:38px;
-}
-
-.hero-description{
-font-size:18px;
-}
-
-.dashboard{
-padding:80px 20px;
-}
-
-}
-
 </style>
-
 </head>
 
 <body>
 
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-inner">
+    <div class="ticker-label">BERITA DESA</div>
+    <div class="ticker-track">
+      <div class="ticker-content" id="tickerContent">
+        <span>Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten</span>
+        <span>Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa</span>
+        <span>Luas wilayah Desa Ponggok: 0,84 km² dengan kepadatan 2.573 jiwa/km²</span>
+        <span>Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten</span>
+        <span>Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik</span>
+        <span>Rasio jenis kelamin Desa Ponggok: 98,80 — penduduk perempuan sedikit lebih banyak</span>
+        <span>Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten</span>
+        <span>Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa</span>
+        <span>Luas wilayah Desa Ponggok: 0,84 km² dengan kepadatan 2.573 jiwa/km²</span>
+        <span>Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten</span>
+        <span>Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik</span>
+        <span>Rasio jenis kelamin Desa Ponggok: 98,80 — penduduk perempuan sedikit lebih banyak</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
 <header>
-
-<div class="logo">
-
-<div class="logo-circle">
-⬢
-</div>
-
-<div class="logo-text">
-
-<h1>Desa Wisata Ponggok</h1>
-
-<p>WEBGIS • KLATEN • JAWA TENGAH</p>
-
-</div>
-
-</div>
-
-<nav class="top-navbar">
-
-<a href="#beranda">BERANDA</a>
-
-<a href="#overview">OVERVIEW</a>
-
-<a href="#grafik">GRAFIK</a>
-
-<a href="#statistik">STATISTIK</a>
-
-<a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank">
-DATA SPASIAL
-</a>
-
-</nav>
-
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-emblem">🌊</div>
+      <div class="logo-text">
+        <h1>Desa Wisata Ponggok</h1>
+        <p>WebGIS • Kec. Polanharjo • Kab. Klaten</p>
+      </div>
+    </div>
+    <nav>
+      <a href="#hero">Beranda</a>
+      <a href="#highlights">Daya Tarik</a>
+      <a href="#statistik">Statistik</a>
+      <a href="#peta">Peta</a>
+      <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" class="cta">🗺 Peta Spasial</a>
+    </nav>
+  </div>
 </header>
 
 <!-- HERO -->
-
-<section class="hero" id="beranda">
-
-<div class="hero-content">
-
-<div class="hero-badge">
-
-WEBGIS PORTAL • KEC. POLANHARJO • KAB. KLATEN
-
-</div>
-
-<h2 class="hero-subtitle">
-
-INFOGRAFIS
-
-</h2>
-
-<h1 class="hero-title">
-
-Ponggok
-
-</h1>
-
-<p class="hero-description">
-
-Portal infografis dan pemetaan digital resmi Desa Wisata Ponggok berbasis data statistik BPS 2025 yang menampilkan informasi kependudukan, visualisasi data, serta integrasi data spasial interaktif.
-
-</p>
-
-<div class="online-status">
-
-<div class="online-dot"></div>
-
-PORTAL ONLINE • REALTIME DATA
-
-</div>
-
-<!-- NAVBAR TENGAH -->
-
-<div class="menu-bar">
-
-<button class="menu-btn active" onclick="showSection('overview', this)">
-Overview
-</button>
-
-<button class="menu-btn" onclick="showSection('grafik-section', this)">
-Kependudukan
-</button>
-
-<button class="menu-btn" onclick="showSection('statistik-section', this)">
-Statistik
-</button>
-
-<a class="menu-btn"
-href="https://www.youtube.com/watch?v=qtT3APyW-VA"
-target="_blank">
-
-Profil Wilayah
-
-</a>
-
-<a class="menu-btn"
-href="https://aovmn.github.io/Ponggok-Webgis/"
-target="_blank">
-
-Peta Spasial
-
-</a>
-
-</div>
-
-</div>
-
+<section class="hero" id="hero">
+  <div class="hero-bg-text">Ponggok</div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge">WebGIS Portal • Data BPS 2025</div>
+      <p class="hero-tagline">Desa Wisata • Klaten • Jawa Tengah</p>
+      <h1 class="hero-title">Desa<span>Ponggok</span></h1>
+      <p class="hero-sub">Surga Air Jernih di Tengah Jawa</p>
+      <p class="hero-desc">Portal infografis dan pemetaan digital resmi Desa Wisata Ponggok — menampilkan data kependudukan, visualisasi statistik, serta integrasi data spasial interaktif berbasis BPS 2025.</p>
+      <div class="hero-actions">
+        <a href="#statistik" class="btn-primary">📊 Lihat Statistik</a>
+        <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" class="btn-secondary">🗺 Buka Peta Spasial</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat-card">
+        <div class="hsc-icon">👥</div>
+        <div class="hsc-num counter" data-target="2157">0</div>
+        <div class="hsc-label">Total Penduduk</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hsc-icon">🏞️</div>
+        <div class="hsc-num">0,84</div>
+        <div class="hsc-label">km² Luas Wilayah</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hsc-icon">📍</div>
+        <div class="hsc-num counter" data-target="2573">0</div>
+        <div class="hsc-label">Jiwa/km² Kepadatan</div>
+      </div>
+      <div class="hero-stat-card">
+        <div class="hsc-icon">⚖️</div>
+        <div class="hsc-num">98,80</div>
+        <div class="hsc-label">Rasio Jenis Kelamin</div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- DASHBOARD -->
-
-<section class="dashboard">
-
-<!-- OVERVIEW -->
-
-<div id="overview" class="section active">
-
-<div class="stats-grid">
-
-<div class="stat-card">
-
-<div class="stat-title">
-TOTAL PENDUDUK
+<!-- WAVE -->
+<div class="wave-divider">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none" fill="var(--cream)">
+    <path d="M0,0 C360,80 1080,0 1440,60 L1440,80 L0,80 Z"/>
+  </svg>
 </div>
 
-<div class="stat-number">
-2.157
-</div>
-
-<div class="stat-desc">
-Jumlah penduduk Desa Ponggok tahun 2025.
-</div>
-
-</div>
-
-<div class="stat-card">
-
-<div class="stat-title">
-LAKI-LAKI
-</div>
-
-<div class="stat-number">
-1.072
-</div>
-
-<div class="stat-desc">
-Jumlah penduduk laki-laki Desa Ponggok.
-</div>
-
-</div>
-
-<div class="stat-card">
-
-<div class="stat-title">
-PEREMPUAN
-</div>
-
-<div class="stat-number">
-1.085
-</div>
-
-<div class="stat-desc">
-Jumlah penduduk perempuan Desa Ponggok.
-</div>
-
-</div>
-
-<div class="stat-card">
-
-<div class="stat-title">
-LUAS WILAYAH
-</div>
-
-<div class="stat-number">
-0,84
-</div>
-
-<div class="stat-desc">
-Luas administratif Desa Ponggok dalam kilometer persegi.
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- GRAFIK -->
-
-<div id="grafik-section" class="section">
-
-<div class="chart-grid" id="grafik">
-
-<div class="chart-card">
-
-<h3>Komposisi Penduduk</h3>
-
-<canvas id="genderChart"></canvas>
-
-</div>
-
-<div class="chart-card">
-
-<h3>Kelompok Umur Penduduk</h3>
-
-<canvas id="ageChart"></canvas>
-
-</div>
-
-<div class="chart-card">
-
-<h3>Perbandingan Penduduk</h3>
-
-<canvas id="populationChart"></canvas>
-
-</div>
-
-<div class="chart-card">
-
-<h3>Kepadatan dan Rasio</h3>
-
-<canvas id="densityChart"></canvas>
-
-</div>
-
-</div>
-
-</div>
+<!-- DAYA TARIK / HIGHLIGHTS -->
+<section class="highlights" id="highlights">
+  <div class="section-heading reveal">
+    <div class="section-tag">Keunggulan Desa</div>
+    <h2 class="section-title">Daya Tarik Ponggok</h2>
+    <p class="section-subtitle">Desa Ponggok dikenal sebagai desa wisata inovatif yang berhasil mengintegrasikan potensi alam, budaya, dan tata kelola modern.</p>
+  </div>
+  <div class="highlight-grid">
+    <div class="hl-card reveal reveal-delay-1">
+      <div class="hl-icon">🌊</div>
+      <h3 class="hl-title">Umbul Ponggok</h3>
+      <p class="hl-desc">Sumber mata air alami bersuhu konstan yang menjadi ikon wisata Klaten. Kejernihan airnya memungkinkan aktivitas snorkeling dan selam air tawar yang unik.</p>
+      <a href="#" class="hl-link">Selengkapnya →</a>
+    </div>
+    <div class="hl-card reveal reveal-delay-2">
+      <div class="hl-icon">🏘️</div>
+      <h3 class="hl-title">BUMDes Terbaik</h3>
+      <p class="hl-desc">Badan Usaha Milik Desa Ponggok menjadi percontohan nasional pengelolaan aset desa yang transparan, inovatif, dan memberikan manfaat langsung bagi warga.</p>
+      <a href="#" class="hl-link">Selengkapnya →</a>
+    </div>
+    <div class="hl-card reveal reveal-delay-3">
+      <div class="hl-icon">🗺️</div>
+      <h3 class="hl-title">Data Spasial Digital</h3>
+      <p class="hl-desc">Peta interaktif berbasis WebGIS yang menampilkan tata ruang, fasilitas umum, dan potensi wilayah secara real-time dan dapat diakses oleh publik.</p>
+      <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" class="hl-link">Buka Peta →</a>
+    </div>
+    <div class="hl-card reveal reveal-delay-1">
+      <div class="hl-icon">🌿</div>
+      <h3 class="hl-title">Alam & Lingkungan</h3>
+      <p class="hl-desc">Wilayah seluas 0,84 km² dengan ekosistem hijau yang terjaga, menjadikan Ponggok contoh keseimbangan antara pengembangan wisata dan pelestarian alam.</p>
+      <a href="#" class="hl-link">Selengkapnya →</a>
+    </div>
+    <div class="hl-card reveal reveal-delay-2">
+      <div class="hl-icon">👨‍👩‍👧‍👦</div>
+      <h3 class="hl-title">Komunitas Aktif</h3>
+      <p class="hl-desc">Dengan 2.157 jiwa penduduk yang berdaya, masyarakat Ponggok aktif berpartisipasi dalam pengelolaan desa wisata dan pelestarian budaya lokal.</p>
+      <a href="#" class="hl-link">Selengkapnya →</a>
+    </div>
+    <div class="hl-card reveal reveal-delay-3">
+      <div class="hl-icon">📡</div>
+      <h3 class="hl-title">Digitalisasi Desa</h3>
+      <p class="hl-desc">Ponggok menjadi pelopor desa digital di Jawa Tengah — dari sistem informasi wisata, transaksi cashless, hingga portal data publik berbasis WebGIS.</p>
+      <a href="#" class="hl-link">Selengkapnya →</a>
+    </div>
+  </div>
+</section>
 
 <!-- STATISTIK -->
-
-<div id="statistik-section" class="section">
-
-<div class="table-section" id="statistik">
-
-<h3>Data Statistik Desa Ponggok</h3>
-
-<table class="data-table">
-
-<thead>
-
-<tr>
-
-<th>Kategori</th>
-
-<th>Jumlah</th>
-
-<th>Keterangan</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-<td>Total Penduduk</td>
-<td>2.157 Jiwa</td>
-<td>Data BPS 2025</td>
-</tr>
-
-<tr>
-<td>Laki-Laki</td>
-<td>1.072 Jiwa</td>
-<td>Penduduk laki-laki</td>
-</tr>
-
-<tr>
-<td>Perempuan</td>
-<td>1.085 Jiwa</td>
-<td>Penduduk perempuan</td>
-</tr>
-
-<tr>
-<td>Luas Wilayah</td>
-<td>0,84 km²</td>
-<td>Luas administratif desa</td>
-</tr>
-
-<tr>
-<td>Kepadatan Penduduk</td>
-<td>2.573 Jiwa/km²</td>
-<td>Kepadatan wilayah</td>
-</tr>
-
-<tr>
-<td>Rasio Jenis Kelamin</td>
-<td>98,80</td>
-<td>Rasio laki-laki dan perempuan</td>
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
+<section class="statistik" id="statistik">
+  <div style="max-width:1300px;margin:auto;position:relative;z-index:1;">
+    <div class="section-heading reveal">
+      <div class="section-tag">Data BPS 2025</div>
+      <h2 class="section-title">Statistik Kependudukan</h2>
+      <p class="section-subtitle">Data resmi kependudukan Desa Ponggok tahun 2025 berdasarkan publikasi Badan Pusat Statistik Kabupaten Klaten.</p>
+    </div>
+    <div class="stat-cards">
+      <div class="sc reveal reveal-delay-1">
+        <span class="sc-icon">👥</span>
+        <div class="sc-num counter" data-target="2157">0</div>
+        <div class="sc-label">Total Penduduk</div>
+        <div class="sc-desc">Jumlah seluruh penduduk tercatat Desa Ponggok tahun 2025</div>
+      </div>
+      <div class="sc reveal reveal-delay-2">
+        <span class="sc-icon">👨</span>
+        <div class="sc-num counter" data-target="1072">0</div>
+        <div class="sc-label">Laki-Laki</div>
+        <div class="sc-desc">Penduduk berjenis kelamin laki-laki</div>
+      </div>
+      <div class="sc reveal reveal-delay-3">
+        <span class="sc-icon">👩</span>
+        <div class="sc-num counter" data-target="1085">0</div>
+        <div class="sc-label">Perempuan</div>
+        <div class="sc-desc">Penduduk berjenis kelamin perempuan</div>
+      </div>
+      <div class="sc reveal reveal-delay-4">
+        <span class="sc-icon">📐</span>
+        <div class="sc-num">0,84 <span class="sc-unit">km²</span></div>
+        <div class="sc-label">Luas Wilayah</div>
+        <div class="sc-desc">Luas administratif desa secara keseluruhan</div>
+      </div>
+      <div class="sc reveal reveal-delay-1">
+        <span class="sc-icon">🏙️</span>
+        <div class="sc-num counter" data-target="2573">0</div>
+        <div class="sc-label">Jiwa/km² Kepadatan</div>
+        <div class="sc-desc">Tingkat kepadatan penduduk per km²</div>
+      </div>
+      <div class="sc reveal reveal-delay-2">
+        <span class="sc-icon">⚖️</span>
+        <div class="sc-num">98,80</div>
+        <div class="sc-label">Rasio Jenis Kelamin</div>
+        <div class="sc-desc">Jumlah laki-laki per 100 perempuan</div>
+      </div>
+      <div class="sc reveal reveal-delay-3">
+        <span class="sc-icon">📅</span>
+        <div class="sc-num">2025</div>
+        <div class="sc-label">Tahun Data</div>
+        <div class="sc-desc">Sumber: BPS Kabupaten Klaten</div>
+      </div>
+      <div class="sc reveal reveal-delay-4">
+        <span class="sc-icon">🏠</span>
+        <div class="sc-num">1</div>
+        <div class="sc-label">Kecamatan</div>
+        <div class="sc-desc">Kecamatan Polanharjo, Kab. Klaten</div>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- CHARTS -->
+<section class="charts-section" id="grafik">
+  <div class="charts-inner">
+    <div class="section-heading reveal">
+      <div class="section-tag">Visualisasi Data</div>
+      <h2 class="section-title">Grafik Kependudukan</h2>
+      <p class="section-subtitle">Representasi visual data demografi Desa Ponggok untuk memudahkan pemahaman dan analisis.</p>
+    </div>
+    <div class="chart-tabs">
+      <button class="chart-tab active" onclick="showChart('komposisi',this)">Komposisi Gender</button>
+      <button class="chart-tab" onclick="showChart('umur',this)">Kelompok Umur</button>
+      <button class="chart-tab" onclick="showChart('perbandingan',this)">Perbandingan</button>
+      <button class="chart-tab" onclick="showChart('kepadatan',this)">Indikator Desa</button>
+    </div>
+    <div class="chart-panels">
+      <div id="chart-komposisi" class="active chart-grid-2">
+        <div class="chart-card reveal">
+          <h4>Komposisi Jenis Kelamin</h4>
+          <p>Distribusi penduduk berdasarkan jenis kelamin (2025)</p>
+          <canvas id="genderChart"></canvas>
+        </div>
+        <div class="chart-card reveal reveal-delay-1">
+          <h4>Proporsi Gender (%)</h4>
+          <p>Persentase laki-laki dan perempuan</p>
+          <canvas id="genderBarChart"></canvas>
+        </div>
+      </div>
+      <div id="chart-umur" class="chart-grid-1">
+        <div class="chart-card reveal">
+          <h4>Piramida Kelompok Umur</h4>
+          <p>Estimasi distribusi kelompok usia penduduk Desa Ponggok</p>
+          <canvas id="ageChart"></canvas>
+        </div>
+      </div>
+      <div id="chart-perbandingan" class="chart-grid-1">
+        <div class="chart-card reveal">
+          <h4>Perbandingan Komposisi Penduduk</h4>
+          <p>Data laki-laki, perempuan, dan total penduduk</p>
+          <canvas id="populationChart"></canvas>
+        </div>
+      </div>
+      <div id="chart-kepadatan" class="chart-grid-1">
+        <div class="chart-card reveal">
+          <h4>Radar Indikator Desa</h4>
+          <p>Gambaran menyeluruh indikator kependudukan Desa Ponggok</p>
+          <canvas id="densityChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABEL DATA -->
+<section class="data-section">
+  <div class="data-inner">
+    <div class="section-heading reveal">
+      <div class="section-tag">Tabel Resmi</div>
+      <h2 class="section-title">Data Lengkap Desa</h2>
+      <p class="section-subtitle">Rekap data statistik resmi Desa Ponggok berdasarkan publikasi BPS 2025.</p>
+    </div>
+    <div class="data-table-wrap reveal">
+      <table class="dt">
+        <thead>
+          <tr>
+            <th>Kategori</th>
+            <th>Jumlah</th>
+            <th>Keterangan</th>
+            <th>Sumber</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Penduduk</td>
+            <td>2.157 Jiwa</td>
+            <td>Seluruh penduduk terdaftar di Desa Ponggok</td>
+            <td><span class="badge-bps">BPS 2025</span></td>
+          </tr>
+          <tr>
+            <td>Laki-Laki</td>
+            <td>1.072 Jiwa</td>
+            <td>Penduduk berjenis kelamin laki-laki</td>
+            <td><span class="badge-bps">BPS 2025</span></td>
+          </tr>
+          <tr>
+            <td>Perempuan</td>
+            <td>1.085 Jiwa</td>
+            <td>Penduduk berjenis kelamin perempuan</td>
+            <td><span class="badge-bps">BPS 2025</span></td>
+          </tr>
+          <tr>
+            <td>Luas Wilayah</td>
+            <td>0,84 km²</td>
+            <td>Luas wilayah administratif desa</td>
+            <td><span class="badge-bps">BPS 2025</span></td>
+          </tr>
+          <tr>
+            <td>Kepadatan Penduduk</td>
+            <td>2.573 Jiwa/km²</td>
+            <td>Kepadatan per satuan luas wilayah</td>
+            <td><span class="badge-bps">BPS 2025</span></td>
+          </tr>
+          <tr>
+            <td>Rasio Jenis Kelamin</td>
+            <td>98,80</td>
+            <td>Jumlah laki-laki per 100 perempuan</td>
+            <td><span class="badge-bps">BPS 2025</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- GALERI -->
+<section class="galeri-section" id="galeri">
+  <div class="galeri-inner">
+    <div class="section-heading reveal">
+      <div class="section-tag">Galeri Desa</div>
+      <h2 class="section-title">Keindahan Ponggok</h2>
+      <p class="section-subtitle">Potret pesona alam, wisata, dan kehidupan masyarakat Desa Ponggok.</p>
+    </div>
+    <div class="galeri-grid reveal">
+      <div class="galeri-item">
+        <div class="galeri-placeholder g1">🌊</div>
+        <div class="galeri-overlay">
+          <div class="galeri-overlay-text">Umbul Ponggok</div>
+        </div>
+      </div>
+      <div class="galeri-item">
+        <div class="galeri-placeholder g2">🌿</div>
+        <div class="galeri-overlay">
+          <div class="galeri-overlay-text">Alam Desa</div>
+        </div>
+      </div>
+      <div class="galeri-item">
+        <div class="galeri-placeholder g3">🏘️</div>
+        <div class="galeri-overlay">
+          <div class="galeri-overlay-text">Pemukiman Warga</div>
+        </div>
+      </div>
+      <div class="galeri-item">
+        <div class="galeri-placeholder g4">🎣</div>
+        <div class="galeri-overlay">
+          <div class="galeri-overlay-text">Aktivitas Wisata</div>
+        </div>
+      </div>
+      <div class="galeri-item">
+        <div class="galeri-placeholder g5">🌾</div>
+        <div class="galeri-overlay">
+          <div class="galeri-overlay-text">Lahan Pertanian</div>
+        </div>
+      </div>
+      <div class="galeri-item">
+        <div class="galeri-placeholder g6">🏛️</div>
+        <div class="galeri-overlay">
+          <div class="galeri-overlay-text">Fasilitas Desa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PETA LOKASI -->
+<section class="peta-section" id="peta">
+  <div class="peta-inner">
+    <div>
+      <div class="section-heading reveal" style="text-align:left;margin-bottom:28px;">
+        <div class="section-tag">Lokasi</div>
+        <h2 class="section-title" style="font-size:42px;">Peta Desa Ponggok</h2>
+      </div>
+      <div id="map"></div>
+    </div>
+    <div class="peta-info reveal">
+      <div class="peta-info-card">
+        <h5>📍 Lokasi Administratif</h5>
+        <p>Desa Ponggok, Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah, Indonesia.</p>
+        <div class="coord-badge">📌 -7.6295°, 110.6203°</div>
+      </div>
+      <div class="peta-info-card">
+        <h5>🗺️ Peta Spasial Interaktif</h5>
+        <p>Jelajahi tata ruang, fasilitas umum, dan potensi wilayah Desa Ponggok melalui platform WebGIS kami.</p>
+        <br>
+        <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 28px;">🗺 Buka WebGIS</a>
+      </div>
+      <div class="peta-info-card">
+        <h5>🎥 Profil Wilayah</h5>
+        <p>Tonton video profil resmi Desa Wisata Ponggok untuk mengenal lebih dekat potensi dan keunikannya.</p>
+        <br>
+        <a href="https://www.youtube.com/watch?v=qtT3APyW-VA" target="_blank" class="btn-secondary" style="font-size:14px;padding:12px 28px;color:var(--teal-dark);border-color:var(--teal-light);">▶ Tonton Video</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-
-© 2026 WEBGIS DESA WISATA PONGGOK • KABUPATEN KLATEN
-
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>🌊 Desa Wisata Ponggok</h3>
+      <p>Portal WebGIS resmi Desa Wisata Ponggok — menyajikan data kependudukan, informasi wilayah, serta pemetaan digital interaktif untuk mendukung transparansi dan kemajuan desa.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigasi</h4>
+      <a href="#hero">Beranda</a>
+      <a href="#highlights">Daya Tarik</a>
+      <a href="#statistik">Statistik</a>
+      <a href="#grafik">Grafik</a>
+      <a href="#peta">Peta</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tautan</h4>
+      <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank">WebGIS Spasial</a>
+      <a href="https://www.youtube.com/watch?v=qtT3APyW-VA" target="_blank">Profil Video</a>
+      <p>Kec. Polanharjo</p>
+      <p>Kab. Klaten, Jawa Tengah</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 WebGIS Desa Wisata Ponggok • Kabupaten Klaten</span>
+    <span>Data: <a href="#">BPS Klaten 2025</a></span>
+  </div>
 </footer>
 
+<!-- CLOCK WIDGET -->
+<div class="clock-widget">
+  <div class="clock-time" id="clockTime">--:--:--</div>
+  <div class="clock-day" id="clockDay">---</div>
+  <div class="clock-date" id="clockDate">-- --- ----</div>
+  <div class="clock-label">WIB • KLATEN</div>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
 <script>
+/* ===== REALTIME CLOCK ===== */
+function updateClock(){
+  const now = new Date();
+  const wibOffset = 7 * 60;
+  const localOffset = now.getTimezoneOffset();
+  const wib = new Date(now.getTime() + (wibOffset + localOffset) * 60000);
 
-/* MENU SECTION */
+  const hh = String(wib.getHours()).padStart(2,'0');
+  const mm = String(wib.getMinutes()).padStart(2,'0');
+  const ss = String(wib.getSeconds()).padStart(2,'0');
+  document.getElementById('clockTime').textContent = `${hh}:${mm}:${ss}`;
 
-function showSection(id, btn){
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  document.getElementById('clockDay').textContent = days[wib.getDay()];
+  document.getElementById('clockDate').textContent = `${wib.getDate()} ${months[wib.getMonth()]} ${wib.getFullYear()}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
 
-document.querySelectorAll('.section').forEach(section=>{
-section.classList.remove('active');
+/* ===== PROGRESS BAR ===== */
+window.addEventListener('scroll', () => {
+  const scrollTop = document.documentElement.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const progress = (scrollTop / scrollHeight) * 100;
+  document.getElementById('progressBar').style.width = progress + '%';
+
+  const btn = document.getElementById('scrollTop');
+  if(scrollTop > 400){ btn.classList.add('visible'); }
+  else{ btn.classList.remove('visible'); }
 });
 
-document.getElementById(id).classList.add('active');
+/* ===== REVEAL ON SCROLL ===== */
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
 
-document.querySelectorAll('.menu-btn').forEach(button=>{
-button.classList.remove('active');
+/* ===== COUNTER ANIMATION ===== */
+function animateCounter(el){
+  const target = parseInt(el.dataset.target);
+  const duration = 1800;
+  const step = target / (duration / 16);
+  let current = 0;
+  const interval = setInterval(() => {
+    current += step;
+    if(current >= target){
+      current = target;
+      clearInterval(interval);
+    }
+    el.textContent = Math.floor(current).toLocaleString('id-ID');
+  }, 16);
+}
+
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting && !e.target.dataset.done){
+      e.target.dataset.done = '1';
+      animateCounter(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+
+/* ===== CHART TAB SWITCH ===== */
+function showChart(id, btn){
+  document.querySelectorAll('.chart-panels > div').forEach(p => p.classList.remove('active'));
+  document.getElementById('chart-' + id).classList.add('active');
+  document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ===== CHART CONFIG COLORS ===== */
+const C = {
+  teal: '#1a7a5e',
+  green: '#2ec97e',
+  gold: '#e8c96a',
+  cream: '#faf6ee',
+  dark: '#0a2e2a',
+  mid: '#0f4a3c',
+  light: '#a8d5c3'
+};
+
+/* Chart 1 - Gender Donut */
+new Chart(document.getElementById('genderChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Laki-Laki (1.072)', 'Perempuan (1.085)'],
+    datasets: [{
+      data: [1072, 1085],
+      backgroundColor: [C.teal, C.green],
+      borderWidth: 0,
+      hoverOffset: 10
+    }]
+  },
+  options: {
+    cutout: '65%',
+    plugins: {
+      legend: { labels: { color: '#3d5c4e', font: { size: 13 } } }
+    }
+  }
 });
 
-if(btn.tagName === "BUTTON"){
-btn.classList.add('active');
-}
-
-}
-
-/* CHART 1 */
-
-new Chart(document.getElementById('genderChart'),{
-
-type:'doughnut',
-
-data:{
-
-labels:['Laki-Laki','Perempuan'],
-
-datasets:[{
-
-data:[1072,1085],
-
-backgroundColor:[
-'#19e3ff',
-'#14c7b7'
-],
-
-borderWidth:0
-
-}]
-
-},
-
-options:{
-
-plugins:{
-
-legend:{
-
-labels:{
-color:'#dffaff'
-}
-
-}
-
-}
-
-}
-
+/* Chart 2 - Gender Bar */
+new Chart(document.getElementById('genderBarChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Laki-Laki', 'Perempuan'],
+    datasets: [{
+      label: '%',
+      data: [49.7, 50.3],
+      backgroundColor: [C.teal, C.green],
+      borderRadius: 10,
+      borderWidth: 0
+    }]
+  },
+  options: {
+    scales: {
+      x: { ticks: { color: '#3d5c4e' }, grid: { display: false } },
+      y: { ticks: { color: '#3d5c4e', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.05)' }, max: 55 }
+    },
+    plugins: { legend: { display: false } }
+  }
 });
 
-/* CHART 2 */
-
-new Chart(document.getElementById('ageChart'),{
-
-type:'bar',
-
-data:{
-
-labels:[
-'0-14',
-'15-24',
-'25-44',
-'45-64',
-'65+'
-],
-
-datasets:[{
-
-label:'Jumlah Penduduk',
-
-data:[
-300,
-500,
-700,
-450,
-250
-],
-
-backgroundColor:'#19e3ff',
-
-borderRadius:10
-
-}]
-
-},
-
-options:{
-
-scales:{
-
-x:{
-ticks:{color:'#dffaff'},
-grid:{color:'rgba(255,255,255,0.05)'}
-},
-
-y:{
-ticks:{color:'#dffaff'},
-grid:{color:'rgba(255,255,255,0.05)'}
-}
-
-},
-
-plugins:{
-legend:{
-labels:{color:'#dffaff'}
-}
-}
-
-}
-
+/* Chart 3 - Age Bar */
+new Chart(document.getElementById('ageChart'), {
+  type: 'bar',
+  data: {
+    labels: ['0–14', '15–24', '25–44', '45–64', '65+'],
+    datasets: [{
+      label: 'Estimasi Penduduk',
+      data: [300, 500, 700, 450, 207],
+      backgroundColor: [C.light, C.green, C.teal, C.mid, C.dark],
+      borderRadius: 12,
+      borderWidth: 0
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    scales: {
+      x: { ticks: { color: '#3d5c4e' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+      y: { ticks: { color: '#3d5c4e' }, grid: { display: false } }
+    },
+    plugins: { legend: { labels: { color: '#3d5c4e' } } }
+  }
 });
 
-/* CHART 3 */
-
-new Chart(document.getElementById('populationChart'),{
-
-type:'line',
-
-data:{
-
-labels:['Laki-Laki','Perempuan','Total'],
-
-datasets:[{
-
-label:'Data Penduduk',
-
-data:[1072,1085,2157],
-
-borderColor:'#19e3ff',
-
-backgroundColor:'rgba(25,227,255,0.15)',
-
-fill:true,
-
-tension:0.4
-
-}]
-
-},
-
-options:{
-
-plugins:{
-legend:{
-labels:{color:'#dffaff'}
-}
-},
-
-scales:{
-
-x:{
-ticks:{color:'#dffaff'},
-grid:{color:'rgba(255,255,255,0.05)'}
-},
-
-y:{
-ticks:{color:'#dffaff'},
-grid:{color:'rgba(255,255,255,0.05)'}
-}
-
-}
-
-}
-
+/* Chart 4 - Line */
+new Chart(document.getElementById('populationChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Laki-Laki', 'Perempuan', 'Total'],
+    datasets: [{
+      label: 'Jumlah Jiwa',
+      data: [1072, 1085, 2157],
+      backgroundColor: [C.teal, C.green, C.gold],
+      borderRadius: 14,
+      borderWidth: 0
+    }]
+  },
+  options: {
+    scales: {
+      x: { ticks: { color: '#3d5c4e' }, grid: { display: false } },
+      y: { ticks: { color: '#3d5c4e' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+    },
+    plugins: { legend: { labels: { color: '#3d5c4e' } } }
+  }
 });
 
-/* CHART 4 */
-
-new Chart(document.getElementById('densityChart'),{
-
-type:'radar',
-
-data:{
-
-labels:[
-'Penduduk',
-'Kepadatan',
-'Wilayah',
-'Rasio JK'
-],
-
-datasets:[{
-
-label:'Indikator Desa',
-
-data:[
-2157,
-2573,
-84,
-98
-],
-
-backgroundColor:'rgba(25,227,255,0.2)',
-
-borderColor:'#19e3ff',
-
-pointBackgroundColor:'#19e3ff'
-
-}]
-
-},
-
-options:{
-
-plugins:{
-legend:{
-labels:{color:'#dffaff'}
-}
-},
-
-scales:{
-r:{
-grid:{color:'rgba(255,255,255,0.08)'},
-angleLines:{color:'rgba(255,255,255,0.08)'},
-pointLabels:{color:'#dffaff'},
-ticks:{display:false}
-}
-}
-
-}
-
+/* Chart 5 - Radar */
+new Chart(document.getElementById('densityChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Penduduk (÷10)', 'Kepadatan (÷10)', 'Luas (×100)', 'Rasio JK', 'L-P Balance'],
+    datasets: [{
+      label: 'Indikator Desa',
+      data: [215.7, 257.3, 84, 98.8, 99.4],
+      backgroundColor: 'rgba(26,122,94,0.15)',
+      borderColor: C.teal,
+      pointBackgroundColor: C.green,
+      pointBorderColor: '#fff',
+      pointRadius: 5,
+      borderWidth: 2
+    }]
+  },
+  options: {
+    scales: {
+      r: {
+        grid: { color: 'rgba(0,0,0,0.07)' },
+        angleLines: { color: 'rgba(0,0,0,0.07)' },
+        pointLabels: { color: '#3d5c4e', font: { size: 12 } },
+        ticks: { display: false }
+      }
+    },
+    plugins: { legend: { labels: { color: '#3d5c4e' } } }
+  }
 });
 
+/* ===== LEAFLET MAP ===== */
+const map = L.map('map').setView([-7.6295, 110.6203], 14);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+const icon = L.divIcon({
+  html: `<div style="background:linear-gradient(135deg,#0f4a3c,#2ec97e);width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 4px 16px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+    <span style="transform:rotate(45deg);font-size:18px;">🌊</span>
+  </div>`,
+  className: '',
+  iconSize: [44, 44],
+  iconAnchor: [22, 44],
+  popupAnchor: [0, -48]
+});
+
+L.marker([-7.6295, 110.6203], { icon })
+  .addTo(map)
+  .bindPopup(`
+    <div style="font-family:'DM Sans',sans-serif;padding:8px;min-width:200px;">
+      <h4 style="color:#0f4a3c;font-size:16px;margin-bottom:6px;">🌊 Desa Wisata Ponggok</h4>
+      <p style="font-size:13px;color:#555;margin-bottom:4px;">Kec. Polanharjo, Kab. Klaten</p>
+      <p style="font-size:13px;color:#555;">Jawa Tengah, Indonesia</p>
+      <hr style="margin:8px 0;border-color:#eee;">
+      <p style="font-size:12px;color:#888;">Penduduk: <strong>2.157 jiwa</strong></p>
+      <p style="font-size:12px;color:#888;">Luas: <strong>0,84 km²</strong></p>
+    </div>
+  `)
+  .openPopup();
+
+L.circle([-7.6295, 110.6203], {
+  radius: 600,
+  color: '#2ec97e',
+  fillColor: '#2ec97e',
+  fillOpacity: 0.07,
+  weight: 2
+}).addTo(map);
 </script>
 
 </body>
 </html>
+HTMLEOF
+echo "Done"
