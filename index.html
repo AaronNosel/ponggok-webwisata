@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
 
 <meta charset="UTF-8">
@@ -8,7 +7,7 @@
 
 <title>WEBGIS Desa Wisata Ponggok</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -27,24 +26,29 @@ scroll-behavior:smooth;
 body{
 
 font-family:'Inter',sans-serif;
-color:#dffaff;
 overflow-x:hidden;
+color:white;
 
 background:
 radial-gradient(circle at top left, rgba(0,255,255,0.08), transparent 35%),
 radial-gradient(circle at bottom right, rgba(0,255,255,0.08), transparent 35%),
-#02181d;
+#03181d;
 
 background-image:
 linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
 linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
 
-background-size:48px 48px;
+background-size:50px 50px;
+
 }
 
 /* HEADER */
 
 header{
+
+position:fixed;
+top:0;
+left:0;
 
 width:100%;
 height:90px;
@@ -55,15 +59,12 @@ align-items:center;
 
 padding:0 70px;
 
-background:rgba(3,30,35,0.88);
+background:rgba(2,22,27,0.88);
 
-border-bottom:1px solid rgba(98,255,255,0.08);
+backdrop-filter:blur(14px);
 
-backdrop-filter:blur(12px);
+border-bottom:1px solid rgba(255,255,255,0.05);
 
-position:fixed;
-top:0;
-left:0;
 z-index:999;
 }
 
@@ -76,35 +77,30 @@ gap:18px;
 
 .logo-circle{
 
-width:58px;
-height:58px;
+width:55px;
+height:55px;
 
 border-radius:50%;
 
-background:linear-gradient(180deg,#15d6e7,#1197a7);
+background:linear-gradient(180deg,#19e3ff,#14c7b7);
 
 display:flex;
 justify-content:center;
 align-items:center;
 
-box-shadow:0 0 25px rgba(0,255,255,0.18);
-}
-
-.logo-circle::before{
-
-content:"⬢";
-color:white;
 font-size:22px;
+font-weight:700;
+
+box-shadow:0 0 25px rgba(0,255,255,0.25);
 }
 
 .logo-text h1{
 
-font-size:34px;
-line-height:1;
-
-color:#caffff;
+font-size:32px;
 
 font-family:'Cormorant Garamond', serif;
+
+color:#c9ffff;
 }
 
 .logo-text p{
@@ -113,12 +109,10 @@ font-size:11px;
 
 letter-spacing:4px;
 
-color:#7faab2;
+color:#8bb8bf;
 
-margin-top:6px;
+margin-top:3px;
 }
-
-/* NAV */
 
 nav{
 
@@ -128,12 +122,10 @@ gap:35px;
 
 nav a{
 
-color:#e4ffff;
-
 text-decoration:none;
+color:white;
 
 font-size:14px;
-
 font-weight:600;
 
 transition:0.3s;
@@ -141,23 +133,22 @@ transition:0.3s;
 
 nav a:hover{
 
-color:#6ef6ff;
+color:#63f7ff;
 }
 
 /* HERO */
 
-.hero-center{
+.hero{
 
-width:100%;
 min-height:100vh;
 
 display:flex;
 justify-content:center;
 align-items:center;
 
-text-align:center;
+padding:120px 30px 80px;
 
-padding:120px 30px 100px;
+text-align:center;
 }
 
 .hero-content{
@@ -173,30 +164,28 @@ padding:14px 28px;
 
 border-radius:50px;
 
-background:rgba(0,255,255,0.03);
+background:rgba(0,255,255,0.04);
 
-border:1px solid rgba(98,255,255,0.12);
-
-color:#8fefff;
+border:1px solid rgba(255,255,255,0.08);
 
 font-size:13px;
 
 letter-spacing:3px;
+
+color:#8ef5ff;
 
 margin-bottom:35px;
 }
 
 .hero-subtitle{
 
-font-size:72px;
-
-letter-spacing:12px;
-
-color:#9dc2ca;
+font-size:70px;
 
 font-family:'Cormorant Garamond', serif;
 
-margin-bottom:10px;
+letter-spacing:10px;
+
+color:#9fbfc7;
 }
 
 .hero-title{
@@ -205,79 +194,88 @@ font-size:180px;
 
 line-height:0.9;
 
-color:#88f7ff;
-
-margin-bottom:35px;
-
 font-family:'Cormorant Garamond', serif;
 
-animation:glow 3s infinite alternate;
+color:#87f5ff;
+
+margin-bottom:30px;
 
 text-shadow:
-0 0 20px rgba(0,255,255,0.08),
-0 0 40px rgba(0,255,255,0.08);
+0 0 20px rgba(0,255,255,0.1),
+0 0 50px rgba(0,255,255,0.1);
+
+animation:glow 3s infinite alternate;
 }
 
 @keyframes glow{
 
 from{
+
 text-shadow:
-0 0 15px rgba(0,255,255,0.12),
-0 0 30px rgba(0,255,255,0.12);
+0 0 20px rgba(0,255,255,0.1),
+0 0 50px rgba(0,255,255,0.1);
+
 }
 
 to{
+
 text-shadow:
-0 0 30px rgba(0,255,255,0.35),
-0 0 60px rgba(0,255,255,0.25);
+0 0 30px rgba(0,255,255,0.4),
+0 0 80px rgba(0,255,255,0.25);
+
 }
 
 }
 
 .hero-description{
 
-font-size:28px;
+font-size:26px;
 
 line-height:2;
 
-color:#a8cad0;
+color:#a9c8cf;
 
 max-width:950px;
 
 margin:auto;
 }
 
-/* ONLINE STATUS */
-
 .online-status{
+
 display:inline-flex;
 align-items:center;
 gap:10px;
 
-margin-top:30px;
+margin-top:35px;
 
-padding:12px 24px;
+padding:14px 26px;
 
-border-radius:40px;
+border-radius:50px;
 
 background:rgba(0,255,255,0.04);
 
-border:1px solid rgba(98,255,255,0.08);
+border:1px solid rgba(255,255,255,0.06);
 
 font-size:14px;
+
 letter-spacing:2px;
-color:#9ef9ff;
+
+color:#aefaff;
 }
 
 .online-dot{
+
 width:10px;
 height:10px;
+
 border-radius:50%;
-background:#17ff7b;
-box-shadow:0 0 15px #17ff7b;
+
+background:#1aff76;
+
+box-shadow:0 0 12px #1aff76;
 }
 
-/* DASHBOARD */
+/* SECTION */
 
 .dashboard{
 
@@ -286,30 +284,85 @@ padding:80px 90px 120px;
 
 .section-heading{
 
-margin-bottom:55px;
-
 text-align:center;
+
+margin-bottom:60px;
 }
 
 .section-heading h2{
 
-font-size:72px;
-
-color:#8ef5ff;
+font-size:70px;
 
 font-family:'Cormorant Garamond', serif;
 
-margin-bottom:15px;
+color:#8ef5ff;
+
+margin-bottom:10px;
 }
 
 .section-heading p{
 
-color:#82adb5;
-
 font-size:20px;
+
+color:#89adb5;
 }
 
-/* INFO GRID */
+/* MENU */
+
+.menu-bar{
+
+display:flex;
+justify-content:center;
+gap:20px;
+
+flex-wrap:wrap;
+
+margin-bottom:60px;
+}
+
+.menu-btn{
+
+padding:14px 28px;
+
+border-radius:40px;
+
+border:none;
+
+background:rgba(0,255,255,0.04);
+
+border:1px solid rgba(255,255,255,0.06);
+
+color:#aefaff;
+
+cursor:pointer;
+
+font-size:14px;
+font-weight:600;
+
+transition:0.3s;
+}
+
+.menu-btn:hover,
+.menu-btn.active{
+
+background:linear-gradient(90deg,#14c7b7,#19e3ff);
+
+color:white;
+
+box-shadow:0 0 20px rgba(0,255,255,0.2);
+}
+
+/* CONTENT */
+
+.content-section{
+display:none;
+}
+
+.active-section{
+display:block;
+}
+
+/* CARDS */
 
 .info-grid{
 
@@ -322,9 +375,9 @@ gap:25px;
 
 .info-card{
 
-background:rgba(5,30,35,0.82);
+background:rgba(5,30,35,0.8);
 
-border:1px solid rgba(98,255,255,0.08);
+border:1px solid rgba(255,255,255,0.05);
 
 border-radius:28px;
 
@@ -335,23 +388,40 @@ transition:0.3s;
 
 .info-card:hover{
 
-transform:translateY(-8px);
+transform:translateY(-7px);
 
-border:1px solid rgba(98,255,255,0.22);
-
-box-shadow:
-0 0 40px rgba(0,255,255,0.08);
+box-shadow:0 0 35px rgba(0,255,255,0.08);
 }
 
 .info-number{
 
-font-size:62px;
-
-color:#89f5ff;
+font-size:60px;
 
 font-weight:700;
 
+color:#8ef5ff;
+
 margin-bottom:10px;
+}
+
+.info-title{
+
+font-size:15px;
+
+letter-spacing:3px;
+
+margin-bottom:12px;
+
+color:#89aeb5;
+}
+
+.info-desc{
+
+font-size:15px;
+
+line-height:1.8;
+
+color:#b5d1d6;
 }
 
 /* CHART */
@@ -359,29 +429,32 @@ margin-bottom:10px;
 .chart-grid{
 
 display:grid;
+
 grid-template-columns:1fr 1fr;
+
 gap:25px;
+
 margin-top:40px;
 }
 
 .chart-card{
 
-background:rgba(5,30,35,0.82);
-
-border-radius:28px;
+background:rgba(5,30,35,0.8);
 
 padding:30px;
 
-border:1px solid rgba(98,255,255,0.08);
+border-radius:28px;
+
+border:1px solid rgba(255,255,255,0.05);
 }
 
 .chart-card h3{
 
-margin-bottom:25px;
+font-size:28px;
+
+margin-bottom:20px;
 
 color:#8ef5ff;
-
-font-size:26px;
 }
 
 /* TABLE */
@@ -389,6 +462,19 @@ font-size:26px;
 .table-section{
 
 margin-top:80px;
+}
+
+.table-section h3{
+
+font-size:56px;
+
+font-family:'Cormorant Garamond', serif;
+
+margin-bottom:20px;
+
+text-align:center;
+
+color:#8ef5ff;
 }
 
 .data-table{
@@ -401,22 +487,20 @@ overflow:hidden;
 
 border-radius:24px;
 
-background:rgba(5,30,35,0.82);
+background:rgba(5,30,35,0.8);
 
-border:1px solid rgba(98,255,255,0.08);
+border:1px solid rgba(255,255,255,0.05);
 }
 
 .data-table th{
+
+padding:22px;
 
 background:rgba(0,255,255,0.04);
 
 color:#8ef5ff;
 
-padding:22px;
-
 text-align:left;
-
-letter-spacing:2px;
 }
 
 .data-table td{
@@ -425,7 +509,7 @@ padding:20px;
 
 border-top:1px solid rgba(255,255,255,0.05);
 
-color:#c6e5ea;
+color:#d7eef2;
 }
 
 /* FOOTER */
@@ -436,9 +520,9 @@ padding:40px;
 
 text-align:center;
 
-color:#7ca7af;
+border-top:1px solid rgba(255,255,255,0.05);
 
-border-top:1px solid rgba(98,255,255,0.08);
+color:#82a9b0;
 }
 
 /* RESPONSIVE */
@@ -464,29 +548,30 @@ height:auto;
 gap:20px;
 }
 
-.hero-title{
+nav{
 
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.hero-title{
 font-size:90px;
 }
 
 .hero-subtitle{
-
-font-size:42px;
+font-size:40px;
 }
 
 .hero-description{
-
 font-size:18px;
 }
 
 .dashboard{
-
-padding:80px 25px;
+padding:80px 20px;
 }
 
 .section-heading h2{
-
-font-size:52px;
+font-size:50px;
 }
 
 }
@@ -501,23 +586,40 @@ font-size:52px;
 
 <div class="logo">
 
-<div class="logo-circle"></div>
+<div class="logo-circle">
+⬢
+</div>
 
 <div class="logo-text">
+
 <h1>Desa Wisata Ponggok</h1>
+
 <p>WEBGIS • KLATEN • JAWA TENGAH</p>
+
 </div>
 
 </div>
 
 <nav>
 
-<a href="#">
+<a href="#beranda">
 BERANDA
 </a>
 
+<a href="#overview">
+OVERVIEW
+</a>
+
+<a href="#penduduk">
+PENDUDUK
+</a>
+
+<a href="#statistik">
+STATISTIK
+</a>
+
 <a 
-href="https://aovmn.github.io/Ponggok-Webgis/#tentang" 
+href="https://aovmn.github.io/Ponggok-Webgis/#tentang"
 target="_blank">
 DATA SPASIAL
 </a>
@@ -528,34 +630,42 @@ DATA SPASIAL
 
 <!-- HERO -->
 
-<section class="hero-center">
+<section class="hero" id="beranda">
 
 <div class="hero-content">
 
 <div class="hero-badge">
+
 WEBGIS PORTAL • KEC. POLANHARJO • KAB. KLATEN
+
 </div>
 
 <h2 class="hero-subtitle">
+
 DESA WISATA
+
 </h2>
 
 <h1 class="hero-title">
+
 Ponggok
+
 </h1>
 
 <p class="hero-description">
 
-Portal infografis dan pemetaan digital resmi
-Desa Wisata Ponggok yang menyajikan data
-kependudukan, wisata, UMKM, dan informasi
+Portal infografis dan pemetaan digital resmi Desa Wisata Ponggok
+yang menyajikan data kependudukan, wisata, UMKM, dan informasi
 desa berbasis spasial secara interaktif.
 
 </p>
 
 <div class="online-status">
+
 <div class="online-dot"></div>
+
 PORTAL ONLINE • REALTIME DATA
+
 </div>
 
 </div>
@@ -571,48 +681,128 @@ PORTAL ONLINE • REALTIME DATA
 <h2>Infografis Desa Ponggok</h2>
 
 <p>
+
 Dashboard statistik dan informasi Desa Ponggok berbasis data BPS 2025
+
 </p>
 
 </div>
 
-<!-- INFO -->
+<!-- MENU -->
+
+<div class="menu-bar">
+
+<button class="menu-btn active" onclick="showSection('overview', this)">
+Overview
+</button>
+
+<button class="menu-btn" onclick="showSection('penduduk', this)">
+Kependudukan
+</button>
+
+<button class="menu-btn" onclick="showSection('statistik', this)">
+Statistik
+</button>
+
+</div>
+
+<!-- OVERVIEW -->
+
+<div id="overview" class="content-section active-section">
 
 <div class="info-grid">
 
 <div class="info-card">
+
 <div class="info-number">2.157</div>
-<p>Total Penduduk</p>
+
+<div class="info-title">
+TOTAL PENDUDUK
+</div>
+
+<div class="info-desc">
+Jumlah penduduk Desa Ponggok tahun 2024.
+</div>
+
 </div>
 
 <div class="info-card">
+
 <div class="info-number">1.072</div>
-<p>Laki-Laki</p>
+
+<div class="info-title">
+LAKI-LAKI
+</div>
+
+<div class="info-desc">
+Penduduk laki-laki Desa Ponggok.
+</div>
+
 </div>
 
 <div class="info-card">
+
 <div class="info-number">1.085</div>
-<p>Perempuan</p>
+
+<div class="info-title">
+PEREMPUAN
+</div>
+
+<div class="info-desc">
+Penduduk perempuan Desa Ponggok.
+</div>
+
 </div>
 
 <div class="info-card">
+
 <div class="info-number">0,84</div>
-<p>Luas Wilayah (km²)</p>
+
+<div class="info-title">
+LUAS WILAYAH
+</div>
+
+<div class="info-desc">
+Luas administratif Desa Ponggok.
+</div>
+
 </div>
 
 <div class="info-card">
+
 <div class="info-number">2.573</div>
-<p>Kepadatan Penduduk</p>
+
+<div class="info-title">
+KEPADATAN
+</div>
+
+<div class="info-desc">
+Kepadatan penduduk per km².
+</div>
+
 </div>
 
 <div class="info-card">
+
 <div class="info-number">98,80</div>
-<p>Rasio Jenis Kelamin</p>
+
+<div class="info-title">
+RASIO JK
+</div>
+
+<div class="info-desc">
+Rasio jenis kelamin penduduk.
 </div>
 
 </div>
 
-<!-- CHART -->
+</div>
+
+</div>
+
+<!-- PENDUDUK -->
+
+<div id="penduduk" class="content-section">
 
 <div class="chart-grid">
 
@@ -634,17 +824,26 @@ Dashboard statistik dan informasi Desa Ponggok berbasis data BPS 2025
 
 </div>
 
-<!-- TABLE -->
+</div>
+
+<!-- STATISTIK -->
+
+<div id="statistik" class="content-section">
 
 <div class="table-section">
+
+<h3>Data Statistik Desa Ponggok</h3>
 
 <table class="data-table">
 
 <thead>
 
 <tr>
+
 <th>Kategori</th>
+
 <th>Jumlah</th>
+
 </tr>
 
 </thead>
@@ -652,33 +851,51 @@ Dashboard statistik dan informasi Desa Ponggok berbasis data BPS 2025
 <tbody>
 
 <tr>
+
 <td>Total Penduduk</td>
+
 <td>2.157 Jiwa</td>
+
 </tr>
 
 <tr>
+
 <td>Laki-Laki</td>
+
 <td>1.072 Jiwa</td>
+
 </tr>
 
 <tr>
+
 <td>Perempuan</td>
+
 <td>1.085 Jiwa</td>
+
 </tr>
 
 <tr>
+
 <td>Luas Wilayah</td>
+
 <td>0,84 km²</td>
+
 </tr>
 
 <tr>
+
 <td>Kepadatan Penduduk</td>
-<td>2.573 jiwa/km²</td>
+
+<td>2.573 Jiwa/km²</td>
+
 </tr>
 
 <tr>
+
 <td>Rasio Jenis Kelamin</td>
+
 <td>98,80</td>
+
 </tr>
 
 </tbody>
@@ -687,13 +904,39 @@ Dashboard statistik dan informasi Desa Ponggok berbasis data BPS 2025
 
 </div>
 
+</div>
+
 </section>
 
 <footer>
+
 © 2026 WEBGIS DESA WISATA PONGGOK
+
 </footer>
 
 <script>
+
+/* NAV MENU */
+
+function showSection(id, btn){
+
+document.querySelectorAll('.content-section').forEach(section=>{
+
+section.classList.remove('active-section');
+
+});
+
+document.getElementById(id).classList.add('active-section');
+
+document.querySelectorAll('.menu-btn').forEach(button=>{
+
+button.classList.remove('active');
+
+});
+
+btn.classList.add('active');
+
+}
 
 /* CHART GENDER */
 
@@ -702,36 +945,52 @@ new Chart(document.getElementById('genderChart'),{
 type:'doughnut',
 
 data:{
+
 labels:['Laki-Laki','Perempuan'],
+
 datasets:[{
+
 data:[1072,1085],
+
 backgroundColor:[
 '#19e3ff',
-'#15e8b5'
+'#14c7b7'
 ],
+
 borderWidth:0
+
 }]
+
 },
 
 options:{
+
 plugins:{
+
 legend:{
+
 labels:{
+
 color:'#dffaff'
+
 }
+
 }
+
 }
+
 }
 
 });
 
-/* AGE CHART */
+/* CHART AGE */
 
 new Chart(document.getElementById('ageChart'),{
 
 type:'bar',
 
 data:{
+
 labels:[
 '0-14',
 '15-24',
@@ -748,14 +1007,16 @@ data:[
 300,
 500,
 700,
-400,
+450,
 250
 ],
 
 backgroundColor:'#19e3ff',
-borderRadius:8
+
+borderRadius:10
 
 }]
+
 },
 
 options:{
@@ -763,31 +1024,41 @@ options:{
 scales:{
 
 x:{
+
 ticks:{
 color:'#dffaff'
 },
+
 grid:{
 color:'rgba(255,255,255,0.05)'
 }
+
 },
 
 y:{
+
 ticks:{
 color:'#dffaff'
 },
+
 grid:{
 color:'rgba(255,255,255,0.05)'
 }
+
 }
 
 },
 
 plugins:{
+
 legend:{
+
 labels:{
 color:'#dffaff'
 }
+
 }
+
 }
 
 }
