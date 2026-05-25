@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,28 +6,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WEBGIS Desa Wisata Ponggok</title>
 
-<link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap)" rel="stylesheet">
-<script src="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/npm/chart.js)"></script>
-<script src="[unpkg.com](https://unpkg.com/leaflet@1.9.4/dist/leaflet.js)"></script>
-<link rel="stylesheet" href="[unpkg.com](https://unpkg.com/leaflet@1.9.4/dist/leaflet.css)"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-/* ===== CSS VARIABLES - BATIK KLATEN BLUE THEME ===== */
+/* ===== CSS VARIABLES ===== */
 :root{
-  --batik-dark: #1a237e;
-  --batik-mid: #283593;
-  --batik-light: #3949ab;
-  --batik-accent: #5c6bc0;
-  --gold: #d4af37;
-  --gold-light: #f5d061;
-  --cream: #f8f9ff;
-  --cream-dark: #e8eaf6;
-  --text-dark: #1a237e;
-  --text-mid: #3949ab;
-  --text-light: #7986cb;
+  --teal-dark: #0a2e2a;
+  --teal-mid: #0f4a3c;
+  --teal-light: #1a7a5e;
+  --green-accent: #2ec97e;
+  --gold: #e8c96a;
+  --gold-light: #f5e4a8;
+  --cream: #faf6ee;
+  --cream-dark: #ede5d4;
+  --text-dark: #1a2e26;
+  --text-mid: #3d5c4e;
+  --text-light: #7a9e8e;
   --white: #ffffff;
-  --shadow-blue: rgba(26,35,126,0.18);
-  --shadow-gold: rgba(212,175,55,0.18);
+  --shadow-green: rgba(46,201,126,0.18);
+  --shadow-gold: rgba(232,201,106,0.18);
 }
 
 /* ===== RESET & BASE ===== */
@@ -39,206 +40,18 @@ body{
   overflow-x: hidden;
 }
 
-/* ===== BATIK PATTERN OVERLAY ===== */
-.batik-pattern {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='[w3.org](http://www.w3.org/2000/svg)'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231a237e' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
-
-/* ===== WELCOME OVERLAY ===== */
-.welcome-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, var(--batik-dark) 0%, var(--batik-mid) 50%, var(--batik-light) 100%);
-  z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 1s ease, visibility 1s ease;
-}
-.welcome-overlay.hidden {
-  opacity: 0;
-  visibility: hidden;
-}
-.welcome-logo {
-  font-size: 120px;
-  animation: float 3s ease-in-out infinite;
-  margin-bottom: 30px;
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-.welcome-text {
-  font-family: 'Playfair Display', serif;
-  font-size: 48px;
-  color: var(--white);
-  text-align: center;
-  margin-bottom: 20px;
-  opacity: 0;
-  animation: fadeInUp 1s ease forwards 0.5s;
-}
-.welcome-subtext {
-  font-size: 18px;
-  color: var(--gold-light);
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  opacity: 0;
-  animation: fadeInUp 1s ease forwards 1s;
-}
-.welcome-enter-btn {
-  margin-top: 40px;
-  padding: 16px 48px;
-  background: var(--gold);
-  color: var(--batik-dark);
-  border: none;
-  border-radius: 50px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  opacity: 0;
-  animation: fadeInUp 1s ease forwards 1.5s;
-  transition: all 0.3s;
-}
-.welcome-enter-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(212,175,55,0.4);
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ===== MUSIC CONTROL ===== */
-.music-control {
-  position: fixed;
-  bottom: 100px;
-  right: 28px;
-  z-index: 950;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.music-btn, .volume-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: none;
-  background: var(--batik-mid);
-  color: var(--white);
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 4px 20px var(--shadow-blue);
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.music-btn:hover, .volume-btn:hover {
-  background: var(--batik-light);
-  transform: scale(1.1);
-}
-.music-btn.playing {
-  animation: pulse-music 2s infinite;
-}
-@keyframes pulse-music {
-  0%, 100% { box-shadow: 0 4px 20px var(--shadow-blue); }
-  50% { box-shadow: 0 4px 30px rgba(212,175,55,0.5); }
-}
-.volume-slider-container {
-  position: absolute;
-  right: 60px;
-  bottom: 0;
-  background: var(--white);
-  padding: 15px 20px;
-  border-radius: 25px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  display: none;
-  align-items: center;
-  gap: 10px;
-}
-.volume-slider-container.show {
-  display: flex;
-}
-.volume-slider {
-  width: 100px;
-  height: 6px;
-  -webkit-appearance: none;
-  background: var(--cream-dark);
-  border-radius: 3px;
-  outline: none;
-}
-.volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  background: var(--batik-mid);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-/* ===== LANGUAGE SELECTOR ===== */
-.lang-selector {
-  position: fixed;
-  top: 100px;
-  right: 28px;
-  z-index: 950;
-  display: flex;
-  gap: 8px;
-  background: var(--white);
-  padding: 8px 12px;
-  border-radius: 50px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  border: 2px solid var(--cream-dark);
-}
-.lang-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 25px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  background: transparent;
-  color: var(--text-mid);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.lang-btn.active {
-  background: var(--batik-mid);
-  color: var(--white);
-}
-.lang-btn:hover:not(.active) {
-  background: var(--cream-dark);
-}
-.lang-flag {
-  font-size: 18px;
-}
-
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar{ width:6px; }
 ::-webkit-scrollbar-track{ background: var(--cream-dark); }
-::-webkit-scrollbar-thumb{ background: var(--batik-light); border-radius:10px; }
+::-webkit-scrollbar-thumb{ background: var(--teal-light); border-radius:10px; }
 
 /* ===== TICKER ===== */
 .ticker-bar{
-  background: var(--batik-dark);
+  background: var(--teal-dark);
   color: var(--gold-light);
   padding: 10px 0;
   overflow: hidden;
-  border-bottom: 2px solid var(--gold);
+  border-bottom: 2px solid var(--green-accent);
   position: relative;
   z-index: 1000;
 }
@@ -248,8 +61,8 @@ body{
   gap: 0;
 }
 .ticker-label{
-  background: var(--gold);
-  color: var(--batik-dark);
+  background: var(--green-accent);
+  color: var(--teal-dark);
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 2px;
@@ -272,7 +85,7 @@ body{
   padding-left: 40px;
 }
 .ticker-content span::before{
-  content: '◆';
+  content: 'â—†';
   margin-right: 12px;
   color: var(--gold);
   font-size: 8px;
@@ -308,19 +121,19 @@ header{
 .logo-emblem{
   width: 54px;
   height: 54px;
-  background: linear-gradient(135deg, var(--batik-mid), var(--batik-light));
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal-light));
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 26px;
-  box-shadow: 0 4px 16px var(--shadow-blue);
+  box-shadow: 0 4px 16px var(--shadow-green);
   flex-shrink: 0;
 }
 .logo-text h1{
   font-family: 'Playfair Display', serif;
   font-size: 22px;
-  color: var(--batik-dark);
+  color: var(--teal-dark);
   line-height: 1.1;
 }
 .logo-text p{
@@ -347,17 +160,17 @@ nav a{
 }
 nav a:hover{
   background: var(--cream);
-  color: var(--batik-light);
+  color: var(--teal-light);
   border-color: var(--cream-dark);
 }
 nav a.cta{
-  background: var(--batik-mid);
+  background: var(--teal-mid);
   color: var(--white);
-  border-color: var(--batik-mid);
+  border-color: var(--teal-mid);
 }
 nav a.cta:hover{
-  background: var(--batik-light);
-  border-color: var(--batik-light);
+  background: var(--teal-light);
+  border-color: var(--teal-light);
 }
 
 /* ===== CLOCK WIDGET (fixed) ===== */
@@ -365,7 +178,7 @@ nav a.cta:hover{
   position: fixed;
   bottom: 28px;
   right: 28px;
-  background: var(--batik-dark);
+  background: var(--teal-dark);
   color: var(--white);
   border-radius: 20px;
   padding: 18px 24px;
@@ -378,7 +191,7 @@ nav a.cta:hover{
 .clock-time{
   font-family: 'Playfair Display', serif;
   font-size: 32px;
-  color: var(--gold);
+  color: var(--green-accent);
   line-height: 1;
   letter-spacing: 2px;
 }
@@ -390,7 +203,7 @@ nav a.cta:hover{
 }
 .clock-day{
   font-size: 13px;
-  color: var(--gold-light);
+  color: var(--gold);
   margin-top: 2px;
   font-weight: 600;
 }
@@ -406,7 +219,7 @@ nav a.cta:hover{
 .hero{
   min-height: 92vh;
   background:
-    linear-gradient(160deg, var(--batik-dark) 0%, var(--batik-mid) 50%, var(--batik-light) 100%);
+    linear-gradient(160deg, var(--teal-dark) 0%, var(--teal-mid) 50%, var(--teal-light) 100%);
   display: flex;
   align-items: center;
   position: relative;
@@ -418,17 +231,8 @@ nav a.cta:hover{
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(212,175,55,0.12) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(92,107,192,0.15) 0%, transparent 50%);
-}
-/* Batik pattern in hero */
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='[w3.org](http://www.w3.org/2000/svg)'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  pointer-events: none;
+    radial-gradient(circle at 20% 30%, rgba(46,201,126,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(232,201,106,0.10) 0%, transparent 50%);
 }
 .hero-bg-text{
   position: absolute;
@@ -457,9 +261,9 @@ nav a.cta:hover{
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(212,175,55,0.15);
-  border: 1px solid rgba(212,175,55,0.35);
-  color: var(--gold);
+  background: rgba(46,201,126,0.15);
+  border: 1px solid rgba(46,201,126,0.35);
+  color: var(--green-accent);
   font-size: 11px;
   letter-spacing: 3px;
   padding: 8px 20px;
@@ -471,9 +275,9 @@ nav a.cta:hover{
   content: '';
   width: 8px;
   height: 8px;
-  background: var(--gold);
+  background: var(--green-accent);
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--gold);
+  box-shadow: 0 0 10px var(--green-accent);
   animation: pulse 2s infinite;
 }
 @keyframes pulse{
@@ -521,8 +325,8 @@ nav a.cta:hover{
 }
 .btn-primary{
   padding: 16px 36px;
-  background: var(--gold);
-  color: var(--batik-dark);
+  background: var(--green-accent);
+  color: var(--teal-dark);
   border-radius: 50px;
   font-weight: 700;
   font-size: 15px;
@@ -533,11 +337,11 @@ nav a.cta:hover{
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 6px 24px rgba(212,175,55,0.35);
+  box-shadow: 0 6px 24px rgba(46,201,126,0.35);
 }
 .btn-primary:hover{
   transform: translateY(-3px);
-  box-shadow: 0 12px 36px rgba(212,175,55,0.45);
+  box-shadow: 0 12px 36px rgba(46,201,126,0.45);
 }
 .btn-secondary{
   padding: 16px 36px;
@@ -581,7 +385,7 @@ nav a.cta:hover{
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--batik-accent), var(--gold));
+  background: linear-gradient(90deg, var(--green-accent), var(--gold));
   transform: scaleX(0);
   transition: transform 0.4s;
   transform-origin: left;
@@ -603,7 +407,7 @@ nav a.cta:hover{
   line-height: 1;
   margin-bottom: 6px;
 }
-.hsc-num.counter{ color: var(--gold); }
+.hsc-num.counter{ color: var(--green-accent); }
 .hsc-label{
   font-size: 12px;
   color: rgba(255,255,255,0.5);
@@ -633,9 +437,9 @@ nav a.cta:hover{
   font-size: 11px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--batik-light);
-  background: rgba(57,73,171,0.08);
-  border: 1px solid rgba(57,73,171,0.2);
+  color: var(--teal-light);
+  background: rgba(26,122,94,0.08);
+  border: 1px solid rgba(26,122,94,0.2);
   padding: 6px 20px;
   border-radius: 50px;
   margin-bottom: 18px;
@@ -643,7 +447,7 @@ nav a.cta:hover{
 .section-title{
   font-family: 'Playfair Display', serif;
   font-size: 54px;
-  color: var(--batik-dark);
+  color: var(--teal-dark);
   line-height: 1.1;
   margin-bottom: 14px;
 }
@@ -659,7 +463,6 @@ nav a.cta:hover{
 .highlights{
   padding: 100px 40px;
   background: var(--cream);
-  position: relative;
 }
 .highlight-grid{
   max-width: 1300px;
@@ -682,7 +485,7 @@ nav a.cta:hover{
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 5px;
-  background: linear-gradient(90deg, var(--batik-light), var(--gold));
+  background: linear-gradient(90deg, var(--teal-light), var(--green-accent));
   transform: scaleX(0);
   transition: transform 0.4s;
   transform-origin: left;
@@ -696,19 +499,19 @@ nav a.cta:hover{
 .hl-icon{
   width: 64px;
   height: 64px;
-  background: linear-gradient(135deg, var(--batik-mid), var(--batik-light));
+  background: linear-gradient(135deg, var(--teal-mid), var(--teal-light));
   border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 30px;
   margin-bottom: 24px;
-  box-shadow: 0 8px 20px var(--shadow-blue);
+  box-shadow: 0 8px 20px var(--shadow-green);
 }
 .hl-title{
   font-family: 'Playfair Display', serif;
   font-size: 24px;
-  color: var(--batik-dark);
+  color: var(--teal-dark);
   margin-bottom: 12px;
 }
 .hl-desc{
@@ -721,7 +524,7 @@ nav a.cta:hover{
   align-items: center;
   gap: 6px;
   margin-top: 20px;
-  color: var(--batik-light);
+  color: var(--teal-light);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -732,7 +535,7 @@ nav a.cta:hover{
 /* ===== STATISTIK SECTION ===== */
 .statistik{
   padding: 100px 40px;
-  background: var(--batik-dark);
+  background: var(--teal-dark);
   position: relative;
   overflow: hidden;
 }
@@ -740,23 +543,14 @@ nav a.cta:hover{
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle at 10% 50%, rgba(212,175,55,0.08), transparent 40%),
-    radial-gradient(circle at 90% 30%, rgba(92,107,192,0.1), transparent 40%);
-}
-/* Batik pattern in statistik */
-.statistik::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='[w3.org](http://www.w3.org/2000/svg)'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  pointer-events: none;
+  background-image: radial-gradient(circle at 10% 50%, rgba(46,201,126,0.08), transparent 40%),
+    radial-gradient(circle at 90% 30%, rgba(232,201,106,0.06), transparent 40%);
 }
 .statistik .section-title{ color: var(--white); }
 .statistik .section-tag{
-  color: var(--gold);
-  background: rgba(212,175,55,0.1);
-  border-color: rgba(212,175,55,0.25);
+  color: var(--green-accent);
+  background: rgba(46,201,126,0.1);
+  border-color: rgba(46,201,126,0.25);
 }
 .statistik .section-subtitle{ color: rgba(255,255,255,0.5); }
 
@@ -793,13 +587,13 @@ nav a.cta:hover{
   font-family: 'Playfair Display', serif;
   font-size: 56px;
   font-weight: 700;
-  color: var(--gold);
+  color: var(--green-accent);
   line-height: 1;
   margin-bottom: 6px;
 }
 .sc-unit{
   font-size: 20px;
-  color: var(--gold-light);
+  color: var(--gold);
   font-weight: 600;
 }
 .sc-label{
@@ -844,10 +638,10 @@ nav a.cta:hover{
   transition: all 0.25s;
 }
 .chart-tab.active, .chart-tab:hover{
-  background: var(--batik-mid);
+  background: var(--teal-mid);
   color: var(--white);
-  border-color: var(--batik-mid);
-  box-shadow: 0 4px 16px var(--shadow-blue);
+  border-color: var(--teal-mid);
+  box-shadow: 0 4px 16px var(--shadow-green);
 }
 .chart-panels > div{ display: none; }
 .chart-panels > div.active{ display: grid; }
@@ -868,7 +662,7 @@ nav a.cta:hover{
 .chart-card h4{
   font-family: 'Playfair Display', serif;
   font-size: 22px;
-  color: var(--batik-dark);
+  color: var(--teal-dark);
   margin-bottom: 6px;
 }
 .chart-card p{
@@ -900,7 +694,7 @@ table.dt{
   border-collapse: collapse;
 }
 table.dt thead{
-  background: linear-gradient(90deg, var(--batik-dark), var(--batik-mid));
+  background: linear-gradient(90deg, var(--teal-dark), var(--teal-mid));
 }
 table.dt th{
   padding: 20px 28px;
@@ -915,7 +709,7 @@ table.dt tbody tr{
   border-bottom: 1px solid var(--cream-dark);
   transition: background 0.2s;
 }
-table.dt tbody tr:hover{ background: rgba(57,73,171,0.04); }
+table.dt tbody tr:hover{ background: rgba(26,122,94,0.04); }
 table.dt tbody tr:last-child{ border-bottom: none; }
 table.dt td{
   padding: 20px 28px;
@@ -924,22 +718,22 @@ table.dt td{
 }
 table.dt td:first-child{
   font-weight: 600;
-  color: var(--batik-dark);
+  color: var(--teal-dark);
 }
 table.dt td:nth-child(2){
   font-family: 'Playfair Display', serif;
   font-size: 22px;
-  color: var(--batik-light);
+  color: var(--teal-light);
 }
 .badge-bps{
   display: inline-block;
-  background: rgba(57,73,171,0.1);
-  color: var(--batik-light);
+  background: rgba(46,201,126,0.1);
+  color: var(--teal-light);
   font-size: 12px;
   padding: 4px 14px;
   border-radius: 50px;
   font-weight: 600;
-  border: 1px solid rgba(57,73,171,0.2);
+  border: 1px solid rgba(46,201,126,0.2);
 }
 
 /* ===== GALERI ===== */
@@ -961,7 +755,7 @@ table.dt td:nth-child(2){
   overflow: hidden;
   position: relative;
   aspect-ratio: 4/3;
-  background: var(--batik-mid);
+  background: var(--teal-mid);
   cursor: pointer;
   transition: transform 0.4s;
 }
@@ -994,7 +788,7 @@ table.dt td:nth-child(2){
   font-size: 20px;
 }
 
-/* Placeholder gradient for galeri - Updated to blue theme */
+/* Placeholder gradient for galeri */
 .galeri-placeholder{
   width: 100%;
   height: 100%;
@@ -1004,12 +798,12 @@ table.dt td:nth-child(2){
   font-size: 52px;
   border-radius: 22px;
 }
-.g1{ background: linear-gradient(135deg,#1a237e,#5c6bc0); }
-.g2{ background: linear-gradient(135deg,#283593,#d4af37); }
-.g3{ background: linear-gradient(135deg,#1a237e,#3949ab); }
-.g4{ background: linear-gradient(135deg,#5c6bc0,#283593); }
-.g5{ background: linear-gradient(135deg,#d4af37,#3949ab); }
-.g6{ background: linear-gradient(135deg,#283593,#1a237e); }
+.g1{ background: linear-gradient(135deg,#0f4a3c,#2ec97e); }
+.g2{ background: linear-gradient(135deg,#1a7a5e,#e8c96a); }
+.g3{ background: linear-gradient(135deg,#0a2e2a,#1a7a5e); }
+.g4{ background: linear-gradient(135deg,#2ec97e,#0f4a3c); }
+.g5{ background: linear-gradient(135deg,#e8c96a,#1a7a5e); }
+.g6{ background: linear-gradient(135deg,#0f4a3c,#0a2e2a); }
 
 /* ===== MAP ===== */
 .peta-section{
@@ -1045,7 +839,7 @@ table.dt td:nth-child(2){
 .peta-info-card h5{
   font-family: 'Playfair Display', serif;
   font-size: 18px;
-  color: var(--batik-dark);
+  color: var(--teal-dark);
   margin-bottom: 10px;
 }
 .peta-info-card p{
@@ -1057,8 +851,8 @@ table.dt td:nth-child(2){
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--batik-dark);
-  color: var(--gold);
+  background: var(--teal-dark);
+  color: var(--green-accent);
   font-size: 13px;
   padding: 8px 18px;
   border-radius: 50px;
@@ -1070,7 +864,7 @@ table.dt td:nth-child(2){
 
 /* ===== FOOTER ===== */
 footer{
-  background: var(--batik-dark);
+  background: var(--teal-dark);
   color: rgba(255,255,255,0.55);
   padding: 60px 40px 40px;
 }
@@ -1108,7 +902,7 @@ footer{
   text-decoration: none;
   transition: color 0.2s;
 }
-.footer-col a:hover{ color: var(--gold); }
+.footer-col a:hover{ color: var(--green-accent); }
 .footer-bottom{
   border-top: 1px solid rgba(255,255,255,0.08);
   padding-top: 28px;
@@ -1118,7 +912,7 @@ footer{
   font-size: 13px;
 }
 .footer-bottom a{
-  color: var(--gold);
+  color: var(--green-accent);
   text-decoration: none;
 }
 
@@ -1129,8 +923,8 @@ footer{
   left: 28px;
   width: 48px;
   height: 48px;
-  background: var(--gold);
-  color: var(--batik-dark);
+  background: var(--green-accent);
+  color: var(--teal-dark);
   border: none;
   border-radius: 50%;
   font-size: 20px;
@@ -1138,7 +932,7 @@ footer{
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px var(--shadow-gold);
+  box-shadow: 0 4px 20px var(--shadow-green);
   transition: all 0.3s;
   opacity: 0;
   transform: translateY(20px);
@@ -1150,7 +944,7 @@ footer{
 }
 .scroll-top:hover{
   transform: translateY(-4px);
-  box-shadow: 0 8px 28px var(--shadow-gold);
+  box-shadow: 0 8px 28px var(--shadow-green);
 }
 
 /* ===== PROGRESS BAR ===== */
@@ -1159,7 +953,7 @@ footer{
   top: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--batik-accent), var(--gold));
+  background: linear-gradient(90deg, var(--green-accent), var(--gold));
   z-index: 9999;
   transition: width 0.1s;
 }
@@ -1190,7 +984,6 @@ footer{
   .highlight-grid{ grid-template-columns: 1fr 1fr; }
   .peta-inner{ grid-template-columns: 1fr; }
   .footer-inner{ grid-template-columns: 1fr 1fr; }
-  .lang-selector{ top: 90px; right: 15px; }
 }
 @media(max-width:768px){
   .header-inner{ padding: 0 20px; }
@@ -1205,52 +998,11 @@ footer{
   .footer-inner{ grid-template-columns: 1fr; gap: 30px; }
   .clock-widget{ bottom: 14px; right: 14px; padding: 14px 18px; }
   .clock-time{ font-size: 24px; }
-  .welcome-text{ font-size: 32px; padding: 0 20px; }
-  .welcome-logo{ font-size: 80px; }
-  .lang-selector{ top: 85px; right: 10px; padding: 6px 8px; }
-  .lang-btn{ padding: 6px 10px; font-size: 11px; }
-  .music-control{ bottom: 80px; right: 14px; }
 }
 </style>
 </head>
 
 <body>
-
-<!-- BATIK PATTERN OVERLAY -->
-<div class="batik-pattern"></div>
-
-<!-- WELCOME OVERLAY -->
-<div class="welcome-overlay" id="welcomeOverlay">
-  <div class="welcome-logo">🌊</div>
-  <h1 class="welcome-text" data-id="id">Selamat Datang</h1>
-  <p class="welcome-subtext" data-id="id">Desa Wisata Ponggok • Klaten</p>
-  <button class="welcome-enter-btn" id="enterBtn" data-id="id">Masuk ke Website</button>
-</div>
-
-<!-- LANGUAGE SELECTOR -->
-<div class="lang-selector">
-  <button class="lang-btn active" id="langID" onclick="setLanguage('id')">
-    <span class="lang-flag">🇮🇩</span> ID
-  </button>
-  <button class="lang-btn" id="langEN" onclick="setLanguage('en')">
-    <span class="lang-flag">🇬🇧</span> EN
-  </button>
-</div>
-
-<!-- MUSIC CONTROL -->
-<div class="music-control">
-  <button class="music-btn" id="musicToggle" onclick="toggleMusic()" title="Play/Pause Music">
-    🎵
-  </button>
-  <button class="volume-btn" id="volumeToggle" onclick="toggleVolume()" title="Volume">
-    🔊
-  </button>
-  <div class="volume-slider-container" id="volumeSlider">
-    <span>🔈</span>
-    <input type="range" class="volume-slider" id="volumeRange" min="0" max="100" value="30" onchange="setVolume(this.value)">
-    <span>🔊</span>
-  </div>
-</div>
 
 <!-- PROGRESS BAR -->
 <div class="progress-bar" id="progressBar"></div>
@@ -1258,21 +1010,21 @@ footer{
 <!-- TICKER -->
 <div class="ticker-bar">
   <div class="ticker-inner">
-    <div class="ticker-label" data-id="id">BERITA DESA</div>
+    <div class="ticker-label">BERITA DESA</div>
     <div class="ticker-track">
       <div class="ticker-content" id="tickerContent">
-        <span data-id="id">Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten</span>
-        <span data-id="id">Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa</span>
-        <span data-id="id">Luas wilayah Desa Ponggok: 0,84 km² dengan kepadatan 2.573 jiwa/km²</span>
-        <span data-id="id">Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten</span>
-        <span data-id="id">Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik</span>
-        <span data-id="id">Rasio jenis kelamin Desa Ponggok: 98,80 — penduduk perempuan sedikit lebih banyak</span>
-        <span data-id="id">Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten</span>
-        <span data-id="id">Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa</span>
-        <span data-id="id">Luas wilayah Desa Ponggok: 0,84 km² dengan kepadatan 2.573 jiwa/km²</span>
-        <span data-id="id">Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten</span>
-        <span data-id="id">Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik</span>
-        <span data-id="id">Rasio jenis kelamin Desa Ponggok: 98,80 — penduduk perempuan sedikit lebih banyak</span>
+        <span>Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten</span>
+        <span>Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa</span>
+        <span>Luas wilayah Desa Ponggok: 0,84 kmÂ² dengan kepadatan 2.573 jiwa/kmÂ²</span>
+        <span>Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten</span>
+        <span>Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik</span>
+        <span>Rasio jenis kelamin Desa Ponggok: 98,80 â€” penduduk perempuan sedikit lebih banyak</span>
+        <span>Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten</span>
+        <span>Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa</span>
+        <span>Luas wilayah Desa Ponggok: 0,84 kmÂ² dengan kepadatan 2.573 jiwa/kmÂ²</span>
+        <span>Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten</span>
+        <span>Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik</span>
+        <span>Rasio jenis kelamin Desa Ponggok: 98,80 â€” penduduk perempuan sedikit lebih banyak</span>
       </div>
     </div>
   </div>
@@ -1282,18 +1034,18 @@ footer{
 <header>
   <div class="header-inner">
     <div class="logo">
-      <div class="logo-emblem">🌊</div>
+      <div class="logo-emblem">ðŸŒŠ</div>
       <div class="logo-text">
         <h1>Desa Wisata Ponggok</h1>
-        <p>WebGIS • Kec. Polanharjo • Kab. Klaten</p>
+        <p>WebGIS â€¢ Kec. Polanharjo â€¢ Kab. Klaten</p>
       </div>
     </div>
     <nav>
-      <a href="#hero" data-id="id">Beranda</a>
-      <a href="#highlights" data-id="id">Daya Tarik</a>
-      <a href="#statistik" data-id="id">Statistik</a>
-      <a href="#peta" data-id="id">Peta</a>
-      <a href="[aovmn.github.io](https://aovmn.github.io/Ponggok-Webgis/)" target="_blank" class="cta">🗺 <span data-id="id">Peta Spasial</span></a>
+      <a href="#hero">Beranda</a>
+      <a href="#highlights">Daya Tarik</a>
+      <a href="#statistik">Statistik</a>
+      <a href="#peta">Peta</a>
+      <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" class="cta">ðŸ—º Peta Spasial</a>
     </nav>
   </div>
 </header>
@@ -1303,36 +1055,36 @@ footer{
   <div class="hero-bg-text">Ponggok</div>
   <div class="hero-inner">
     <div class="hero-left">
-      <div class="hero-badge">WebGIS Portal • Data BPS 2025</div>
-      <p class="hero-tagline" data-id="id">Desa Wisata • Klaten • Jawa Tengah</p>
-      <h1 class="hero-title" data-id="id">Desa<span>Ponggok</span></h1>
-      <p class="hero-sub" data-id="id">Surga Air Jernih di Tengah Jawa</p>
-      <p class="hero-desc" data-id="id">Portal infografis dan pemetaan digital resmi Desa Wisata Ponggok — menampilkan data kependudukan, visualisasi statistik, serta integrasi data spasial interaktif berbasis BPS 2025.</p>
+      <div class="hero-badge">WebGIS Portal â€¢ Data BPS 2025</div>
+      <p class="hero-tagline">Desa Wisata â€¢ Klaten â€¢ Jawa Tengah</p>
+      <h1 class="hero-title">Desa<span>Ponggok</span></h1>
+      <p class="hero-sub">Surga Air Jernih di Tengah Jawa</p>
+      <p class="hero-desc">Portal infografis dan pemetaan digital resmi Desa Wisata Ponggok â€” menampilkan data kependudukan, visualisasi statistik, serta integrasi data spasial interaktif berbasis BPS 2025.</p>
       <div class="hero-actions">
-        <a href="#statistik" class="btn-primary">📊 <span data-id="id">Lihat Statistik</span></a>
-        <a href="[aovmn.github.io](https://aovmn.github.io/Ponggok-Webgis/)" target="_blank" class="btn-secondary">🗺 <span data-id="id">Buka Peta Spasial</span></a>
+        <a href="#statistik" class="btn-primary">ðŸ“Š Lihat Statistik</a>
+        <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" class="btn-secondary">ðŸ—º Buka Peta Spasial</a>
       </div>
     </div>
     <div class="hero-stats">
       <div class="hero-stat-card">
-        <div class="hsc-icon">👥</div>
+        <div class="hsc-icon">ðŸ‘¥</div>
         <div class="hsc-num counter" data-target="2157">0</div>
-        <div class="hsc-label" data-id="id">Total Penduduk</div>
+        <div class="hsc-label">Total Penduduk</div>
       </div>
       <div class="hero-stat-card">
-        <div class="hsc-icon">🏞️</div>
+        <div class="hsc-icon">ðŸžï¸</div>
         <div class="hsc-num">0,84</div>
-        <div class="hsc-label" data-id="id">km² Luas Wilayah</div>
+        <div class="hsc-label">kmÂ² Luas Wilayah</div>
       </div>
       <div class="hero-stat-card">
-        <div class="hsc-icon">📍</div>
+        <div class="hsc-icon">ðŸ“</div>
         <div class="hsc-num counter" data-target="2573">0</div>
-        <div class="hsc-label" data-id="id">Jiwa/km² Kepadatan</div>
+        <div class="hsc-label">Jiwa/kmÂ² Kepadatan</div>
       </div>
       <div class="hero-stat-card">
-        <div class="hsc-icon">⚖️</div>
+        <div class="hsc-icon">âš–ï¸</div>
         <div class="hsc-num">98,80</div>
-        <div class="hsc-label" data-id="id">Rasio Jenis Kelamin</div>
+        <div class="hsc-label">Rasio Jenis Kelamin</div>
       </div>
     </div>
   </div>
@@ -1348,46 +1100,46 @@ footer{
 <!-- DAYA TARIK / HIGHLIGHTS -->
 <section class="highlights" id="highlights">
   <div class="section-heading reveal">
-    <div class="section-tag" data-id="id">Keunggulan Desa</div>
-    <h2 class="section-title" data-id="id">Daya Tarik Ponggok</h2>
-    <p class="section-subtitle" data-id="id">Desa Ponggok dikenal sebagai desa wisata inovatif yang berhasil mengintegrasikan potensi alam, budaya, dan tata kelola modern.</p>
+    <div class="section-tag">Keunggulan Desa</div>
+    <h2 class="section-title">Daya Tarik Ponggok</h2>
+    <p class="section-subtitle">Desa Ponggok dikenal sebagai desa wisata inovatif yang berhasil mengintegrasikan potensi alam, budaya, dan tata kelola modern.</p>
   </div>
   <div class="highlight-grid">
     <div class="hl-card reveal reveal-delay-1">
-      <div class="hl-icon">🌊</div>
-      <h3 class="hl-title" data-id="id">Umbul Ponggok</h3>
-      <p class="hl-desc" data-id="id">Sumber mata air alami bersuhu konstan yang menjadi ikon wisata Klaten. Kejernihan airnya memungkinkan aktivitas snorkeling dan selam air tawar yang unik.</p>
-      <a href="#" class="hl-link" data-id="id">Selengkapnya →</a>
+      <div class="hl-icon">ðŸŒŠ</div>
+      <h3 class="hl-title">Umbul Ponggok</h3>
+      <p class="hl-desc">Sumber mata air alami bersuhu konstan yang menjadi ikon wisata Klaten. Kejernihan airnya memungkinkan aktivitas snorkeling dan selam air tawar yang unik.</p>
+      <a href="#" class="hl-link">Selengkapnya â†’</a>
     </div>
     <div class="hl-card reveal reveal-delay-2">
-      <div class="hl-icon">🏘️</div>
-      <h3 class="hl-title" data-id="id">BUMDes Terbaik</h3>
-      <p class="hl-desc" data-id="id">Badan Usaha Milik Desa Ponggok menjadi percontohan nasional pengelolaan aset desa yang transparan, inovatif, dan memberikan manfaat langsung bagi warga.</p>
-      <a href="#" class="hl-link" data-id="id">Selengkapnya →</a>
+      <div class="hl-icon">ðŸ˜ï¸</div>
+      <h3 class="hl-title">BUMDes Terbaik</h3>
+      <p class="hl-desc">Badan Usaha Milik Desa Ponggok menjadi percontohan nasional pengelolaan aset desa yang transparan, inovatif, dan memberikan manfaat langsung bagi warga.</p>
+      <a href="#" class="hl-link">Selengkapnya â†’</a>
     </div>
     <div class="hl-card reveal reveal-delay-3">
-      <div class="hl-icon">🗺️</div>
-      <h3 class="hl-title" data-id="id">Data Spasial Digital</h3>
-      <p class="hl-desc" data-id="id">Peta interaktif berbasis WebGIS yang menampilkan tata ruang, fasilitas umum, dan potensi wilayah secara real-time dan dapat diakses oleh publik.</p>
-      <a href="[aovmn.github.io](https://aovmn.github.io/Ponggok-Webgis/)" target="_blank" class="hl-link" data-id="id">Buka Peta →</a>
+      <div class="hl-icon">ðŸ—ºï¸</div>
+      <h3 class="hl-title">Data Spasial Digital</h3>
+      <p class="hl-desc">Peta interaktif berbasis WebGIS yang menampilkan tata ruang, fasilitas umum, dan potensi wilayah secara real-time dan dapat diakses oleh publik.</p>
+      <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" class="hl-link">Buka Peta â†’</a>
     </div>
     <div class="hl-card reveal reveal-delay-1">
-      <div class="hl-icon">🌿</div>
-      <h3 class="hl-title" data-id="id">Alam & Lingkungan</h3>
-      <p class="hl-desc" data-id="id">Wilayah seluas 0,84 km² dengan ekosistem hijau yang terjaga, menjadikan Ponggok contoh keseimbangan antara pengembangan wisata dan pelestarian alam.</p>
-      <a href="#" class="hl-link" data-id="id">Selengkapnya →</a>
+      <div class="hl-icon">ðŸŒ¿</div>
+      <h3 class="hl-title">Alam & Lingkungan</h3>
+      <p class="hl-desc">Wilayah seluas 0,84 kmÂ² dengan ekosistem hijau yang terjaga, menjadikan Ponggok contoh keseimbangan antara pengembangan wisata dan pelestarian alam.</p>
+      <a href="#" class="hl-link">Selengkapnya â†’</a>
     </div>
     <div class="hl-card reveal reveal-delay-2">
-      <div class="hl-icon">👨‍👩‍👧‍👦</div>
-      <h3 class="hl-title" data-id="id">Komunitas Aktif</h3>
-      <p class="hl-desc" data-id="id">Dengan 2.157 jiwa penduduk yang berdaya, masyarakat Ponggok aktif berpartisipasi dalam pengelolaan desa wisata dan pelestarian budaya lokal.</p>
-      <a href="#" class="hl-link" data-id="id">Selengkapnya →</a>
+      <div class="hl-icon">ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦</div>
+      <h3 class="hl-title">Komunitas Aktif</h3>
+      <p class="hl-desc">Dengan 2.157 jiwa penduduk yang berdaya, masyarakat Ponggok aktif berpartisipasi dalam pengelolaan desa wisata dan pelestarian budaya lokal.</p>
+      <a href="#" class="hl-link">Selengkapnya â†’</a>
     </div>
     <div class="hl-card reveal reveal-delay-3">
-      <div class="hl-icon">📡</div>
-      <h3 class="hl-title" data-id="id">Digitalisasi Desa</h3>
-      <p class="hl-desc" data-id="id">Ponggok menjadi pelopor desa digital di Jawa Tengah — dari sistem informasi wisata, transaksi cashless, hingga portal data publik berbasis WebGIS.</p>
-      <a href="#" class="hl-link" data-id="id">Selengkapnya →</a>
+      <div class="hl-icon">ðŸ“¡</div>
+      <h3 class="hl-title">Digitalisasi Desa</h3>
+      <p class="hl-desc">Ponggok menjadi pelopor desa digital di Jawa Tengah â€” dari sistem informasi wisata, transaksi cashless, hingga portal data publik berbasis WebGIS.</p>
+      <a href="#" class="hl-link">Selengkapnya â†’</a>
     </div>
   </div>
 </section>
@@ -1396,58 +1148,58 @@ footer{
 <section class="statistik" id="statistik">
   <div style="max-width:1300px;margin:auto;position:relative;z-index:1;">
     <div class="section-heading reveal">
-      <div class="section-tag" data-id="id">Data BPS 2025</div>
-      <h2 class="section-title" data-id="id">Statistik Kependudukan</h2>
-      <p class="section-subtitle" data-id="id">Data resmi kependudukan Desa Ponggok tahun 2025 berdasarkan publikasi Badan Pusat Statistik Kabupaten Klaten.</p>
+      <div class="section-tag">Data BPS 2025</div>
+      <h2 class="section-title">Statistik Kependudukan</h2>
+      <p class="section-subtitle">Data resmi kependudukan Desa Ponggok tahun 2025 berdasarkan publikasi Badan Pusat Statistik Kabupaten Klaten.</p>
     </div>
     <div class="stat-cards">
       <div class="sc reveal reveal-delay-1">
-        <span class="sc-icon">👥</span>
+        <span class="sc-icon">ðŸ‘¥</span>
         <div class="sc-num counter" data-target="2157">0</div>
-        <div class="sc-label" data-id="id">Total Penduduk</div>
-        <div class="sc-desc" data-id="id">Jumlah seluruh penduduk tercatat Desa Ponggok tahun 2025</div>
+        <div class="sc-label">Total Penduduk</div>
+        <div class="sc-desc">Jumlah seluruh penduduk tercatat Desa Ponggok tahun 2025</div>
       </div>
       <div class="sc reveal reveal-delay-2">
-        <span class="sc-icon">👨</span>
+        <span class="sc-icon">ðŸ‘¨</span>
         <div class="sc-num counter" data-target="1072">0</div>
-        <div class="sc-label" data-id="id">Laki-Laki</div>
-        <div class="sc-desc" data-id="id">Penduduk berjenis kelamin laki-laki</div>
+        <div class="sc-label">Laki-Laki</div>
+        <div class="sc-desc">Penduduk berjenis kelamin laki-laki</div>
       </div>
       <div class="sc reveal reveal-delay-3">
-        <span class="sc-icon">👩</span>
+        <span class="sc-icon">ðŸ‘©</span>
         <div class="sc-num counter" data-target="1085">0</div>
-        <div class="sc-label" data-id="id">Perempuan</div>
-        <div class="sc-desc" data-id="id">Penduduk berjenis kelamin perempuan</div>
+        <div class="sc-label">Perempuan</div>
+        <div class="sc-desc">Penduduk berjenis kelamin perempuan</div>
       </div>
       <div class="sc reveal reveal-delay-4">
-        <span class="sc-icon">📐</span>
-        <div class="sc-num">0,84 <span class="sc-unit">km²</span></div>
-        <div class="sc-label" data-id="id">Luas Wilayah</div>
-        <div class="sc-desc" data-id="id">Luas administratif desa secara keseluruhan</div>
+        <span class="sc-icon">ðŸ“</span>
+        <div class="sc-num">0,84 <span class="sc-unit">kmÂ²</span></div>
+        <div class="sc-label">Luas Wilayah</div>
+        <div class="sc-desc">Luas administratif desa secara keseluruhan</div>
       </div>
       <div class="sc reveal reveal-delay-1">
-        <span class="sc-icon">🏙️</span>
+        <span class="sc-icon">ðŸ™ï¸</span>
         <div class="sc-num counter" data-target="2573">0</div>
-        <div class="sc-label" data-id="id">Jiwa/km² Kepadatan</div>
-        <div class="sc-desc" data-id="id">Tingkat kepadatan penduduk per km²</div>
+        <div class="sc-label">Jiwa/kmÂ² Kepadatan</div>
+        <div class="sc-desc">Tingkat kepadatan penduduk per kmÂ²</div>
       </div>
       <div class="sc reveal reveal-delay-2">
-        <span class="sc-icon">⚖️</span>
+        <span class="sc-icon">âš–ï¸</span>
         <div class="sc-num">98,80</div>
-        <div class="sc-label" data-id="id">Rasio Jenis Kelamin</div>
-        <div class="sc-desc" data-id="id">Jumlah laki-laki per 100 perempuan</div>
+        <div class="sc-label">Rasio Jenis Kelamin</div>
+        <div class="sc-desc">Jumlah laki-laki per 100 perempuan</div>
       </div>
       <div class="sc reveal reveal-delay-3">
-        <span class="sc-icon">📅</span>
+        <span class="sc-icon">ðŸ“…</span>
         <div class="sc-num">2025</div>
-        <div class="sc-label" data-id="id">Tahun Data</div>
-        <div class="sc-desc" data-id="id">Sumber: BPS Kabupaten Klaten</div>
+        <div class="sc-label">Tahun Data</div>
+        <div class="sc-desc">Sumber: BPS Kabupaten Klaten</div>
       </div>
       <div class="sc reveal reveal-delay-4">
-        <span class="sc-icon">🏠</span>
+        <span class="sc-icon">ðŸ </span>
         <div class="sc-num">1</div>
-        <div class="sc-label" data-id="id">Kecamatan</div>
-        <div class="sc-desc" data-id="id">Kecamatan Polanharjo, Kab. Klaten</div>
+        <div class="sc-label">Kecamatan</div>
+        <div class="sc-desc">Kecamatan Polanharjo, Kab. Klaten</div>
       </div>
     </div>
   </div>
@@ -1457,47 +1209,47 @@ footer{
 <section class="charts-section" id="grafik">
   <div class="charts-inner">
     <div class="section-heading reveal">
-      <div class="section-tag" data-id="id">Visualisasi Data</div>
-      <h2 class="section-title" data-id="id">Grafik Kependudukan</h2>
-      <p class="section-subtitle" data-id="id">Representasi visual data demografi Desa Ponggok untuk memudahkan pemahaman dan analisis.</p>
+      <div class="section-tag">Visualisasi Data</div>
+      <h2 class="section-title">Grafik Kependudukan</h2>
+      <p class="section-subtitle">Representasi visual data demografi Desa Ponggok untuk memudahkan pemahaman dan analisis.</p>
     </div>
     <div class="chart-tabs">
-      <button class="chart-tab active" onclick="showChart('komposisi',this)" data-id="id">Komposisi Gender</button>
-      <button class="chart-tab" onclick="showChart('umur',this)" data-id="id">Kelompok Umur</button>
-      <button class="chart-tab" onclick="showChart('perbandingan',this)" data-id="id">Perbandingan</button>
-      <button class="chart-tab" onclick="showChart('kepadatan',this)" data-id="id">Indikator Desa</button>
+      <button class="chart-tab active" onclick="showChart('komposisi',this)">Komposisi Gender</button>
+      <button class="chart-tab" onclick="showChart('umur',this)">Kelompok Umur</button>
+      <button class="chart-tab" onclick="showChart('perbandingan',this)">Perbandingan</button>
+      <button class="chart-tab" onclick="showChart('kepadatan',this)">Indikator Desa</button>
     </div>
     <div class="chart-panels">
       <div id="chart-komposisi" class="active chart-grid-2">
         <div class="chart-card reveal">
-          <h4 data-id="id">Komposisi Jenis Kelamin</h4>
-          <p data-id="id">Distribusi penduduk berdasarkan jenis kelamin (2025)</p>
+          <h4>Komposisi Jenis Kelamin</h4>
+          <p>Distribusi penduduk berdasarkan jenis kelamin (2025)</p>
           <canvas id="genderChart"></canvas>
         </div>
         <div class="chart-card reveal reveal-delay-1">
-          <h4 data-id="id">Proporsi Gender (%)</h4>
-          <p data-id="id">Persentase laki-laki dan perempuan</p>
+          <h4>Proporsi Gender (%)</h4>
+          <p>Persentase laki-laki dan perempuan</p>
           <canvas id="genderBarChart"></canvas>
         </div>
       </div>
       <div id="chart-umur" class="chart-grid-1">
         <div class="chart-card reveal">
-          <h4 data-id="id">Piramida Kelompok Umur</h4>
-          <p data-id="id">Estimasi distribusi kelompok usia penduduk Desa Ponggok</p>
+          <h4>Piramida Kelompok Umur</h4>
+          <p>Estimasi distribusi kelompok usia penduduk Desa Ponggok</p>
           <canvas id="ageChart"></canvas>
         </div>
       </div>
       <div id="chart-perbandingan" class="chart-grid-1">
         <div class="chart-card reveal">
-          <h4 data-id="id">Perbandingan Komposisi Penduduk</h4>
-          <p data-id="id">Data laki-laki, perempuan, dan total penduduk</p>
+          <h4>Perbandingan Komposisi Penduduk</h4>
+          <p>Data laki-laki, perempuan, dan total penduduk</p>
           <canvas id="populationChart"></canvas>
         </div>
       </div>
       <div id="chart-kepadatan" class="chart-grid-1">
         <div class="chart-card reveal">
-          <h4 data-id="id">Radar Indikator Desa</h4>
-          <p data-id="id">Gambaran menyeluruh indikator kependudukan Desa Ponggok</p>
+          <h4>Radar Indikator Desa</h4>
+          <p>Gambaran menyeluruh indikator kependudukan Desa Ponggok</p>
           <canvas id="densityChart"></canvas>
         </div>
       </div>
@@ -1509,55 +1261,55 @@ footer{
 <section class="data-section">
   <div class="data-inner">
     <div class="section-heading reveal">
-      <div class="section-tag" data-id="id">Tabel Resmi</div>
-      <h2 class="section-title" data-id="id">Data Lengkap Desa</h2>
-      <p class="section-subtitle" data-id="id">Rekap data statistik resmi Desa Ponggok berdasarkan publikasi BPS 2025.</p>
+      <div class="section-tag">Tabel Resmi</div>
+      <h2 class="section-title">Data Lengkap Desa</h2>
+      <p class="section-subtitle">Rekap data statistik resmi Desa Ponggok berdasarkan publikasi BPS 2025.</p>
     </div>
     <div class="data-table-wrap reveal">
       <table class="dt">
         <thead>
           <tr>
-            <th data-id="id">Kategori</th>
-            <th data-id="id">Jumlah</th>
-            <th data-id="id">Keterangan</th>
-            <th data-id="id">Sumber</th>
+            <th>Kategori</th>
+            <th>Jumlah</th>
+            <th>Keterangan</th>
+            <th>Sumber</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td data-id="id">Total Penduduk</td>
-            <td data-id="id">2.157 Jiwa</td>
-            <td data-id="id">Seluruh penduduk terdaftar di Desa Ponggok</td>
+            <td>Total Penduduk</td>
+            <td>2.157 Jiwa</td>
+            <td>Seluruh penduduk terdaftar di Desa Ponggok</td>
             <td><span class="badge-bps">BPS 2025</span></td>
           </tr>
           <tr>
-            <td data-id="id">Laki-Laki</td>
-            <td data-id="id">1.072 Jiwa</td>
-            <td data-id="id">Penduduk berjenis kelamin laki-laki</td>
+            <td>Laki-Laki</td>
+            <td>1.072 Jiwa</td>
+            <td>Penduduk berjenis kelamin laki-laki</td>
             <td><span class="badge-bps">BPS 2025</span></td>
           </tr>
           <tr>
-            <td data-id="id">Perempuan</td>
-            <td data-id="id">1.085 Jiwa</td>
-            <td data-id="id">Penduduk berjenis kelamin perempuan</td>
+            <td>Perempuan</td>
+            <td>1.085 Jiwa</td>
+            <td>Penduduk berjenis kelamin perempuan</td>
             <td><span class="badge-bps">BPS 2025</span></td>
           </tr>
           <tr>
-            <td data-id="id">Luas Wilayah</td>
-            <td>0,84 km²</td>
-            <td data-id="id">Luas wilayah administratif desa</td>
+            <td>Luas Wilayah</td>
+            <td>0,84 kmÂ²</td>
+            <td>Luas wilayah administratif desa</td>
             <td><span class="badge-bps">BPS 2025</span></td>
           </tr>
           <tr>
-            <td data-id="id">Kepadatan Penduduk</td>
-            <td data-id="id">2.573 Jiwa/km²</td>
-            <td data-id="id">Kepadatan per satuan luas wilayah</td>
+            <td>Kepadatan Penduduk</td>
+            <td>2.573 Jiwa/kmÂ²</td>
+            <td>Kepadatan per satuan luas wilayah</td>
             <td><span class="badge-bps">BPS 2025</span></td>
           </tr>
           <tr>
-            <td data-id="id">Rasio Jenis Kelamin</td>
+            <td>Rasio Jenis Kelamin</td>
             <td>98,80</td>
-            <td data-id="id">Jumlah laki-laki per 100 perempuan</td>
+            <td>Jumlah laki-laki per 100 perempuan</td>
             <td><span class="badge-bps">BPS 2025</span></td>
           </tr>
         </tbody>
@@ -1570,45 +1322,45 @@ footer{
 <section class="galeri-section" id="galeri">
   <div class="galeri-inner">
     <div class="section-heading reveal">
-      <div class="section-tag" data-id="id">Galeri Desa</div>
-      <h2 class="section-title" data-id="id">Keindahan Ponggok</h2>
-      <p class="section-subtitle" data-id="id">Potret pesona alam, wisata, dan kehidupan masyarakat Desa Ponggok.</p>
+      <div class="section-tag">Galeri Desa</div>
+      <h2 class="section-title">Keindahan Ponggok</h2>
+      <p class="section-subtitle">Potret pesona alam, wisata, dan kehidupan masyarakat Desa Ponggok.</p>
     </div>
     <div class="galeri-grid reveal">
       <div class="galeri-item">
-        <div class="galeri-placeholder g1">🌊</div>
+        <div class="galeri-placeholder g1">ðŸŒŠ</div>
         <div class="galeri-overlay">
-          <div class="galeri-overlay-text" data-id="id">Umbul Ponggok</div>
+          <div class="galeri-overlay-text">Umbul Ponggok</div>
         </div>
       </div>
       <div class="galeri-item">
-        <div class="galeri-placeholder g2">🌿</div>
+        <div class="galeri-placeholder g2">ðŸŒ¿</div>
         <div class="galeri-overlay">
-          <div class="galeri-overlay-text" data-id="id">Alam Desa</div>
+          <div class="galeri-overlay-text">Alam Desa</div>
         </div>
       </div>
       <div class="galeri-item">
-        <div class="galeri-placeholder g3">🏘️</div>
+        <div class="galeri-placeholder g3">ðŸ˜ï¸</div>
         <div class="galeri-overlay">
-          <div class="galeri-overlay-text" data-id="id">Pemukiman Warga</div>
+          <div class="galeri-overlay-text">Pemukiman Warga</div>
         </div>
       </div>
       <div class="galeri-item">
-        <div class="galeri-placeholder g4">🎣</div>
+        <div class="galeri-placeholder g4">ðŸŽ£</div>
         <div class="galeri-overlay">
-          <div class="galeri-overlay-text" data-id="id">Aktivitas Wisata</div>
+          <div class="galeri-overlay-text">Aktivitas Wisata</div>
         </div>
       </div>
       <div class="galeri-item">
-        <div class="galeri-placeholder g5">🌾</div>
+        <div class="galeri-placeholder g5">ðŸŒ¾</div>
         <div class="galeri-overlay">
-          <div class="galeri-overlay-text" data-id="id">Lahan Pertanian</div>
+          <div class="galeri-overlay-text">Lahan Pertanian</div>
         </div>
       </div>
       <div class="galeri-item">
-        <div class="galeri-placeholder g6">🏛️</div>
+        <div class="galeri-placeholder g6">ðŸ›ï¸</div>
         <div class="galeri-overlay">
-          <div class="galeri-overlay-text" data-id="id">Fasilitas Desa</div>
+          <div class="galeri-overlay-text">Fasilitas Desa</div>
         </div>
       </div>
     </div>
@@ -1620,28 +1372,28 @@ footer{
   <div class="peta-inner">
     <div>
       <div class="section-heading reveal" style="text-align:left;margin-bottom:28px;">
-        <div class="section-tag" data-id="id">Lokasi</div>
-        <h2 class="section-title" style="font-size:42px;" data-id="id">Peta Desa Ponggok</h2>
+        <div class="section-tag">Lokasi</div>
+        <h2 class="section-title" style="font-size:42px;">Peta Desa Ponggok</h2>
       </div>
       <div id="map"></div>
     </div>
     <div class="peta-info reveal">
       <div class="peta-info-card">
-        <h5 data-id="id">📍 Lokasi Administratif</h5>
-        <p data-id="id">Desa Ponggok, Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah, Indonesia.</p>
-        <div class="coord-badge">📌 -7.6295°, 110.6203°</div>
+        <h5>ðŸ“ Lokasi Administratif</h5>
+        <p>Desa Ponggok, Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah, Indonesia.</p>
+        <div class="coord-badge">ðŸ“Œ -7.6295Â°, 110.6203Â°</div>
       </div>
       <div class="peta-info-card">
-        <h5 data-id="id">🗺️ Peta Spasial Interaktif</h5>
-        <p data-id="id">Jelajahi tata ruang, fasilitas umum, dan potensi wilayah Desa Ponggok melalui platform WebGIS kami.</p>
+        <h5>ðŸ—ºï¸ Peta Spasial Interaktif</h5>
+        <p>Jelajahi tata ruang, fasilitas umum, dan potensi wilayah Desa Ponggok melalui platform WebGIS kami.</p>
         <br>
-        <a href="[aovmn.github.io](https://aovmn.github.io/Ponggok-Webgis/)" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 28px;">🗺 <span data-id="id">Buka WebGIS</span></a>
+        <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 28px;">ðŸ—º Buka WebGIS</a>
       </div>
       <div class="peta-info-card">
-        <h5 data-id="id">🎥 Profil Wilayah</h5>
-        <p data-id="id">Tonton video profil resmi Desa Wisata Ponggok untuk mengenal lebih dekat potensi dan keunikannya.</p>
+        <h5>ðŸŽ¥ Profil Wilayah</h5>
+        <p>Tonton video profil resmi Desa Wisata Ponggok untuk mengenal lebih dekat potensi dan keunikannya.</p>
         <br>
-        <a href="[youtube.com](https://www.youtube.com/watch?v=qtT3APyW-VA)" target="_blank" class="btn-secondary" style="font-size:14px;padding:12px 28px;color:var(--batik-dark);border-color:var(--batik-light);">▶ <span data-id="id">Tonton Video</span></a>
+        <a href="https://www.youtube.com/watch?v=qtT3APyW-VA" target="_blank" class="btn-secondary" style="font-size:14px;padding:12px 28px;color:var(--teal-dark);border-color:var(--teal-light);">â–¶ Tonton Video</a>
       </div>
     </div>
   </div>
@@ -1651,27 +1403,27 @@ footer{
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <h3>🌊 Desa Wisata Ponggok</h3>
-      <p data-id="id">Portal WebGIS resmi Desa Wisata Ponggok — menyajikan data kependudukan, informasi wilayah, serta pemetaan digital interaktif untuk mendukung transparansi dan kemajuan desa.</p>
+      <h3>ðŸŒŠ Desa Wisata Ponggok</h3>
+      <p>Portal WebGIS resmi Desa Wisata Ponggok â€” menyajikan data kependudukan, informasi wilayah, serta pemetaan digital interaktif untuk mendukung transparansi dan kemajuan desa.</p>
     </div>
     <div class="footer-col">
-      <h4 data-id="id">Navigasi</h4>
-      <a href="#hero" data-id="id">Beranda</a>
-      <a href="#highlights" data-id="id">Daya Tarik</a>
-      <a href="#statistik" data-id="id">Statistik</a>
-      <a href="#grafik" data-id="id">Grafik</a>
-      <a href="#peta" data-id="id">Peta</a>
+      <h4>Navigasi</h4>
+      <a href="#hero">Beranda</a>
+      <a href="#highlights">Daya Tarik</a>
+      <a href="#statistik">Statistik</a>
+      <a href="#grafik">Grafik</a>
+      <a href="#peta">Peta</a>
     </div>
     <div class="footer-col">
-      <h4 data-id="id">Tautan</h4>
-      <a href="[aovmn.github.io](https://aovmn.github.io/Ponggok-Webgis/)" target="_blank">WebGIS Spasial</a>
-      <a href="[youtube.com](https://www.youtube.com/watch?v=qtT3APyW-VA)" target="_blank" data-id="id">Profil Video</a>
+      <h4>Tautan</h4>
+      <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank">WebGIS Spasial</a>
+      <a href="https://www.youtube.com/watch?v=qtT3APyW-VA" target="_blank">Profil Video</a>
       <p>Kec. Polanharjo</p>
       <p>Kab. Klaten, Jawa Tengah</p>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 WebGIS Desa Wisata Ponggok • Kabupaten Klaten</span>
+    <span>Â© 2026 WebGIS Desa Wisata Ponggok â€¢ Kabupaten Klaten</span>
     <span>Data: <a href="#">BPS Klaten 2025</a></span>
   </div>
 </footer>
@@ -1681,391 +1433,13 @@ footer{
   <div class="clock-time" id="clockTime">--:--:--</div>
   <div class="clock-day" id="clockDay">---</div>
   <div class="clock-date" id="clockDate">-- --- ----</div>
-  <div class="clock-label">WIB • KLATEN</div>
+  <div class="clock-label">WIB â€¢ KLATEN</div>
 </div>
 
 <!-- SCROLL TO TOP -->
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-
-<!-- AUDIO ELEMENTS -->
-<audio id="bgMusic" loop preload="auto">
-  <source src="[soundhelix.com](https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3)" type="audio/mpeg">
-</audio>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">â†‘</button>
 
 <script>
-/* ===== TRANSLATIONS ===== */
-const translations = {
-  id: {
-    // Welcome
-    'Selamat Datang': 'Selamat Datang',
-    'Desa Wisata Ponggok • Klaten': 'Desa Wisata Ponggok • Klaten',
-    'Masuk ke Website': 'Masuk ke Website',
-    // Ticker
-    'BERITA DESA': 'BERITA DESA',
-    'Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten': 'Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten',
-    'Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa': 'Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa',
-    'Luas wilayah Desa Ponggok: 0,84 km² dengan kepadatan 2.573 jiwa/km²': 'Luas wilayah Desa Ponggok: 0,84 km² dengan kepadatan 2.573 jiwa/km²',
-    'Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten': 'Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten',
-    'Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik': 'Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik',
-    'Rasio jenis kelamin Desa Ponggok: 98,80 — penduduk perempuan sedikit lebih banyak': 'Rasio jenis kelamin Desa Ponggok: 98,80 — penduduk perempuan sedikit lebih banyak',
-    // Navigation
-    'Beranda': 'Beranda',
-    'Daya Tarik': 'Daya Tarik',
-    'Statistik': 'Statistik',
-    'Peta': 'Peta',
-    'Peta Spasial': 'Peta Spasial',
-    // Hero
-    'Desa Wisata • Klaten • Jawa Tengah': 'Desa Wisata • Klaten • Jawa Tengah',
-    'Desa<span>Ponggok</span>': 'Desa<span>Ponggok</span>',
-    'Surga Air Jernih di Tengah Jawa': 'Surga Air Jernih di Tengah Jawa',
-    'Portal infografis dan pemetaan digital resmi Desa Wisata Ponggok — menampilkan data kependudukan, visualisasi statistik, serta integrasi data spasial interaktif berbasis BPS 2025.': 'Portal infografis dan pemetaan digital resmi Desa Wisata Ponggok — menampilkan data kependudukan, visualisasi statistik, serta integrasi data spasial interaktif berbasis BPS 2025.',
-    'Lihat Statistik': 'Lihat Statistik',
-    'Buka Peta Spasial': 'Buka Peta Spasial',
-    'Total Penduduk': 'Total Penduduk',
-    'km² Luas Wilayah': 'km² Luas Wilayah',
-    'Jiwa/km² Kepadatan': 'Jiwa/km² Kepadatan',
-    'Rasio Jenis Kelamin': 'Rasio Jenis Kelamin',
-    // Highlights
-    'Keunggulan Desa': 'Keunggulan Desa',
-    'Daya Tarik Ponggok': 'Daya Tarik Ponggok',
-    'Desa Ponggok dikenal sebagai desa wisata inovatif yang berhasil mengintegrasikan potensi alam, budaya, dan tata kelola modern.': 'Desa Ponggok dikenal sebagai desa wisata inovatif yang berhasil mengintegrasikan potensi alam, budaya, dan tata kelola modern.',
-    'Umbul Ponggok': 'Umbul Ponggok',
-    'Sumber mata air alami bersuhu konstan yang menjadi ikon wisata Klaten. Kejernihan airnya memungkinkan aktivitas snorkeling dan selam air tawar yang unik.': 'Sumber mata air alami bersuhu konstan yang menjadi ikon wisata Klaten. Kejernihan airnya memungkinkan aktivitas snorkeling dan selam air tawar yang unik.',
-    'Selengkapnya →': 'Selengkapnya →',
-    'BUMDes Terbaik': 'BUMDes Terbaik',
-    'Badan Usaha Milik Desa Ponggok menjadi percontohan nasional pengelolaan aset desa yang transparan, inovatif, dan memberikan manfaat langsung bagi warga.': 'Badan Usaha Milik Desa Ponggok menjadi percontohan nasional pengelolaan aset desa yang transparan, inovatif, dan memberikan manfaat langsung bagi warga.',
-    'Data Spasial Digital': 'Data Spasial Digital',
-    'Peta interaktif berbasis WebGIS yang menampilkan tata ruang, fasilitas umum, dan potensi wilayah secara real-time dan dapat diakses oleh publik.': 'Peta interaktif berbasis WebGIS yang menampilkan tata ruang, fasilitas umum, dan potensi wilayah secara real-time dan dapat diakses oleh publik.',
-    'Buka Peta →': 'Buka Peta →',
-    'Alam & Lingkungan': 'Alam & Lingkungan',
-    'Wilayah seluas 0,84 km² dengan ekosistem hijau yang terjaga, menjadikan Ponggok contoh keseimbangan antara pengembangan wisata dan pelestarian alam.': 'Wilayah seluas 0,84 km² dengan ekosistem hijau yang terjaga, menjadikan Ponggok contoh keseimbangan antara pengembangan wisata dan pelestarian alam.',
-    'Komunitas Aktif': 'Komunitas Aktif',
-    'Dengan 2.157 jiwa penduduk yang berdaya, masyarakat Ponggok aktif berpartisipasi dalam pengelolaan desa wisata dan pelestarian budaya lokal.': 'Dengan 2.157 jiwa penduduk yang berdaya, masyarakat Ponggok aktif berpartisipasi dalam pengelolaan desa wisata dan pelestarian budaya lokal.',
-    'Digitalisasi Desa': 'Digitalisasi Desa',
-    'Ponggok menjadi pelopor desa digital di Jawa Tengah — dari sistem informasi wisata, transaksi cashless, hingga portal data publik berbasis WebGIS.': 'Ponggok menjadi pelopor desa digital di Jawa Tengah — dari sistem informasi wisata, transaksi cashless, hingga portal data publik berbasis WebGIS.',
-    // Statistics
-    'Data BPS 2025': 'Data BPS 2025',
-    'Statistik Kependudukan': 'Statistik Kependudukan',
-    'Data resmi kependudukan Desa Ponggok tahun 2025 berdasarkan publikasi Badan Pusat Statistik Kabupaten Klaten.': 'Data resmi kependudukan Desa Ponggok tahun 2025 berdasarkan publikasi Badan Pusat Statistik Kabupaten Klaten.',
-    'Jumlah seluruh penduduk tercatat Desa Ponggok tahun 2025': 'Jumlah seluruh penduduk tercatat Desa Ponggok tahun 2025',
-    'Laki-Laki': 'Laki-Laki',
-    'Penduduk berjenis kelamin laki-laki': 'Penduduk berjenis kelamin laki-laki',
-    'Perempuan': 'Perempuan',
-    'Penduduk berjenis kelamin perempuan': 'Penduduk berjenis kelamin perempuan',
-    'Luas Wilayah': 'Luas Wilayah',
-    'Luas administratif desa secara keseluruhan': 'Luas administratif desa secara keseluruhan',
-    'Tingkat kepadatan penduduk per km²': 'Tingkat kepadatan penduduk per km²',
-    'Jumlah laki-laki per 100 perempuan': 'Jumlah laki-laki per 100 perempuan',
-    'Tahun Data': 'Tahun Data',
-    'Sumber: BPS Kabupaten Klaten': 'Sumber: BPS Kabupaten Klaten',
-    'Kecamatan': 'Kecamatan',
-    'Kecamatan Polanharjo, Kab. Klaten': 'Kecamatan Polanharjo, Kab. Klaten',
-    // Charts
-    'Visualisasi Data': 'Visualisasi Data',
-    'Grafik Kependudukan': 'Grafik Kependudukan',
-    'Representasi visual data demografi Desa Ponggok untuk memudahkan pemahaman dan analisis.': 'Representasi visual data demografi Desa Ponggok untuk memudahkan pemahaman dan analisis.',
-    'Komposisi Gender': 'Komposisi Gender',
-    'Kelompok Umur': 'Kelompok Umur',
-    'Perbandingan': 'Perbandingan',
-    'Indikator Desa': 'Indikator Desa',
-    'Komposisi Jenis Kelamin': 'Komposisi Jenis Kelamin',
-    'Distribusi penduduk berdasarkan jenis kelamin (2025)': 'Distribusi penduduk berdasarkan jenis kelamin (2025)',
-    'Proporsi Gender (%)': 'Proporsi Gender (%)',
-    'Persentase laki-laki dan perempuan': 'Persentase laki-laki dan perempuan',
-    'Piramida Kelompok Umur': 'Piramida Kelompok Umur',
-    'Estimasi distribusi kelompok usia penduduk Desa Ponggok': 'Estimasi distribusi kelompok usia penduduk Desa Ponggok',
-    'Perbandingan Komposisi Penduduk': 'Perbandingan Komposisi Penduduk',
-    'Data laki-laki, perempuan, dan total penduduk': 'Data laki-laki, perempuan, dan total penduduk',
-    'Radar Indikator Desa': 'Radar Indikator Desa',
-    'Gambaran menyeluruh indikator kependudukan Desa Ponggok': 'Gambaran menyeluruh indikator kependudukan Desa Ponggok',
-    // Table
-    'Tabel Resmi': 'Tabel Resmi',
-    'Data Lengkap Desa': 'Data Lengkap Desa',
-    'Rekap data statistik resmi Desa Ponggok berdasarkan publikasi BPS 2025.': 'Rekap data statistik resmi Desa Ponggok berdasarkan publikasi BPS 2025.',
-    'Kategori': 'Kategori',
-    'Jumlah': 'Jumlah',
-    'Keterangan': 'Keterangan',
-    'Sumber': 'Sumber',
-    '2.157 Jiwa': '2.157 Jiwa',
-    'Seluruh penduduk terdaftar di Desa Ponggok': 'Seluruh penduduk terdaftar di Desa Ponggok',
-    '1.072 Jiwa': '1.072 Jiwa',
-    '1.085 Jiwa': '1.085 Jiwa',
-    'Luas wilayah administratif desa': 'Luas wilayah administratif desa',
-    'Kepadatan Penduduk': 'Kepadatan Penduduk',
-    '2.573 Jiwa/km²': '2.573 Jiwa/km²',
-    'Kepadatan per satuan luas wilayah': 'Kepadatan per satuan luas wilayah',
-    // Gallery
-    'Galeri Desa': 'Galeri Desa',
-    'Keindahan Ponggok': 'Keindahan Ponggok',
-    'Potret pesona alam, wisata, dan kehidupan masyarakat Desa Ponggok.': 'Potret pesona alam, wisata, dan kehidupan masyarakat Desa Ponggok.',
-    'Alam Desa': 'Alam Desa',
-    'Pemukiman Warga': 'Pemukiman Warga',
-    'Aktivitas Wisata': 'Aktivitas Wisata',
-    'Lahan Pertanian': 'Lahan Pertanian',
-    'Fasilitas Desa': 'Fasilitas Desa',
-    // Map
-    'Lokasi': 'Lokasi',
-    'Peta Desa Ponggok': 'Peta Desa Ponggok',
-    '📍 Lokasi Administratif': '📍 Lokasi Administratif',
-    'Desa Ponggok, Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah, Indonesia.': 'Desa Ponggok, Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah, Indonesia.',
-    '🗺️ Peta Spasial Interaktif': '🗺️ Peta Spasial Interaktif',
-    'Jelajahi tata ruang, fasilitas umum, dan potensi wilayah Desa Ponggok melalui platform WebGIS kami.': 'Jelajahi tata ruang, fasilitas umum, dan potensi wilayah Desa Ponggok melalui platform WebGIS kami.',
-    'Buka WebGIS': 'Buka WebGIS',
-    '🎥 Profil Wilayah': '🎥 Profil Wilayah',
-    'Tonton video profil resmi Desa Wisata Ponggok untuk mengenal lebih dekat potensi dan keunikannya.': 'Tonton video profil resmi Desa Wisata Ponggok untuk mengenal lebih dekat potensi dan keunikannya.',
-    'Tonton Video': 'Tonton Video',
-    // Footer
-    'Portal WebGIS resmi Desa Wisata Ponggok — menyajikan data kependudukan, informasi wilayah, serta pemetaan digital interaktif untuk mendukung transparansi dan kemajuan desa.': 'Portal WebGIS resmi Desa Wisata Ponggok — menyajikan data kependudukan, informasi wilayah, serta pemetaan digital interaktif untuk mendukung transparansi dan kemajuan desa.',
-    'Navigasi': 'Navigasi',
-    'Tautan': 'Tautan',
-    'Grafik': 'Grafik',
-    'Profil Video': 'Profil Video'
-  },
-  en: {
-    // Welcome
-    'Selamat Datang': 'Welcome',
-    'Desa Wisata Ponggok • Klaten': 'Ponggok Tourism Village • Klaten',
-    'Masuk ke Website': 'Enter Website',
-    // Ticker
-    'BERITA DESA': 'VILLAGE NEWS',
-    'Selamat datang di Portal WEBGIS Desa Wisata Ponggok, Kecamatan Polanharjo, Kabupaten Klaten': 'Welcome to WEBGIS Portal of Ponggok Tourism Village, Polanharjo District, Klaten Regency',
-    'Total penduduk Desa Ponggok tahun 2025: 2.157 jiwa': 'Total population of Ponggok Village in 2025: 2,157 people',
-    'Luas wilayah Desa Ponggok: 0,84 km² dengan kepadatan 2.573 jiwa/km²': 'Area of Ponggok Village: 0.84 km² with density of 2,573 people/km²',
-    'Umbul Ponggok adalah destinasi wisata unggulan berbasis air jernih alami di Klaten': 'Umbul Ponggok is a leading tourist destination based on natural clear water in Klaten',
-    'Desa Ponggok berhasil menjadi desa wisata percontohan pengelolaan BUMDes terbaik': 'Ponggok Village has become a model tourism village for best BUMDes management',
-    'Rasio jenis kelamin Desa Ponggok: 98,80 — penduduk perempuan sedikit lebih banyak': 'Sex ratio of Ponggok Village: 98.80 — slightly more female population',
-    // Navigation
-    'Beranda': 'Home',
-    'Daya Tarik': 'Attractions',
-    'Statistik': 'Statistics',
-    'Peta': 'Map',
-    'Peta Spasial': 'Spatial Map',
-    // Hero
-    'Desa Wisata • Klaten • Jawa Tengah': 'Tourism Village • Klaten • Central Java',
-    'Desa<span>Ponggok</span>': 'Village<span>Ponggok</span>',
-    'Surga Air Jernih di Tengah Jawa': 'Crystal Clear Water Paradise in Central Java',
-    'Portal infografis dan pemetaan digital resmi Desa Wisata Ponggok — menampilkan data kependudukan, visualisasi statistik, serta integrasi data spasial interaktif berbasis BPS 2025.': 'Official infographic and digital mapping portal of Ponggok Tourism Village — displaying population data, statistical visualization, and interactive spatial data integration based on BPS 2025.',
-    'Lihat Statistik': 'View Statistics',
-    'Buka Peta Spasial': 'Open Spatial Map',
-    'Total Penduduk': 'Total Population',
-    'km² Luas Wilayah': 'km² Area',
-    'Jiwa/km² Kepadatan': 'People/km² Density',
-    'Rasio Jenis Kelamin': 'Sex Ratio',
-    // Highlights
-    'Keunggulan Desa': 'Village Excellence',
-    'Daya Tarik Ponggok': 'Ponggok Attractions',
-    'Desa Ponggok dikenal sebagai desa wisata inovatif yang berhasil mengintegrasikan potensi alam, budaya, dan tata kelola modern.': 'Ponggok Village is known as an innovative tourism village that successfully integrates natural potential, culture, and modern governance.',
-    'Umbul Ponggok': 'Umbul Ponggok',
-    'Sumber mata air alami bersuhu konstan yang menjadi ikon wisata Klaten. Kejernihan airnya memungkinkan aktivitas snorkeling dan selam air tawar yang unik.': 'Natural spring with constant temperature that has become an icon of Klaten tourism. Its crystal clear water enables unique snorkeling and freshwater diving activities.',
-    'Selengkapnya →': 'Learn More →',
-    'BUMDes Terbaik': 'Best BUMDes',
-    'Badan Usaha Milik Desa Ponggok menjadi percontohan nasional pengelolaan aset desa yang transparan, inovatif, dan memberikan manfaat langsung bagi warga.': 'Ponggok Village-Owned Enterprise has become a national model for transparent, innovative village asset management that directly benefits residents.',
-    'Data Spasial Digital': 'Digital Spatial Data',
-    'Peta interaktif berbasis WebGIS yang menampilkan tata ruang, fasilitas umum, dan potensi wilayah secara real-time dan dapat diakses oleh publik.': 'WebGIS-based interactive map displaying spatial planning, public facilities, and regional potential in real-time and publicly accessible.',
-    'Buka Peta →': 'Open Map →',
-    'Alam & Lingkungan': 'Nature & Environment',
-    'Wilayah seluas 0,84 km² dengan ekosistem hijau yang terjaga, menjadikan Ponggok contoh keseimbangan antara pengembangan wisata dan pelestarian alam.': 'An area of 0.84 km² with preserved green ecosystem, making Ponggok an example of balance between tourism development and nature conservation.',
-    'Komunitas Aktif': 'Active Community',
-    'Dengan 2.157 jiwa penduduk yang berdaya, masyarakat Ponggok aktif berpartisipasi dalam pengelolaan desa wisata dan pelestarian budaya lokal.': 'With 2,157 empowered residents, Ponggok community actively participates in tourism village management and local cultural preservation.',
-    'Digitalisasi Desa': 'Village Digitalization',
-    'Ponggok menjadi pelopor desa digital di Jawa Tengah — dari sistem informasi wisata, transaksi cashless, hingga portal data publik berbasis WebGIS.': 'Ponggok becomes a pioneer of digital village in Central Java — from tourism information systems, cashless transactions, to WebGIS-based public data portal.',
-    // Statistics
-    'Data BPS 2025': 'BPS Data 2025',
-    'Statistik Kependudukan': 'Population Statistics',
-    'Data resmi kependudukan Desa Ponggok tahun 2025 berdasarkan publikasi Badan Pusat Statistik Kabupaten Klaten.': 'Official population data of Ponggok Village in 2025 based on Central Bureau of Statistics Klaten Regency publication.',
-    'Jumlah seluruh penduduk tercatat Desa Ponggok tahun 2025': 'Total registered population of Ponggok Village in 2025',
-    'Laki-Laki': 'Male',
-    'Penduduk berjenis kelamin laki-laki': 'Male population',
-    'Perempuan': 'Female',
-    'Penduduk berjenis kelamin perempuan': 'Female population',
-    'Luas Wilayah': 'Area',
-    'Luas administratif desa secara keseluruhan': 'Total administrative village area',
-    'Tingkat kepadatan penduduk per km²': 'Population density per km²',
-    'Jumlah laki-laki per 100 perempuan': 'Males per 100 females',
-    'Tahun Data': 'Data Year',
-    'Sumber: BPS Kabupaten Klaten': 'Source: BPS Klaten Regency',
-    'Kecamatan': 'District',
-    'Kecamatan Polanharjo, Kab. Klaten': 'Polanharjo District, Klaten Regency',
-    // Charts
-    'Visualisasi Data': 'Data Visualization',
-    'Grafik Kependudukan': 'Population Charts',
-    'Representasi visual data demografi Desa Ponggok untuk memudahkan pemahaman dan analisis.': 'Visual representation of Ponggok Village demographic data for easier understanding and analysis.',
-    'Komposisi Gender': 'Gender Composition',
-    'Kelompok Umur': 'Age Groups',
-    'Perbandingan': 'Comparison',
-    'Indikator Desa': 'Village Indicators',
-    'Komposisi Jenis Kelamin': 'Gender Composition',
-    'Distribusi penduduk berdasarkan jenis kelamin (2025)': 'Population distribution by gender (2025)',
-    'Proporsi Gender (%)': 'Gender Proportion (%)',
-    'Persentase laki-laki dan perempuan': 'Male and female percentage',
-    'Piramida Kelompok Umur': 'Age Group Pyramid',
-    'Estimasi distribusi kelompok usia penduduk Desa Ponggok': 'Estimated age group distribution of Ponggok Village population',
-    'Perbandingan Komposisi Penduduk': 'Population Composition Comparison',
-    'Data laki-laki, perempuan, dan total penduduk': 'Male, female, and total population data',
-    'Radar Indikator Desa': 'Village Indicator Radar',
-    'Gambaran menyeluruh indikator kependudukan Desa Ponggok': 'Comprehensive overview of Ponggok Village population indicators',
-    // Table
-    'Tabel Resmi': 'Official Table',
-    'Data Lengkap Desa': 'Complete Village Data',
-    'Rekap data statistik resmi Desa Ponggok berdasarkan publikasi BPS 2025.': 'Official statistical data recap of Ponggok Village based on BPS 2025 publication.',
-    'Kategori': 'Category',
-    'Jumlah': 'Amount',
-    'Keterangan': 'Description',
-    'Sumber': 'Source',
-    '2.157 Jiwa': '2,157 People',
-    'Seluruh penduduk terdaftar di Desa Ponggok': 'All registered residents in Ponggok Village',
-    '1.072 Jiwa': '1,072 People',
-    '1.085 Jiwa': '1,085 People',
-    'Luas wilayah administratif desa': 'Administrative village area',
-    'Kepadatan Penduduk': 'Population Density',
-    '2.573 Jiwa/km²': '2,573 People/km²',
-    'Kepadatan per satuan luas wilayah': 'Density per area unit',
-    // Gallery
-    'Galeri Desa': 'Village Gallery',
-    'Keindahan Ponggok': 'Beauty of Ponggok',
-    'Potret pesona alam, wisata, dan kehidupan masyarakat Desa Ponggok.': 'Portrait of natural beauty, tourism, and community life of Ponggok Village.',
-    'Alam Desa': 'Village Nature',
-    'Pemukiman Warga': 'Residential Area',
-    'Aktivitas Wisata': 'Tourism Activities',
-    'Lahan Pertanian': 'Agricultural Land',
-    'Fasilitas Desa': 'Village Facilities',
-    // Map
-    'Lokasi': 'Location',
-    'Peta Desa Ponggok': 'Ponggok Village Map',
-    '📍 Lokasi Administratif': '📍 Administrative Location',
-    'Desa Ponggok, Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah, Indonesia.': 'Ponggok Village, Polanharjo District, Klaten Regency, Central Java Province, Indonesia.',
-    '🗺️ Peta Spasial Interaktif': '🗺️ Interactive Spatial Map',
-    'Jelajahi tata ruang, fasilitas umum, dan potensi wilayah Desa Ponggok melalui platform WebGIS kami.': 'Explore spatial planning, public facilities, and regional potential of Ponggok Village through our WebGIS platform.',
-    'Buka WebGIS': 'Open WebGIS',
-    '🎥 Profil Wilayah': '🎥 Regional Profile',
-    'Tonton video profil resmi Desa Wisata Ponggok untuk mengenal lebih dekat potensi dan keunikannya.': 'Watch the official profile video of Ponggok Tourism Village to learn more about its potential and uniqueness.',
-    'Tonton Video': 'Watch Video',
-    // Footer
-    'Portal WebGIS resmi Desa Wisata Ponggok — menyajikan data kependudukan, informasi wilayah, serta pemetaan digital interaktif untuk mendukung transparansi dan kemajuan desa.': 'Official WebGIS portal of Ponggok Tourism Village — presenting population data, regional information, and interactive digital mapping to support village transparency and progress.',
-    'Navigasi': 'Navigation',
-    'Tautan': 'Links',
-    'Grafik': 'Charts',
-    'Profil Video': 'Video Profile'
-  }
-};
-
-let currentLang = 'id';
-let bgMusic = null;
-let welcomeAudio = null;
-let isPlaying = false;
-
-/* ===== WELCOME VOICE ===== */
-function playWelcomeVoice() {
-  if ('speechSynthesis' in window) {
-    const text = currentLang === 'id' 
-      ? 'Selamat datang di website Desa Wisata Ponggok' 
-      : 'Welcome to Ponggok Tourism Village website';
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = currentLang === 'id' ? 'id-ID' : 'en-US';
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 0.8;
-    
-    // Get available voices and set appropriate one
-    const voices = speechSynthesis.getVoices();
-    const preferredVoice = voices.find(v => v.lang.startsWith(currentLang === 'id' ? 'id' : 'en'));
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-    
-    speechSynthesis.speak(utterance);
-  }
-}
-
-/* ===== LANGUAGE SWITCHER ===== */
-function setLanguage(lang) {
-  currentLang = lang;
-  
-  // Update buttons
-  document.getElementById('langID').classList.toggle('active', lang === 'id');
-  document.getElementById('langEN').classList.toggle('active', lang === 'en');
-  
-  // Update all translatable elements
-  document.querySelectorAll('[data-id]').forEach(el => {
-    const originalText = el.textContent.trim();
-    // Find the key in translations
-    for (const [key, value] of Object.entries(translations.id)) {
-      if (el.textContent.trim() === key || el.textContent.trim() === translations.en[key]) {
-        if (el.innerHTML.includes('<span>')) {
-          el.innerHTML = translations[lang][key];
-        } else {
-          el.textContent = translations[lang][key];
-        }
-        break;
-      }
-    }
-  });
-  
-  // Update HTML lang attribute
-  document.documentElement.lang = lang;
-  
-  // Store preference
-  localStorage.setItem('preferredLang', lang);
-}
-
-/* ===== MUSIC CONTROLS ===== */
-function initMusic() {
-  bgMusic = document.getElementById('bgMusic');
-  bgMusic.volume = 0.3;
-}
-
-function toggleMusic() {
-  const btn = document.getElementById('musicToggle');
-  if (!bgMusic) initMusic();
-  
-  if (isPlaying) {
-    bgMusic.pause();
-    btn.textContent = '🎵';
-    btn.classList.remove('playing');
-  } else {
-    bgMusic.play().catch(e => console.log('Audio play failed:', e));
-    btn.textContent = '⏸️';
-    btn.classList.add('playing');
-  }
-  isPlaying = !isPlaying;
-}
-
-function toggleVolume() {
-  const slider = document.getElementById('volumeSlider');
-  slider.classList.toggle('show');
-}
-
-function setVolume(value) {
-  if (!bgMusic) initMusic();
-  bgMusic.volume = value / 100;
-}
-
-/* ===== WELCOME OVERLAY ===== */
-document.getElementById('enterBtn').addEventListener('click', function() {
-  const overlay = document.getElementById('welcomeOverlay');
-  overlay.classList.add('hidden');
-  
-  // Play welcome voice
-  setTimeout(() => {
-    playWelcomeVoice();
-  }, 500);
-  
-  // Auto-play background music after entering
-  setTimeout(() => {
-    if (!isPlaying) {
-      toggleMusic();
-    }
-  }, 3000);
-});
-
-// Load voices for speech synthesis
-if ('speechSynthesis' in window) {
-  speechSynthesis.onvoiceschanged = () => {
-    speechSynthesis.getVoices();
-  };
-}
-
 /* ===== REALTIME CLOCK ===== */
 function updateClock(){
   const now = new Date();
@@ -2078,14 +1452,8 @@ function updateClock(){
   const ss = String(wib.getSeconds()).padStart(2,'0');
   document.getElementById('clockTime').textContent = `${hh}:${mm}:${ss}`;
 
-  const daysID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  const daysEN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const monthsID = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  const monthsEN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  
-  const days = currentLang === 'id' ? daysID : daysEN;
-  const months = currentLang === 'id' ? monthsID : monthsEN;
-  
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   document.getElementById('clockDay').textContent = days[wib.getDay()];
   document.getElementById('clockDate').textContent = `${wib.getDate()} ${months[wib.getMonth()]} ${wib.getFullYear()}`;
 }
@@ -2147,16 +1515,15 @@ function showChart(id, btn){
   btn.classList.add('active');
 }
 
-/* ===== CHART CONFIG COLORS - Updated to Batik Blue Theme ===== */
+/* ===== CHART CONFIG COLORS ===== */
 const C = {
-  batikDark: '#1a237e',
-  batikMid: '#283593',
-  batikLight: '#3949ab',
-  batikAccent: '#5c6bc0',
-  gold: '#d4af37',
-  goldLight: '#f5d061',
-  cream: '#f8f9ff',
-  light: '#7986cb'
+  teal: '#1a7a5e',
+  green: '#2ec97e',
+  gold: '#e8c96a',
+  cream: '#faf6ee',
+  dark: '#0a2e2a',
+  mid: '#0f4a3c',
+  light: '#a8d5c3'
 };
 
 /* Chart 1 - Gender Donut */
@@ -2166,7 +1533,7 @@ new Chart(document.getElementById('genderChart'), {
     labels: ['Laki-Laki (1.072)', 'Perempuan (1.085)'],
     datasets: [{
       data: [1072, 1085],
-      backgroundColor: [C.batikMid, C.gold],
+      backgroundColor: [C.teal, C.green],
       borderWidth: 0,
       hoverOffset: 10
     }]
@@ -2174,7 +1541,7 @@ new Chart(document.getElementById('genderChart'), {
   options: {
     cutout: '65%',
     plugins: {
-      legend: { labels: { color: '#3949ab', font: { size: 13 } } }
+      legend: { labels: { color: '#3d5c4e', font: { size: 13 } } }
     }
   }
 });
@@ -2187,15 +1554,15 @@ new Chart(document.getElementById('genderBarChart'), {
     datasets: [{
       label: '%',
       data: [49.7, 50.3],
-      backgroundColor: [C.batikMid, C.gold],
+      backgroundColor: [C.teal, C.green],
       borderRadius: 10,
       borderWidth: 0
     }]
   },
   options: {
     scales: {
-      x: { ticks: { color: '#3949ab' }, grid: { display: false } },
-      y: { ticks: { color: '#3949ab', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.05)' }, max: 55 }
+      x: { ticks: { color: '#3d5c4e' }, grid: { display: false } },
+      y: { ticks: { color: '#3d5c4e', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.05)' }, max: 55 }
     },
     plugins: { legend: { display: false } }
   }
@@ -2205,11 +1572,11 @@ new Chart(document.getElementById('genderBarChart'), {
 new Chart(document.getElementById('ageChart'), {
   type: 'bar',
   data: {
-    labels: ['0–14', '15–24', '25–44', '45–64', '65+'],
+    labels: ['0â€“14', '15â€“24', '25â€“44', '45â€“64', '65+'],
     datasets: [{
       label: 'Estimasi Penduduk',
       data: [300, 500, 700, 450, 207],
-      backgroundColor: [C.light, C.batikAccent, C.batikLight, C.batikMid, C.batikDark],
+      backgroundColor: [C.light, C.green, C.teal, C.mid, C.dark],
       borderRadius: 12,
       borderWidth: 0
     }]
@@ -2217,14 +1584,14 @@ new Chart(document.getElementById('ageChart'), {
   options: {
     indexAxis: 'y',
     scales: {
-      x: { ticks: { color: '#3949ab' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-      y: { ticks: { color: '#3949ab' }, grid: { display: false } }
+      x: { ticks: { color: '#3d5c4e' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+      y: { ticks: { color: '#3d5c4e' }, grid: { display: false } }
     },
-    plugins: { legend: { labels: { color: '#3949ab' } } }
+    plugins: { legend: { labels: { color: '#3d5c4e' } } }
   }
 });
 
-/* Chart 4 - Bar */
+/* Chart 4 - Line */
 new Chart(document.getElementById('populationChart'), {
   type: 'bar',
   data: {
@@ -2232,17 +1599,17 @@ new Chart(document.getElementById('populationChart'), {
     datasets: [{
       label: 'Jumlah Jiwa',
       data: [1072, 1085, 2157],
-      backgroundColor: [C.batikMid, C.batikLight, C.gold],
+      backgroundColor: [C.teal, C.green, C.gold],
       borderRadius: 14,
       borderWidth: 0
     }]
   },
   options: {
     scales: {
-      x: { ticks: { color: '#3949ab' }, grid: { display: false } },
-      y: { ticks: { color: '#3949ab' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      x: { ticks: { color: '#3d5c4e' }, grid: { display: false } },
+      y: { ticks: { color: '#3d5c4e' }, grid: { color: 'rgba(0,0,0,0.05)' } }
     },
-    plugins: { legend: { labels: { color: '#3949ab' } } }
+    plugins: { legend: { labels: { color: '#3d5c4e' } } }
   }
 });
 
@@ -2250,13 +1617,13 @@ new Chart(document.getElementById('populationChart'), {
 new Chart(document.getElementById('densityChart'), {
   type: 'radar',
   data: {
-    labels: ['Penduduk (÷10)', 'Kepadatan (÷10)', 'Luas (×100)', 'Rasio JK', 'L-P Balance'],
+    labels: ['Penduduk (Ã·10)', 'Kepadatan (Ã·10)', 'Luas (Ã—100)', 'Rasio JK', 'L-P Balance'],
     datasets: [{
       label: 'Indikator Desa',
       data: [215.7, 257.3, 84, 98.8, 99.4],
-      backgroundColor: 'rgba(57,73,171,0.15)',
-      borderColor: C.batikMid,
-      pointBackgroundColor: C.gold,
+      backgroundColor: 'rgba(26,122,94,0.15)',
+      borderColor: C.teal,
+      pointBackgroundColor: C.green,
       pointBorderColor: '#fff',
       pointRadius: 5,
       borderWidth: 2
@@ -2267,23 +1634,23 @@ new Chart(document.getElementById('densityChart'), {
       r: {
         grid: { color: 'rgba(0,0,0,0.07)' },
         angleLines: { color: 'rgba(0,0,0,0.07)' },
-        pointLabels: { color: '#3949ab', font: { size: 12 } },
+        pointLabels: { color: '#3d5c4e', font: { size: 12 } },
         ticks: { display: false }
       }
     },
-    plugins: { legend: { labels: { color: '#3949ab' } } }
+    plugins: { legend: { labels: { color: '#3d5c4e' } } }
   }
 });
 
 /* ===== LEAFLET MAP ===== */
 const map = L.map('map').setView([-7.6295, 110.6203], 14);
-L.tileLayer('[{s}.tile.openstreetmap.org](https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png)', {
-  attribution: '© OpenStreetMap contributors'
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: 'Â© OpenStreetMap contributors'
 }).addTo(map);
 
 const icon = L.divIcon({
-  html: `<div style="background:linear-gradient(135deg,#283593,#5c6bc0);width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 4px 16px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
-    <span style="transform:rotate(45deg);font-size:18px;">🌊</span>
+  html: `<div style="background:linear-gradient(135deg,#0f4a3c,#2ec97e);width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 4px 16px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+    <span style="transform:rotate(45deg);font-size:18px;">ðŸŒŠ</span>
   </div>`,
   className: '',
   iconSize: [44, 44],
@@ -2295,45 +1662,26 @@ L.marker([-7.6295, 110.6203], { icon })
   .addTo(map)
   .bindPopup(`
     <div style="font-family:'DM Sans',sans-serif;padding:8px;min-width:200px;">
-      <h4 style="color:#283593;font-size:16px;margin-bottom:6px;">🌊 Desa Wisata Ponggok</h4>
+      <h4 style="color:#0f4a3c;font-size:16px;margin-bottom:6px;">ðŸŒŠ Desa Wisata Ponggok</h4>
       <p style="font-size:13px;color:#555;margin-bottom:4px;">Kec. Polanharjo, Kab. Klaten</p>
       <p style="font-size:13px;color:#555;">Jawa Tengah, Indonesia</p>
       <hr style="margin:8px 0;border-color:#eee;">
       <p style="font-size:12px;color:#888;">Penduduk: <strong>2.157 jiwa</strong></p>
-      <p style="font-size:12px;color:#888;">Luas: <strong>0,84 km²</strong></p>
+      <p style="font-size:12px;color:#888;">Luas: <strong>0,84 kmÂ²</strong></p>
     </div>
   `)
   .openPopup();
 
 L.circle([-7.6295, 110.6203], {
   radius: 600,
-  color: '#d4af37',
-  fillColor: '#d4af37',
+  color: '#2ec97e',
+  fillColor: '#2ec97e',
   fillOpacity: 0.07,
   weight: 2
 }).addTo(map);
-
-/* ===== INIT ===== */
-document.addEventListener('DOMContentLoaded', function() {
-  // Check for saved language preference
-  const savedLang = localStorage.getItem('preferredLang');
-  if (savedLang) {
-    setLanguage(savedLang);
-  }
-  
-  // Initialize music
-  initMusic();
-  
-  // Close volume slider when clicking outside
-  document.addEventListener('click', function(e) {
-    const volumeSlider = document.getElementById('volumeSlider');
-    const volumeBtn = document.getElementById('volumeToggle');
-    if (!volumeSlider.contains(e.target) && !volumeBtn.contains(e.target)) {
-      volumeSlider.classList.remove('show');
-    }
-  });
-});
 </script>
 
 </body>
 </html>
+HTMLEOF
+echo "Done"
