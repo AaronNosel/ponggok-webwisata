@@ -1,14 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WEBGIS Desa Wisata Ponggok</title>
+
 <link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap)" rel="stylesheet">
 <script src="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/npm/chart.js)"></script>
 <script src="[unpkg.com](https://unpkg.com/leaflet@1.9.4/dist/leaflet.js)"></script>
 <link rel="stylesheet" href="[unpkg.com](https://unpkg.com/leaflet@1.9.4/dist/leaflet.css)"/>
+
 <style>
 /* ===== CSS VARIABLES - BATIK KLATEN BLUE THEME ===== */
 :root{
@@ -27,6 +28,7 @@
   --shadow-blue: rgba(26,35,126,0.18);
   --shadow-gold: rgba(212,175,55,0.18);
 }
+
 /* ===== RESET & BASE ===== */
 *{ margin:0; padding:0; box-sizing:border-box; }
 html{ scroll-behavior:smooth; }
@@ -36,6 +38,7 @@ body{
   color: var(--text-dark);
   overflow-x: hidden;
 }
+
 /* ===== BATIK PATTERN OVERLAY ===== */
 .batik-pattern {
   position: fixed;
@@ -48,6 +51,7 @@ body{
   opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='[w3.org](http://www.w3.org/2000/svg)'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231a237e' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
+
 /* ===== WELCOME OVERLAY ===== */
 .welcome-overlay {
   position: fixed;
@@ -115,6 +119,7 @@ body{
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 /* ===== MUSIC CONTROL ===== */
 .music-control {
   position: fixed;
@@ -182,6 +187,7 @@ body{
   border-radius: 50%;
   cursor: pointer;
 }
+
 /* ===== LANGUAGE SELECTOR ===== */
 .lang-selector {
   position: fixed;
@@ -220,10 +226,12 @@ body{
 .lang-flag {
   font-size: 18px;
 }
+
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar{ width:6px; }
 ::-webkit-scrollbar-track{ background: var(--cream-dark); }
 ::-webkit-scrollbar-thumb{ background: var(--batik-light); border-radius:10px; }
+
 /* ===== TICKER ===== */
 .ticker-bar{
   background: var(--batik-dark);
@@ -273,6 +281,7 @@ body{
   from{ transform: translateX(0); }
   to{ transform: translateX(-50%); }
 }
+
 /* ===== HEADER ===== */
 header{
   position: sticky;
@@ -350,6 +359,7 @@ nav a.cta:hover{
   background: var(--batik-light);
   border-color: var(--batik-light);
 }
+
 /* ===== CLOCK WIDGET (fixed) ===== */
 .clock-widget{
   position: fixed;
@@ -391,6 +401,7 @@ nav a.cta:hover{
   margin-top: 8px;
   text-transform: uppercase;
 }
+
 /* ===== HERO ===== */
 .hero{
   min-height: 92vh;
@@ -546,6 +557,7 @@ nav a.cta:hover{
   background: rgba(255,255,255,0.08);
   border-color: rgba(255,255,255,0.6);
 }
+
 /* HERO STATS CARD */
 .hero-stats{
   display: grid;
@@ -598,6 +610,7 @@ nav a.cta:hover{
   letter-spacing: 2px;
   text-transform: uppercase;
 }
+
 /* ===== DIVIDER ===== */
 .wave-divider{
   width: 100%;
@@ -609,6 +622,7 @@ nav a.cta:hover{
   display: block;
   width: 100%;
 }
+
 /* ===== SECTION HEADING ===== */
 .section-heading{
   text-align: center;
@@ -640,6 +654,7 @@ nav a.cta:hover{
   margin: auto;
   line-height: 1.8;
 }
+
 /* ===== DAYA TARIK / HIGHLIGHT CARDS ===== */
 .highlights{
   padding: 100px 40px;
@@ -713,6 +728,7 @@ nav a.cta:hover{
   transition: gap 0.3s;
 }
 .hl-link:hover{ gap: 10px; }
+
 /* ===== STATISTIK SECTION ===== */
 .statistik{
   padding: 100px 40px;
@@ -743,6 +759,7 @@ nav a.cta:hover{
   border-color: rgba(212,175,55,0.25);
 }
 .statistik .section-subtitle{ color: rgba(255,255,255,0.5); }
+
 .stat-cards{
   max-width: 1300px;
   margin: auto;
@@ -798,6 +815,7 @@ nav a.cta:hover{
   margin-top: 10px;
   line-height: 1.6;
 }
+
 /* ===== CHARTS ===== */
 .charts-section{
   padding: 100px 40px;
@@ -861,6 +879,7 @@ nav a.cta:hover{
 .chart-card canvas{
   max-height: 300px;
 }
+
 /* ===== TABEL DATA ===== */
 .data-section{
   padding: 100px 40px;
@@ -922,6 +941,7 @@ table.dt td:nth-child(2){
   font-weight: 600;
   border: 1px solid rgba(57,73,171,0.2);
 }
+
 /* ===== GALERI ===== */
 .galeri-section{
   padding: 100px 40px;
@@ -973,6 +993,7 @@ table.dt td:nth-child(2){
   font-family: 'Playfair Display', serif;
   font-size: 20px;
 }
+
 /* Placeholder gradient for galeri - Updated to blue theme */
 .galeri-placeholder{
   width: 100%;
@@ -989,6 +1010,7 @@ table.dt td:nth-child(2){
 .g4{ background: linear-gradient(135deg,#5c6bc0,#283593); }
 .g5{ background: linear-gradient(135deg,#d4af37,#3949ab); }
 .g6{ background: linear-gradient(135deg,#283593,#1a237e); }
+
 /* ===== MAP ===== */
 .peta-section{
   padding: 100px 40px;
@@ -1045,6 +1067,7 @@ table.dt td:nth-child(2){
   font-family: monospace;
   letter-spacing: 0.5px;
 }
+
 /* ===== FOOTER ===== */
 footer{
   background: var(--batik-dark);
@@ -1098,6 +1121,7 @@ footer{
   color: var(--gold);
   text-decoration: none;
 }
+
 /* ===== SCROLL TO TOP ===== */
 .scroll-top{
   position: fixed;
@@ -1128,6 +1152,7 @@ footer{
   transform: translateY(-4px);
   box-shadow: 0 8px 28px var(--shadow-gold);
 }
+
 /* ===== PROGRESS BAR ===== */
 .progress-bar{
   position: fixed;
@@ -1138,6 +1163,7 @@ footer{
   z-index: 9999;
   transition: width 0.1s;
 }
+
 /* ===== ANIMATIONS ===== */
 .reveal{
   opacity: 0;
@@ -1152,6 +1178,7 @@ footer{
 .reveal-delay-2{ transition-delay: 0.2s; }
 .reveal-delay-3{ transition-delay: 0.3s; }
 .reveal-delay-4{ transition-delay: 0.4s; }
+
 /* ===== RESPONSIVE ===== */
 @media(max-width:1100px){
   .hero-inner{ grid-template-columns: 1fr; text-align: center; }
@@ -1186,9 +1213,12 @@ footer{
 }
 </style>
 </head>
+
 <body>
+
 <!-- BATIK PATTERN OVERLAY -->
 <div class="batik-pattern"></div>
+
 <!-- WELCOME OVERLAY -->
 <div class="welcome-overlay" id="welcomeOverlay">
   <div class="welcome-logo">🌊</div>
@@ -1196,6 +1226,7 @@ footer{
   <p class="welcome-subtext" data-id="id">Desa Wisata Ponggok • Klaten</p>
   <button class="welcome-enter-btn" id="enterBtn" data-id="id">Masuk ke Website</button>
 </div>
+
 <!-- LANGUAGE SELECTOR -->
 <div class="lang-selector">
   <button class="lang-btn active" id="langID" onclick="setLanguage('id')">
@@ -1205,6 +1236,7 @@ footer{
     <span class="lang-flag">🇬🇧</span> EN
   </button>
 </div>
+
 <!-- MUSIC CONTROL -->
 <div class="music-control">
   <button class="music-btn" id="musicToggle" onclick="toggleMusic()" title="Play/Pause Music">
@@ -1219,8 +1251,10 @@ footer{
     <span>🔊</span>
   </div>
 </div>
+
 <!-- PROGRESS BAR -->
 <div class="progress-bar" id="progressBar"></div>
+
 <!-- TICKER -->
 <div class="ticker-bar">
   <div class="ticker-inner">
@@ -1243,6 +1277,7 @@ footer{
     </div>
   </div>
 </div>
+
 <!-- HEADER -->
 <header>
   <div class="header-inner">
@@ -1262,6 +1297,7 @@ footer{
     </nav>
   </div>
 </header>
+
 <!-- HERO -->
 <section class="hero" id="hero">
   <div class="hero-bg-text">Ponggok</div>
@@ -1301,12 +1337,14 @@ footer{
     </div>
   </div>
 </section>
+
 <!-- WAVE -->
 <div class="wave-divider">
   <svg viewBox="0 0 1440 80" preserveAspectRatio="none" fill="var(--cream)">
     <path d="M0,0 C360,80 1080,0 1440,60 L1440,80 L0,80 Z"/>
   </svg>
 </div>
+
 <!-- DAYA TARIK / HIGHLIGHTS -->
 <section class="highlights" id="highlights">
   <div class="section-heading reveal">
@@ -1353,6 +1391,7 @@ footer{
     </div>
   </div>
 </section>
+
 <!-- STATISTIK -->
 <section class="statistik" id="statistik">
   <div style="max-width:1300px;margin:auto;position:relative;z-index:1;">
@@ -1413,6 +1452,7 @@ footer{
     </div>
   </div>
 </section>
+
 <!-- CHARTS -->
 <section class="charts-section" id="grafik">
   <div class="charts-inner">
@@ -1464,6 +1504,7 @@ footer{
     </div>
   </div>
 </section>
+
 <!-- TABEL DATA -->
 <section class="data-section">
   <div class="data-inner">
@@ -1524,6 +1565,7 @@ footer{
     </div>
   </div>
 </section>
+
 <!-- GALERI -->
 <section class="galeri-section" id="galeri">
   <div class="galeri-inner">
@@ -1572,6 +1614,7 @@ footer{
     </div>
   </div>
 </section>
+
 <!-- PETA LOKASI -->
 <section class="peta-section" id="peta">
   <div class="peta-inner">
@@ -1603,6 +1646,7 @@ footer{
     </div>
   </div>
 </section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -1631,6 +1675,7 @@ footer{
     <span>Data: <a href="#">BPS Klaten 2025</a></span>
   </div>
 </footer>
+
 <!-- CLOCK WIDGET -->
 <div class="clock-widget">
   <div class="clock-time" id="clockTime">--:--:--</div>
@@ -1638,12 +1683,15 @@ footer{
   <div class="clock-date" id="clockDate">-- --- ----</div>
   <div class="clock-label">WIB • KLATEN</div>
 </div>
+
 <!-- SCROLL TO TOP -->
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
 <!-- AUDIO ELEMENTS -->
 <audio id="bgMusic" loop preload="auto">
   <source src="[soundhelix.com](https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3)" type="audio/mpeg">
 </audio>
+
 <script>
 /* ===== TRANSLATIONS ===== */
 const translations = {
@@ -1900,10 +1948,12 @@ const translations = {
     'Profil Video': 'Video Profile'
   }
 };
+
 let currentLang = 'id';
 let bgMusic = null;
 let welcomeAudio = null;
 let isPlaying = false;
+
 /* ===== WELCOME VOICE ===== */
 function playWelcomeVoice() {
   if ('speechSynthesis' in window) {
@@ -1927,6 +1977,7 @@ function playWelcomeVoice() {
     speechSynthesis.speak(utterance);
   }
 }
+
 /* ===== LANGUAGE SWITCHER ===== */
 function setLanguage(lang) {
   currentLang = lang;
@@ -1957,11 +2008,13 @@ function setLanguage(lang) {
   // Store preference
   localStorage.setItem('preferredLang', lang);
 }
+
 /* ===== MUSIC CONTROLS ===== */
 function initMusic() {
   bgMusic = document.getElementById('bgMusic');
   bgMusic.volume = 0.3;
 }
+
 function toggleMusic() {
   const btn = document.getElementById('musicToggle');
   if (!bgMusic) initMusic();
@@ -1977,14 +2030,17 @@ function toggleMusic() {
   }
   isPlaying = !isPlaying;
 }
+
 function toggleVolume() {
   const slider = document.getElementById('volumeSlider');
   slider.classList.toggle('show');
 }
+
 function setVolume(value) {
   if (!bgMusic) initMusic();
   bgMusic.volume = value / 100;
 }
+
 /* ===== WELCOME OVERLAY ===== */
 document.getElementById('enterBtn').addEventListener('click', function() {
   const overlay = document.getElementById('welcomeOverlay');
@@ -2002,22 +2058,26 @@ document.getElementById('enterBtn').addEventListener('click', function() {
     }
   }, 3000);
 });
+
 // Load voices for speech synthesis
 if ('speechSynthesis' in window) {
   speechSynthesis.onvoiceschanged = () => {
     speechSynthesis.getVoices();
   };
 }
+
 /* ===== REALTIME CLOCK ===== */
 function updateClock(){
   const now = new Date();
   const wibOffset = 7 * 60;
   const localOffset = now.getTimezoneOffset();
   const wib = new Date(now.getTime() + (wibOffset + localOffset) * 60000);
+
   const hh = String(wib.getHours()).padStart(2,'0');
   const mm = String(wib.getMinutes()).padStart(2,'0');
   const ss = String(wib.getSeconds()).padStart(2,'0');
   document.getElementById('clockTime').textContent = `${hh}:${mm}:${ss}`;
+
   const daysID = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
   const daysEN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const monthsID = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -2031,16 +2091,19 @@ function updateClock(){
 }
 updateClock();
 setInterval(updateClock, 1000);
+
 /* ===== PROGRESS BAR ===== */
 window.addEventListener('scroll', () => {
   const scrollTop = document.documentElement.scrollTop;
   const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
   const progress = (scrollTop / scrollHeight) * 100;
   document.getElementById('progressBar').style.width = progress + '%';
+
   const btn = document.getElementById('scrollTop');
   if(scrollTop > 400){ btn.classList.add('visible'); }
   else{ btn.classList.remove('visible'); }
 });
+
 /* ===== REVEAL ON SCROLL ===== */
 const reveals = document.querySelectorAll('.reveal');
 const observer = new IntersectionObserver((entries) => {
@@ -2049,6 +2112,7 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12 });
 reveals.forEach(el => observer.observe(el));
+
 /* ===== COUNTER ANIMATION ===== */
 function animateCounter(el){
   const target = parseInt(el.dataset.target);
@@ -2064,6 +2128,7 @@ function animateCounter(el){
     el.textContent = Math.floor(current).toLocaleString('id-ID');
   }, 16);
 }
+
 const counterObs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if(e.isIntersecting && !e.target.dataset.done){
@@ -2073,6 +2138,7 @@ const counterObs = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.5 });
 document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+
 /* ===== CHART TAB SWITCH ===== */
 function showChart(id, btn){
   document.querySelectorAll('.chart-panels > div').forEach(p => p.classList.remove('active'));
@@ -2080,6 +2146,7 @@ function showChart(id, btn){
   document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
+
 /* ===== CHART CONFIG COLORS - Updated to Batik Blue Theme ===== */
 const C = {
   batikDark: '#1a237e',
@@ -2091,6 +2158,7 @@ const C = {
   cream: '#f8f9ff',
   light: '#7986cb'
 };
+
 /* Chart 1 - Gender Donut */
 new Chart(document.getElementById('genderChart'), {
   type: 'doughnut',
@@ -2110,6 +2178,7 @@ new Chart(document.getElementById('genderChart'), {
     }
   }
 });
+
 /* Chart 2 - Gender Bar */
 new Chart(document.getElementById('genderBarChart'), {
   type: 'bar',
@@ -2131,6 +2200,7 @@ new Chart(document.getElementById('genderBarChart'), {
     plugins: { legend: { display: false } }
   }
 });
+
 /* Chart 3 - Age Bar */
 new Chart(document.getElementById('ageChart'), {
   type: 'bar',
@@ -2153,6 +2223,7 @@ new Chart(document.getElementById('ageChart'), {
     plugins: { legend: { labels: { color: '#3949ab' } } }
   }
 });
+
 /* Chart 4 - Bar */
 new Chart(document.getElementById('populationChart'), {
   type: 'bar',
@@ -2174,6 +2245,7 @@ new Chart(document.getElementById('populationChart'), {
     plugins: { legend: { labels: { color: '#3949ab' } } }
   }
 });
+
 /* Chart 5 - Radar */
 new Chart(document.getElementById('densityChart'), {
   type: 'radar',
@@ -2202,11 +2274,13 @@ new Chart(document.getElementById('densityChart'), {
     plugins: { legend: { labels: { color: '#3949ab' } } }
   }
 });
+
 /* ===== LEAFLET MAP ===== */
 const map = L.map('map').setView([-7.6295, 110.6203], 14);
 L.tileLayer('[{s}.tile.openstreetmap.org](https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png)', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
+
 const icon = L.divIcon({
   html: `<div style="background:linear-gradient(135deg,#283593,#5c6bc0);width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 4px 16px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
     <span style="transform:rotate(45deg);font-size:18px;">🌊</span>
@@ -2216,6 +2290,7 @@ const icon = L.divIcon({
   iconAnchor: [22, 44],
   popupAnchor: [0, -48]
 });
+
 L.marker([-7.6295, 110.6203], { icon })
   .addTo(map)
   .bindPopup(`
@@ -2229,6 +2304,7 @@ L.marker([-7.6295, 110.6203], { icon })
     </div>
   `)
   .openPopup();
+
 L.circle([-7.6295, 110.6203], {
   radius: 600,
   color: '#d4af37',
@@ -2236,6 +2312,7 @@ L.circle([-7.6295, 110.6203], {
   fillOpacity: 0.07,
   weight: 2
 }).addTo(map);
+
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', function() {
   // Check for saved language preference
@@ -2257,5 +2334,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+
 </body>
 </html>
