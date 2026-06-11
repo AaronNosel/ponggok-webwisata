@@ -176,43 +176,25 @@
       justify-content: space-between;
       align-items: center;
     }
-    .logo {
+    .logo-container {
       display: flex;
       align-items: center;
       gap: 12px;
-      cursor: pointer;
-      text-decoration: none;
     }
-    .logo-emblem {
-      width: 44px;
-      height: 44px;
-      background: var(--primary);
-      color: #FFFFFF;
-      border-radius: 8px;
+    .logo-separator {
+      width: 1px;
+      height: 26px;
+      background: var(--border);
+    }
+    .logo {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 20px;
+      text-decoration: none;
       transition: var(--transition);
     }
-    .logo:hover .logo-emblem {
-      transform: translateY(-2px);
-      background: var(--primary-light);
-    }
-    .logo-text h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--primary);
-      line-height: 1.1;
-    }
-    .logo-text p {
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: var(--text-light);
-      margin-top: 1px;
-      text-transform: uppercase;
-      font-weight: 600;
+    .logo:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
     }
 
     nav {
@@ -566,62 +548,66 @@
       line-height: 1.6;
     }
 
-    /* ===== GALLERY SECTION ===== */
-    .gallery {
+    /* ===== DOCUMENTATION SECTION ===== */
+    .documentation {
       padding: 80px 24px;
       background: var(--bg-base);
       border-bottom: 1px solid var(--border);
     }
-    .gallery-inner {
+    .documentation-inner {
       max-width: 1200px;
       margin: auto;
     }
-    .gallery-grid {
+    .doc-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
       margin-top: 30px;
     }
-    .gallery-item {
-      position: relative;
-      overflow: hidden;
+    .doc-card {
+      background: var(--bg-card);
       border-radius: 12px;
-      aspect-ratio: 4/3;
-      cursor: pointer;
+      overflow: hidden;
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--border);
       transition: var(--transition);
+      display: flex;
+      flex-direction: column;
     }
-    .gallery-item:hover {
-      transform: translateY(-3px);
+    .doc-card:hover {
+      transform: translateY(-4px);
       box-shadow: var(--shadow-md);
+      border-color: var(--primary-light);
     }
-    .gallery-item img {
+    .doc-img-wrapper {
+      aspect-ratio: 16/10;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .doc-img-wrapper img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-    .gallery-item:hover img {
-      transform: scale(1.06);
-    }
-    .gallery-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(15, 76, 62, 0.75);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
       transition: var(--transition);
-      backdrop-filter: blur(2px);
     }
-    .gallery-item:hover .gallery-overlay {
-      opacity: 1;
+    .doc-card:hover .doc-img-wrapper img {
+      transform: scale(1.04);
     }
-    .gallery-overlay-icon {
-      font-size: 24px;
-      color: var(--accent);
+    .doc-info {
+      padding: 24px;
+      flex-grow: 1;
+    }
+    .doc-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .doc-info p {
+      font-size: 13.5px;
+      color: var(--text-mid);
+      line-height: 1.6;
     }
 
     /* ===== VIDEO SECTION ===== */
@@ -1134,6 +1120,17 @@
       .about-content { padding: 24px; }
       .footer-grid { grid-template-columns: 1fr; gap: 30px; }
     }
+    @media (max-width: 480px) {
+      .logo-container img:first-child {
+        height: 32px !important;
+      }
+      .logo-container .logo-separator {
+        height: 20px !important;
+      }
+      .logo-container .logo img {
+        height: 38px !important;
+      }
+    }
 
     /* ===== SCROLL ANIMATION ===== */
     .fade-in {
@@ -1191,16 +1188,18 @@
   <!-- HEADER -->
   <header>
     <div class="header-inner">
-      <a class="logo" href="#">
-        <div class="logo-emblem"><i class="fa-solid fa-water"></i></div>
-        <div class="logo-text">
-          <h1>Ponggok</h1>
-          <p>Desa Wisata</p>
-        </div>
-      </a>
+      <!-- Double Logo Layout in Top-Left -->
+      <div class="logo-container">
+        <img src="img/lambang_klaten.png" alt="Kabupaten Klaten" style="height: 42px; width: auto; object-fit: contain;">
+        <div class="logo-separator"></div>
+        <a class="logo" href="#">
+          <img src="img/logo.png" alt="Desa Ponggok" style="height: 48px; width: auto; object-fit: contain;">
+        </a>
+      </div>
+      
       <nav>
         <a href="#highlights">Keunggulan</a>
-        <a href="#gallery">Galeri</a>
+        <a href="#documentation">Dokumentasi</a>
         <a href="#video">Video</a>
         <a href="#data">Data</a>
         <a href="#about">Tentang</a>
@@ -1229,7 +1228,7 @@
         <p class="hero-desc">Desa Wisata Ponggok menawarkan pengalaman wisata yang tak terlupakan dengan pemandangan alam yang memukau, aktivitas seru di Umbul Ponggok, dan kehangatan budaya lokal yang autentik di Kecamatan Polanharjo, Kabupaten Klaten, Jawa Tengah.</p>
         <div class="hero-actions">
           <a href="#map" class="btn-primary"><i class="fa-solid fa-map-location-dot"></i> Peta Interaktif WebGIS</a>
-          <a href="#gallery" class="btn-secondary"><i class="fa-regular fa-image"></i> Lihat Galeri</a>
+          <a href="#documentation" class="btn-secondary"><i class="fa-regular fa-image"></i> Lihat Dokumentasi</a>
         </div>
       </div>
       <div class="hero-stats">
@@ -1269,7 +1268,7 @@
         <div class="highlight-card fade-in">
           <div class="hc-icon"><i class="fa-solid fa-water"></i></div>
           <h3 class="hc-title">Umbul Ponggok</h3>
-          <p class="hc-desc">Mata air alami yang jernih dan melimpah, menjadi destinasi snorkeling air tawar yang terkenal di Indonesia.</p>
+          <p class="hc-desc">Mata air alami yang jernih and melimpah, menjadi destinasi snorkeling air tawar yang terkenal di Indonesia.</p>
         </div>
         <div class="highlight-card fade-in">
           <div class="hc-icon"><i class="fa-solid fa-droplet"></i></div>
@@ -1300,49 +1299,43 @@
     </div>
   </section>
 
-  <!-- GALLERY SECTION -->
-  <section class="gallery" id="gallery">
-    <div class="gallery-inner">
+  <!-- DOCUMENTATION SECTION (Replacing Unsplash Gallery) -->
+  <section class="documentation" id="documentation">
+    <div class="documentation-inner">
       <div class="section-heading">
-        <span class="section-tag">Koleksi Kami</span>
-        <h2 class="section-title">Galeri Foto</h2>
-        <p class="section-subtitle">Lihat keindahan Desa Wisata Ponggok melalui dokumentasi visual kami</p>
+        <span class="section-tag">Dokumentasi Wilayah</span>
+        <h2 class="section-title">Aset & Landmark Desa</h2>
+        <p class="section-subtitle">Galeri foto dokumentasi resmi aset fisik, ikon kawasan, dan infrastruktur Desa Wisata Ponggok</p>
       </div>
-      <div class="gallery-grid">
-        <div class="gallery-item fade-in">
-          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop" alt="Pemandangan Alam">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+      <div class="doc-grid">
+        <!-- Card 1 -->
+        <div class="doc-card fade-in">
+          <div class="doc-img-wrapper">
+            <img src="img/patung_arjuna.png" alt="Ikon Patung Memanah">
+          </div>
+          <div class="doc-info">
+            <h3>Ikon Patung Memanah</h3>
+            <p>Patung ksatria memanah yang berdiri kokoh sebagai salah satu landmark ikonik penyambut selamat datang dan simbol budaya kearifan lokal di kawasan Desa Wisata Ponggok.</p>
           </div>
         </div>
-        <div class="gallery-item fade-in">
-          <img src="https://images.unsplash.com/photo-1469022563149-aa64dbd37dae?w=500&h=500&fit=crop" alt="Sawah Hijau">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <!-- Card 2 -->
+        <div class="doc-card fade-in">
+          <div class="doc-img-wrapper">
+            <img src="img/balai_desa.jpg" alt="Gedung Kantor Desa Ponggok">
+          </div>
+          <div class="doc-info">
+            <h3>Gedung Kantor Desa</h3>
+            <p>Pusat administrasi, koordinasi, dan pelayanan publik bagi seluruh warga serta kantor pusat pemerintahan Desa Ponggok yang bersih, modern, dan representatif.</p>
           </div>
         </div>
-        <div class="gallery-item fade-in">
-          <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=500&h=500&fit=crop" alt="Tradisional">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <!-- Card 3 -->
+        <div class="doc-card fade-in">
+          <div class="doc-img-wrapper">
+            <img src="img/kantor_desa_plang.jpg" alt="Landmark Gerbang Kantor Desa">
           </div>
-        </div>
-        <div class="gallery-item fade-in">
-          <img src="https://images.unsplash.com/photo-1522092995904-d7a6c0e6e79a?w=500&h=500&fit=crop" alt="Aktivitas">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-          </div>
-        </div>
-        <div class="gallery-item fade-in">
-          <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&h=500&fit=crop" alt="Pantai">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-          </div>
-        </div>
-        <div class="gallery-item fade-in">
-          <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&h=500&fit=crop" alt="Matahari Terbenam">
-          <div class="gallery-overlay">
-            <div class="gallery-overlay-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+          <div class="doc-info">
+            <h3>Landmark Gerbang Kantor Desa</h3>
+            <p>Plang nama utama di gerbang masuk Kantor Desa Ponggok yang didesain menggunakan pilar batu alam yang megah dan mencerminkan kekokohan serta keasrian desa.</p>
           </div>
         </div>
       </div>
@@ -1537,7 +1530,7 @@
         </div>
         <div class="about-media fade-in">
           <div class="about-image">
-            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop" alt="Desa Wisata Ponggok">
+            <img src="img/balai_desa.jpg" alt="Gedung Kantor Desa Ponggok">
           </div>
         </div>
       </div>
@@ -1636,7 +1629,7 @@
           <h4>Navigasi</h4>
           <ul>
             <li><a href="#highlights">Keunggulan Kami</a></li>
-            <li><a href="#gallery">Galeri Foto</a></li>
+            <li><a href="#documentation">Dokumentasi Wilayah</a></li>
             <li><a href="#video">Video Profil</a></li>
             <li><a href="#data">Data Statistik</a></li>
             <li><a href="#about">Tentang Kami</a></li>
