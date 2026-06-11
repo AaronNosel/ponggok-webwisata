@@ -1,1054 +1,705 @@
-<!DOCTYPE html>
+cd /home/claude && python3 << 'PYEOF'
+from img_data import IMAGES
+
+html = f"""<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Desa Wisata Ponggok - Destinasi wisata terbaik dengan pemandangan alam yang memukau dan pengalaman budaya autentik.">
-<meta name="keywords" content="desa wisata, Ponggok, pariwisata, alam, budaya, Indonesia, Klaten">
-<meta name="author" content="Desa Wisata Ponggok">
-<title>WEBGIS Desa Wisata Ponggok - Destinasi Wisata Alam Terbaik</title>
+<meta name="description" content="WebGIS Desa Wisata Ponggok - Destinasi wisata terbaik Kabupaten Klaten, Jawa Tengah.">
+<title>WEBGIS Desa Wisata Ponggok</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-/* ===== CSS VARIABLES ===== */
-:root{
-  --teal-dark: #0a2e2a;
-  --teal-mid: #0f4a3c;
-  --teal-light: #1a7a5e;
-  --green-accent: #2ec97e;
-  --gold: #e8c96a;
-  --gold-light: #f5e4a8;
-  --cream: #faf6ee;
-  --cream-dark: #ede5d4;
-  --text-dark: #1a2e26;
-  --text-mid: #3d5c4e;
-  --text-light: #7a9e8e;
+:root {{
+  --blue: #1a4f8b;
+  --blue-dark: #0f3260;
+  --blue-light: #2d6abf;
+  --cyan: #0ea5d4;
+  --cyan-light: #7dd3ee;
   --white: #ffffff;
-  --shadow-green: rgba(46,201,126,0.18);
-  --shadow-gold: rgba(232,201,106,0.18);
-  --red-accent: #e74c3c;
-}
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --gray-600: #475569;
+  --gray-800: #1e293b;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 12px;
+}}
 
-/* ===== RESET & BASE ===== */
-*{ margin:0; padding:0; box-sizing:border-box; }
-html{ scroll-behavior:smooth; }
-body{
-  font-family:'DM Sans', sans-serif;
-  background: var(--cream);
-  color: var(--text-dark);
-  overflow-x: hidden;
+* {{ margin:0; padding:0; box-sizing:border-box; }}
+html {{ scroll-behavior:smooth; }}
+body {{
+  font-family: 'Inter', sans-serif;
+  background: var(--white);
+  color: var(--gray-800);
   line-height: 1.6;
-}
+  overflow-x: hidden;
+}}
 
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar{ width:8px; }
-::-webkit-scrollbar-track{ background: var(--cream-dark); }
-::-webkit-scrollbar-thumb{ background: var(--teal-light); border-radius:10px; }
-::-webkit-scrollbar-thumb:hover{ background: var(--green-accent); }
+::-webkit-scrollbar {{ width: 6px; }}
+::-webkit-scrollbar-track {{ background: var(--gray-100); }}
+::-webkit-scrollbar-thumb {{ background: var(--blue-light); border-radius: 6px; }}
 
-/* ===== TICKER ===== */
-.ticker-bar{
-  background: var(--teal-dark);
-  color: var(--gold-light);
-  padding: 12px 0;
+/* ── TICKER ── */
+.ticker-bar {{
+  background: var(--blue-dark);
+  color: rgba(255,255,255,0.85);
+  padding: 10px 0;
   overflow: hidden;
-  border-bottom: 2px solid var(--green-accent);
+  border-bottom: 2px solid var(--cyan);
   position: relative;
   z-index: 1000;
-}
-.ticker-inner{
-  display: flex;
-  align-items: center;
-  gap: 0;
-}
-.ticker-label{
-  background: var(--green-accent);
-  color: var(--teal-dark);
+}}
+.ticker-inner {{ display:flex; align-items:center; }}
+.ticker-label {{
+  background: var(--cyan);
+  color: var(--blue-dark);
   font-weight: 700;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 2px;
-  padding: 4px 18px;
+  padding: 4px 16px;
   white-space: nowrap;
   flex-shrink: 0;
-}
-.ticker-track{
-  overflow: hidden;
-  flex: 1;
-  position: relative;
-}
-.ticker-content{
+  text-transform: uppercase;
+}}
+.ticker-track {{ overflow:hidden; flex:1; }}
+.ticker-content {{
   display: inline-flex;
   gap: 80px;
   animation: ticker 40s linear infinite;
   white-space: nowrap;
-  font-size: 13px;
-  letter-spacing: 0.5px;
+  font-size: 12px;
   padding-left: 40px;
-}
-.ticker-content span::before{
-  content: '◆';
-  margin-right: 12px;
-  color: var(--gold);
-  font-size: 8px;
-}
-@keyframes ticker{
-  from{ transform: translateX(0); }
-  to{ transform: translateX(-50%); }
-}
+}}
+.ticker-content span::before {{ content:'◆'; margin-right:10px; color:var(--cyan); font-size:7px; }}
+@keyframes ticker {{ from{{transform:translateX(0)}} to{{transform:translateX(-50%)}} }}
 
-/* ===== HEADER ===== */
-header{
+/* ── HEADER ── */
+header {{
   position: sticky;
   top: 0;
   z-index: 999;
   background: var(--white);
-  border-bottom: 2px solid var(--cream-dark);
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-}
-.header-inner{
-  max-width: 1300px;
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}}
+.header-inner {{
+  max-width: 1200px;
   margin: auto;
-  padding: 0 40px;
-  height: 80px;
+  padding: 0 32px;
+  height: 72px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-.logo{
+}}
+.logo {{
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   cursor: pointer;
-}
-.logo-emblem{
-  width: 54px;
-  height: 54px;
-  background: linear-gradient(135deg, var(--teal-mid), var(--teal-light));
-  border-radius: 14px;
+  text-decoration: none;
+}}
+.logo img {{
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}}
+.logo-klaten {{
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.85;
+}}
+.logo-divider {{
+  width: 1px;
+  height: 36px;
+  background: var(--gray-200);
+}}
+.logo-text h1 {{
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--blue-dark);
+  line-height: 1.2;
+}}
+.logo-text p {{
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gray-400);
+  text-transform: uppercase;
+}}
+
+nav {{ display:flex; align-items:center; gap:4px; }}
+nav a {{
+  text-decoration: none;
+  color: var(--gray-600);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}}
+nav a:hover {{ background:var(--gray-100); color:var(--blue); }}
+nav a.cta {{
+  background: var(--blue);
+  color: var(--white);
+  margin-left: 8px;
+}}
+nav a.cta:hover {{ background: var(--blue-dark); }}
+
+/* ── WIDGETS ── */
+.music-player {{
+  position: fixed;
+  bottom: 190px;
+  right: 24px;
+  z-index: 900;
+}}
+.music-btn {{
+  width: 46px;
+  height: 46px;
+  background: var(--blue);
+  border: none;
+  border-radius: 50%;
+  color: var(--white);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s;
+}}
+.music-btn:hover {{ background:var(--blue-dark); transform:scale(1.05); }}
+#bgAudio {{ display:none; }}
+
+.clock-widget {{
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--blue-dark);
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  z-index: 900;
+  min-width: 150px;
+  border: 1px solid rgba(255,255,255,0.08);
+}}
+.clock-time {{
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  color: var(--cyan);
+  letter-spacing: 2px;
+  line-height: 1;
+}}
+.clock-date {{ font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 5px; }}
+.clock-day {{ font-size: 12px; color: var(--gold); margin-top: 2px; font-weight: 600; }}
+.clock-label {{ font-size: 9px; letter-spacing: 3px; color: rgba(255,255,255,0.25); margin-top: 7px; text-transform: uppercase; }}
+
+.weather-widget {{
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  background: var(--blue-dark);
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  z-index: 900;
+  min-width: 160px;
+  border: 1px solid rgba(255,255,255,0.08);
+}}
+.weather-icon {{ font-size: 36px; margin-bottom: 6px; }}
+.weather-temp {{ font-family:'Playfair Display',serif; font-size:26px; color:var(--cyan); line-height:1; }}
+.weather-desc {{ font-size:11px; color:rgba(255,255,255,0.55); margin-top:3px; }}
+.weather-label {{ font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.25); margin-top:7px; text-transform:uppercase; }}
+
+/* ── HERO ── */
+.hero {{
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--blue-dark);
+}}
+.hero-bg {{
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/jpeg;base64,{IMAGES['umbul']}");
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.3);
+}}
+.hero-inner {{
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: auto;
+  padding: 80px 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  width: 100%;
+}}
+.hero-badge {{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14,165,212,0.15);
+  border: 1px solid rgba(14,165,212,0.4);
+  color: var(--cyan-light);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 6px 16px;
+  border-radius: 50px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}}
+.hero-badge-dot {{
+  width: 7px; height: 7px;
+  background: var(--cyan);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}}
+@keyframes pulse {{ 0%,100%{{opacity:1;transform:scale(1)}} 50%{{opacity:0.5;transform:scale(1.4)}} }}
+
+.hero-title {{
+  font-family: 'Playfair Display', serif;
+  font-size: 64px;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 8px;
+}}
+.hero-title span {{ color: var(--cyan); display: block; }}
+.hero-sub {{
+  font-size: 16px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 16px;
+  font-style: italic;
+}}
+.hero-desc {{
+  font-size: 14px;
+  line-height: 1.85;
+  color: rgba(255,255,255,0.65);
+  max-width: 480px;
+  margin-bottom: 32px;
+}}
+.hero-actions {{ display:flex; gap:12px; flex-wrap:wrap; }}
+.btn-primary {{
+  padding: 13px 28px;
+  background: var(--cyan);
+  color: var(--blue-dark);
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(14,165,212,0.3);
+}}
+.btn-primary:hover {{ background:var(--cyan-light); transform:translateY(-2px); }}
+.btn-secondary {{
+  padding: 13px 28px;
+  background: transparent;
+  color: var(--white);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.2s;
+}}
+.btn-secondary:hover {{ border-color:rgba(255,255,255,0.7); background:rgba(255,255,255,0.06); }}
+
+/* HERO STATS */
+.hero-stats {{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }}
+.hero-stat-card {{
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  transition: all 0.3s;
+}}
+.hero-stat-card:hover {{
+  background: rgba(255,255,255,0.11);
+  transform: translateY(-3px);
+  border-color: rgba(14,165,212,0.4);
+}}
+.hsc-icon {{ font-size: 24px; margin-bottom: 12px; }}
+.hsc-num {{
+  font-family: 'Playfair Display', serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--cyan);
+  line-height: 1;
+  margin-bottom: 4px;
+}}
+.hsc-label {{ font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; }}
+
+/* ── SECTION BASE ── */
+.section {{ padding: 80px 32px; }}
+.section-inner {{ max-width: 1200px; margin: auto; }}
+.section-heading {{ text-align:center; margin-bottom:48px; }}
+.section-tag {{
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: rgba(26,79,139,0.07);
+  border: 1px solid rgba(26,79,139,0.15);
+  padding: 5px 16px;
+  border-radius: 50px;
+  margin-bottom: 14px;
+}}
+.section-title {{
+  font-family: 'Playfair Display', serif;
+  font-size: 40px;
+  color: var(--gray-800);
+  line-height: 1.15;
+  margin-bottom: 12px;
+}}
+.section-subtitle {{
+  font-size: 15px;
+  color: var(--gray-400);
+  max-width: 520px;
+  margin: auto;
+  line-height: 1.75;
+}}
+
+/* ── HIGHLIGHTS ── */
+.bg-gray {{ background: var(--gray-50); }}
+.highlights-grid {{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}}
+.highlight-card {{
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  border: 1px solid var(--gray-200);
+  transition: all 0.3s;
+}}
+.highlight-card:hover {{
+  transform: translateY(-4px);
+  border-color: var(--cyan);
+  box-shadow: var(--shadow-md);
+}}
+.hc-icon {{
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-light));
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 26px;
-  box-shadow: 0 4px 16px var(--shadow-green);
-  flex-shrink: 0;
-  transition: transform 0.3s;
-}
-.logo-emblem:hover{ transform: scale(1.05); }
-.logo-text h1{
+  margin-bottom: 20px;
+}}
+.hc-title {{
   font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  color: var(--teal-dark);
-  line-height: 1.1;
-}
-.logo-text p{
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--text-light);
-  margin-top: 2px;
-  text-transform: uppercase;
-}
-
-nav{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-nav a{
-  text-decoration: none;
-  color: var(--text-mid);
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 18px;
-  border-radius: 50px;
-  transition: all 0.25s;
-  border: 1.5px solid transparent;
-}
-nav a:hover{
-  background: var(--cream);
-  color: var(--teal-light);
-  border-color: var(--cream-dark);
-}
-nav a.cta{
-  background: var(--teal-mid);
-  color: var(--white);
-  border-color: var(--teal-mid);
-}
-nav a.cta:hover{
-  background: var(--teal-light);
-  border-color: var(--teal-light);
-}
-
-/* ===== MUSIC PLAYER WIDGET ===== */
-.music-player{
-  position: fixed;
-  bottom: 180px;
-  right: 28px;
-  background: var(--teal-dark);
-  border-radius: 50px;
-  padding: 14px;
-  z-index: 900;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  border: 1.5px solid rgba(255,255,255,0.1);
-}
-.music-btn{
-  width: 48px;
-  height: 48px;
-  background: var(--green-accent);
-  border: none;
-  border-radius: 50%;
-  color: var(--teal-dark);
   font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s;
-}
-.music-btn:hover{
-  transform: scale(1.1);
-}
-#bgAudio{
-  display: none;
-}
+  color: var(--gray-800);
+  margin-bottom: 10px;
+}}
+.hc-desc {{ font-size: 14px; color: var(--gray-600); line-height: 1.7; }}
 
-/* ===== CLOCK WIDGET ===== */
-.clock-widget{
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  background: var(--teal-dark);
-  color: var(--white);
-  border-radius: 20px;
-  padding: 18px 24px;
-  text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
-  z-index: 900;
-  min-width: 160px;
-  border: 1.5px solid rgba(255,255,255,0.08);
-}
-.clock-time{
-  font-family: 'Playfair Display', serif;
-  font-size: 32px;
-  color: var(--green-accent);
-  line-height: 1;
-  letter-spacing: 2px;
-}
-.clock-date{
-  font-size: 11px;
-  color: rgba(255,255,255,0.55);
-  margin-top: 6px;
-  letter-spacing: 1px;
-}
-.clock-day{
-  font-size: 13px;
-  color: var(--gold);
-  margin-top: 2px;
-  font-weight: 600;
-}
-.clock-label{
-  font-size: 9px;
-  letter-spacing: 3px;
-  color: rgba(255,255,255,0.3);
-  margin-top: 8px;
-  text-transform: uppercase;
-}
-
-/* ===== WEATHER WIDGET ===== */
-.weather-widget{
-  position: fixed;
-  bottom: 28px;
-  left: 28px;
-  background: var(--teal-dark);
-  color: var(--white);
-  border-radius: 20px;
-  padding: 16px 24px;
-  text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
-  z-index: 900;
-  min-width: 180px;
-  border: 1.5px solid rgba(255,255,255,0.08);
-}
-.weather-icon{
-  font-size: 40px;
-  margin-bottom: 8px;
-}
-.weather-temp{
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
-  color: var(--green-accent);
-  line-height: 1;
-}
-.weather-desc{
-  font-size: 12px;
-  color: rgba(255,255,255,0.6);
-  margin-top: 4px;
-  text-transform: capitalize;
-}
-.weather-label{
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: rgba(255,255,255,0.4);
-  margin-top: 8px;
-  text-transform: uppercase;
-}
-
-/* ===== HERO ===== */
-.hero{
-  min-height: 92vh;
-  background: linear-gradient(160deg, var(--teal-dark) 0%, var(--teal-mid) 50%, var(--teal-light) 100%);
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  padding: 60px 40px;
-}
-.hero::before{
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(46,201,126,0.12) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(232,201,106,0.10) 0%, transparent 50%);
-}
-.hero-bg-text{
-  position: absolute;
-  bottom: -30px;
-  right: -20px;
-  font-family: 'Playfair Display', serif;
-  font-size: 280px;
-  font-weight: 900;
-  color: rgba(255,255,255,0.025);
-  line-height: 1;
-  user-select: none;
-  pointer-events: none;
-}
-.hero-inner{
-  max-width: 1300px;
-  margin: auto;
-  width: 100%;
+/* ── GALLERY ── */
+.gallery-grid {{
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 60px;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-.hero-badge{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(46,201,126,0.15);
-  border: 1px solid rgba(46,201,126,0.35);
-  color: var(--green-accent);
-  font-size: 11px;
-  letter-spacing: 3px;
-  padding: 8px 20px;
-  border-radius: 50px;
-  margin-bottom: 28px;
-  text-transform: uppercase;
-  animation: slideInLeft 0.8s ease-out;
-}
-.hero-badge::before{
-  content: '';
-  width: 8px;
-  height: 8px;
-  background: var(--green-accent);
-  border-radius: 50%;
-  box-shadow: 0 0 10px var(--green-accent);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse{
-  0%,100%{ opacity:1; transform: scale(1); }
-  50%{ opacity:0.5; transform: scale(1.4); }
-}
-@keyframes slideInLeft{
-  from{ opacity: 0; transform: translateX(-30px); }
-  to{ opacity: 1; transform: translateX(0); }
-}
-.hero-tagline{
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  letter-spacing: 5px;
-  color: rgba(255,255,255,0.5);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-.hero-title{
-  font-family: 'Playfair Display', serif;
-  font-size: 88px;
-  font-weight: 900;
-  color: var(--white);
-  line-height: 0.9;
-  margin-bottom: 8px;
-}
-.hero-title span{
-  color: var(--gold);
-  display: block;
-}
-.hero-sub{
-  font-family: 'DM Serif Display', serif;
-  font-size: 22px;
-  color: rgba(255,255,255,0.65);
-  margin-bottom: 28px;
-  font-style: italic;
-}
-.hero-desc{
-  font-size: 16px;
-  line-height: 1.9;
-  color: rgba(255,255,255,0.70);
-  max-width: 520px;
-  margin-bottom: 40px;
-}
-.hero-actions{
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-.btn-primary{
-  padding: 16px 36px;
-  background: var(--green-accent);
-  color: var(--teal-dark);
-  border-radius: 50px;
-  font-weight: 700;
-  font-size: 15px;
-  text-decoration: none;
-  transition: all 0.3s;
-  border: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 6px 24px rgba(46,201,126,0.35);
-}
-.btn-primary:hover{
-  transform: translateY(-3px);
-  box-shadow: 0 12px 36px rgba(46,201,126,0.45);
-}
-.btn-secondary{
-  padding: 16px 36px;
-  background: transparent;
-  color: var(--white);
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  transition: all 0.3s;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.btn-secondary:hover{
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.6);
-}
-
-/* HERO STATS CARD */
-.hero-stats{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-}
-.hero-stat-card{
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 22px;
-  padding: 28px 24px;
-  transition: all 0.4s;
+}}
+.gallery-item {{
   position: relative;
   overflow: hidden;
-}
-.hero-stat-card::after{
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--green-accent), var(--gold));
-  transform: scaleX(0);
-  transition: transform 0.4s;
-  transform-origin: left;
-}
-.hero-stat-card:hover::after{ transform: scaleX(1); }
-.hero-stat-card:hover{
-  background: rgba(255,255,255,0.10);
-  transform: translateY(-4px);
-}
-.hsc-icon{
-  font-size: 28px;
-  margin-bottom: 14px;
-}
-.hsc-num{
-  font-family: 'Playfair Display', serif;
-  font-size: 44px;
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1;
-  margin-bottom: 6px;
-}
-.hsc-num.counter{ color: var(--green-accent); }
-.hsc-label{
-  font-size: 12px;
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-/* ===== DIVIDER ===== */
-.wave-divider{
-  width: 100%;
-  overflow: hidden;
-  line-height: 0;
-  margin-top: -2px;
-}
-.wave-divider svg{
-  display: block;
-  width: 100%;
-}
-
-/* ===== SECTION HEADING ===== */
-.section-heading{
-  text-align: center;
-  margin-bottom: 56px;
-}
-.section-tag{
-  display: inline-block;
-  font-size: 11px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--teal-light);
-  background: rgba(26,122,94,0.08);
-  border: 1px solid rgba(26,122,94,0.2);
-  padding: 6px 20px;
-  border-radius: 50px;
-  margin-bottom: 18px;
-}
-.section-title{
-  font-family: 'Playfair Display', serif;
-  font-size: 54px;
-  color: var(--teal-dark);
-  line-height: 1.1;
-  margin-bottom: 14px;
-}
-.section-subtitle{
-  font-size: 17px;
-  color: var(--text-light);
-  max-width: 550px;
-  margin: auto;
-  line-height: 1.8;
-}
-
-/* ===== HIGHLIGHTS SECTION ===== */
-.highlights{
-  padding: 100px 40px;
-  background: var(--cream);
-  max-width: 1300px;
-  margin: auto;
-}
-.highlights-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 28px;
-  margin-top: 50px;
-}
-.highlight-card{
-  background: var(--white);
-  border-radius: 22px;
-  padding: 40px 32px;
-  text-align: center;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-  transition: all 0.4s;
-  border: 1px solid rgba(26,122,94,0.1);
-}
-.highlight-card:hover{
-  transform: translateY(-8px);
-  box-shadow: 0 12px 36px var(--shadow-green);
-  border-color: var(--green-accent);
-}
-.hc-icon{
-  width: 70px;
-  height: 70px;
-  background: linear-gradient(135deg, var(--teal-light), var(--green-accent));
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  margin: 0 auto 28px;
-  box-shadow: 0 6px 20px var(--shadow-green);
-}
-.hc-title{
-  font-family: 'Playfair Display', serif;
-  font-size: 28px;
-  color: var(--teal-dark);
-  margin-bottom: 14px;
-}
-.hc-desc{
-  font-size: 15px;
-  color: var(--text-light);
-  line-height: 1.8;
-}
-
-/* ===== GALLERY SECTION ===== */
-.gallery{
-  padding: 100px 40px;
-  background: var(--white);
-  max-width: 1300px;
-  margin: auto;
-}
-.gallery-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 50px;
-}
-.gallery-item{
-  position: relative;
-  overflow: hidden;
-  border-radius: 16px;
-  aspect-ratio: 1/1;
+  border-radius: var(--radius);
+  aspect-ratio: 4/3;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  transition: transform 0.3s;
-}
-.gallery-item:hover{
-  transform: scale(1.05);
-}
-.gallery-item img{
-  width: 100%;
-  height: 100%;
+}}
+.gallery-item img {{
+  width:100%; height:100%;
   object-fit: cover;
   transition: transform 0.4s;
-}
-.gallery-item:hover img{
-  transform: scale(1.1);
-}
-.gallery-overlay{
-  position: absolute;
-  inset: 0;
-  background: rgba(10,46,42,0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.gallery-item:hover .gallery-overlay{
-  opacity: 1;
-}
-.gallery-overlay-icon{
-  font-size: 40px;
-  color: var(--gold);
-}
+}}
+.gallery-item:hover img {{ transform: scale(1.06); }}
+.gallery-overlay {{
+  position:absolute; inset:0;
+  background: rgba(15,50,96,0.75);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity 0.3s;
+}}
+.gallery-item:hover .gallery-overlay {{ opacity:1; }}
+.gallery-overlay-icon {{ font-size:32px; color:var(--cyan); }}
 
-/* ===== VIDEO SECTION ===== */
-.video-section{
-  padding: 100px 40px;
-  background: var(--cream);
-  max-width: 1300px;
-  margin: auto;
-}
-.video-container{
-  position: relative;
-  width: 100%;
-  max-width: 900px;
-  margin: 50px auto 0;
+/* ── VIDEO ── */
+.video-wrap {{
+  max-width: 880px;
+  margin: 0 auto;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.15);
-}
-.video-container iframe{
-  width: 100%;
-  height: 500px;
-  border: none;
-  display: block;
-}
+  box-shadow: var(--shadow-lg);
+}}
+.video-wrap iframe {{
+  width:100%; height:480px; border:none; display:block;
+}}
 
-/* ===== DATA BPS SECTION ===== */
-.data-bps{
-  padding: 100px 40px;
-  background: var(--white);
-  max-width: 1300px;
-  margin: auto;
-}
-.bps-grid{
+/* ── DATA TABLE ── */
+.bps-grid {{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
-  margin-top: 50px;
-}
-.bps-chart-container{
-  background: var(--cream);
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-}
-.bps-chart-title{
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  color: var(--teal-dark);
-  margin-bottom: 24px;
-  text-align: center;
-}
-.data-table{
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 30px;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}}
+.bps-chart-box {{
   background: var(--white);
-  border-radius: 12px;
+  border-radius: var(--radius);
+  padding: 28px;
+  border: 1px solid var(--gray-200);
+}}
+.bps-chart-title {{
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  color: var(--gray-800);
+  margin-bottom: 20px;
+  text-align: center;
+}}
+.data-table {{
+  width:100%;
+  border-collapse: collapse;
+  background: var(--white);
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-}
-.data-table thead{
-  background: linear-gradient(135deg, var(--teal-light), var(--green-accent));
-  color: var(--white);
-}
-.data-table th,
-.data-table td{
-  padding: 16px;
-  text-align: left;
-}
-.data-table th{
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-.data-table tbody tr{
-  border-bottom: 1px solid var(--cream-dark);
-  transition: background 0.3s;
-}
-.data-table tbody tr:hover{
-  background: var(--cream);
-}
-.data-table tbody tr:last-child{
-  border-bottom: none;
-}
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}}
+.data-table thead {{ background: var(--blue-dark); color: var(--white); }}
+.data-table th, .data-table td {{ padding: 14px 18px; text-align: left; font-size: 14px; }}
+.data-table th {{ font-weight: 600; letter-spacing: 0.5px; font-size: 12px; text-transform: uppercase; }}
+.data-table tbody tr {{ border-bottom: 1px solid var(--gray-100); transition: background 0.2s; }}
+.data-table tbody tr:hover {{ background: var(--gray-50); }}
+.data-table tbody tr:last-child {{ border-bottom: none; }}
 
-/* ===== MAP SECTION ===== */
-.map-section{
-  padding: 100px 40px;
-  background: var(--cream);
-  max-width: 1300px;
-  margin: auto;
-}
-.map-container{
-  margin-top: 50px;
+/* ── MAP ── */
+.map-btn-wrap {{
+  margin-top: 0;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.15);
-  aspect-ratio: 16/9;
-}
-.map-container a{
+  box-shadow: var(--shadow-lg);
+  display: block;
+}}
+.map-btn-wrap a {{
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
+  height: 340px;
+  background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-light) 100%);
   text-decoration: none;
   color: var(--white);
-  font-size: 24px;
-  font-weight: 700;
   text-align: center;
   padding: 40px;
-  transition: all 0.4s;
-}
-.map-container a:hover{
-  background: linear-gradient(135deg, var(--teal-light), var(--green-accent));
-}
-.map-content{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-.map-icon{
-  font-size: 48px;
-}
+  transition: all 0.3s;
+}}
+.map-btn-wrap a:hover {{ background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%); }}
+.map-content {{ display:flex; flex-direction:column; align-items:center; gap:14px; }}
+.map-icon {{ font-size:52px; }}
+.map-text {{ font-family:'Playfair Display',serif; font-size:26px; font-weight:700; }}
+.map-subtext {{ font-size:13px; opacity:0.75; }}
 
-/* ===== ABOUT SECTION ===== */
-.about{
-  padding: 100px 40px;
-  background: var(--white);
-  max-width: 1300px;
-  margin: auto;
-}
-.about-inner{
+/* ── ABOUT ── */
+.about-inner {{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
-  align-items: center;
-  margin-top: 50px;
-}
-.about-content h3{
-  font-family: 'Playfair Display', serif;
-  font-size: 32px;
-  color: var(--teal-dark);
-  margin-bottom: 20px;
-}
-.about-content p{
-  font-size: 16px;
-  color: var(--text-mid);
-  line-height: 1.9;
-  margin-bottom: 16px;
-}
-.about-list{
-  list-style: none;
-  margin-top: 28px;
-}
-.about-list li{
-  display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
-  font-size: 15px;
-  color: var(--text-mid);
-}
-.about-list li::before{
-  content: '✓';
-  color: var(--green-accent);
-  font-weight: bold;
-  flex-shrink: 0;
-}
-.about-image{
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.15);
-}
-.about-image img{
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* ===== TESTIMONIAL SECTION ===== */
-.testimonials{
-  padding: 100px 40px;
-  background: var(--cream);
-  max-width: 1300px;
-  margin: auto;
-}
-.testimonials-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 28px;
-  margin-top: 50px;
-}
-.testimonial-card{
-  background: var(--white);
-  border-radius: 16px;
-  padding: 32px;
-  border-left: 4px solid var(--green-accent);
-  transition: all 0.4s;
-}
-.testimonial-card:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px var(--shadow-green);
-}
-.testimonial-stars{
-  color: var(--gold);
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-.testimonial-text{
-  font-size: 15px;
-  color: var(--text-mid);
-  line-height: 1.8;
-  margin-bottom: 20px;
-  font-style: italic;
-}
-.testimonial-author{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.testimonial-avatar{
-  width: 48px;
-  height: 48px;
-  background: var(--teal-light);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--white);
-  font-size: 24px;
-  flex-shrink: 0;
-}
-.testimonial-info h4{
-  font-family: 'Playfair Display', serif;
-  font-size: 16px;
-  color: var(--teal-dark);
-  margin-bottom: 2px;
-}
-.testimonial-info p{
-  font-size: 12px;
-  color: var(--text-light);
-}
-
-/* ===== CONTACT SECTION ===== */
-.contact{
-  padding: 100px 40px;
-  background: var(--white);
-  max-width: 1300px;
-  margin: auto;
-}
-.contact-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 32px;
-  margin-top: 50px;
-}
-.contact-card{
-  background: var(--cream);
-  padding: 40px 32px;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  transition: all 0.4s;
-}
-.contact-card:hover{
-  transform: translateY(-8px);
-  box-shadow: 0 12px 36px var(--shadow-green);
-}
-.contact-card-icon{
-  width: 60px;
-  height: 60px;
-  background: var(--white);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  margin: 0 auto 20px;
-  color: var(--green-accent);
-}
-.contact-card h3{
+  align-items: start;
+}}
+.about-content h3 {{
   font-family: 'Playfair Display', serif;
   font-size: 22px;
-  color: var(--teal-dark);
+  color: var(--blue-dark);
   margin-bottom: 12px;
-}
-.contact-card p{
-  font-size: 15px;
-  color: var(--text-light);
-  line-height: 1.8;
-}
-
-/* ===== FOOTER ===== */
-footer{
-  background: var(--teal-dark);
-  color: rgba(255,255,255,0.7);
-  padding: 60px 40px 28px;
-}
-.footer-inner{
-  max-width: 1300px;
-  margin: auto;
-}
-.footer-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px;
-  margin-bottom: 40px;
-}
-.footer-col h4{
-  font-family: 'Playfair Display', serif;
-  font-size: 18px;
-  color: var(--white);
-  margin-bottom: 20px;
-}
-.footer-col ul{
-  list-style: none;
-}
-.footer-col ul li{
+  margin-top: 24px;
+}}
+.about-content h3:first-child {{ margin-top:0; }}
+.about-content p {{
+  font-size: 14px;
+  color: var(--gray-600);
+  line-height: 1.85;
   margin-bottom: 10px;
-}
-.footer-col ul li a{
-  text-decoration: none;
-  color: rgba(255,255,255,0.7);
-  transition: color 0.3s;
-}
-.footer-col ul li a:hover{
-  color: var(--green-accent);
-}
-.social-links{
-  display: flex;
-  gap: 16px;
-}
-.social-links a{
-  width: 40px;
-  height: 40px;
-  background: rgba(46,201,126,0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--green-accent);
+}}
+.about-list {{ list-style:none; margin-top:16px; }}
+.about-list li {{
+  display:flex; gap:10px;
+  margin-bottom:10px;
+  font-size:14px;
+  color:var(--gray-600);
+  align-items: flex-start;
+}}
+.about-list li::before {{ content:'✓'; color:var(--green); font-weight:700; flex-shrink:0; margin-top:1px; }}
+.about-img-stack {{ display:flex; flex-direction:column; gap:16px; }}
+.about-img {{
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}}
+.about-img img {{ width:100%; display:block; object-fit:cover; }}
+
+/* ── TESTIMONIALS ── */
+.testimonials-grid {{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}}
+.testimonial-card {{
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 28px;
+  border: 1px solid var(--gray-200);
+  border-top: 3px solid var(--blue);
   transition: all 0.3s;
-}
-.social-links a:hover{
-  background: var(--green-accent);
-  color: var(--teal-dark);
-}
-.footer-bottom{
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 28px;
+}}
+.testimonial-card:hover {{ transform:translateY(-3px); box-shadow:var(--shadow-md); }}
+.testimonial-stars {{ color:var(--gold); font-size:14px; margin-bottom:10px; }}
+.testimonial-text {{ font-size:14px; color:var(--gray-600); line-height:1.75; margin-bottom:18px; font-style:italic; }}
+.testimonial-author {{ display:flex; align-items:center; gap:10px; }}
+.testimonial-avatar {{
+  width:42px; height:42px;
+  background: var(--blue);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--white); font-size:20px; flex-shrink:0;
+}}
+.testimonial-info h4 {{ font-size:14px; font-weight:600; color:var(--gray-800); }}
+.testimonial-info p {{ font-size:12px; color:var(--gray-400); }}
+
+/* ── CONTACT ── */
+.contact-grid {{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}}
+.contact-card {{
+  background: var(--white);
+  padding: 32px 24px;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
   text-align: center;
-}
+  transition: all 0.3s;
+}}
+.contact-card:hover {{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--blue-light); }}
+.contact-icon {{
+  width:52px; height:52px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; margin:0 auto 16px; color:var(--blue);
+}}
+.contact-card h3 {{ font-family:'Playfair Display',serif; font-size:18px; color:var(--gray-800); margin-bottom:10px; }}
+.contact-card p {{ font-size:14px; color:var(--gray-600); line-height:1.8; }}
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px){
-  .header-inner{ padding: 0 20px; height: 70px; }
-  nav{ display: none; }
-  .hero-inner{ grid-template-columns: 1fr; text-align: center; }
-  .hero-title{ font-size: 52px; }
-  .hero-stats{ grid-template-columns: 1fr; }
-  .about-inner{ grid-template-columns: 1fr; }
-  .highlights-grid,
-  .gallery-grid,
-  .testimonials-grid,
-  .contact-grid,
-  .bps-grid{
-    grid-template-columns: 1fr;
-  }
-  .section-title{ font-size: 36px; }
-  .hero-desc{ max-width: 100%; }
-  .video-container iframe{ height: 300px; }
-}
+/* ── FOOTER ── */
+footer {{
+  background: var(--blue-dark);
+  color: rgba(255,255,255,0.65);
+  padding: 56px 32px 24px;
+}}
+.footer-inner {{ max-width:1200px; margin:auto; }}
+.footer-grid {{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 36px;
+  margin-bottom: 36px;
+}}
+.footer-col h4 {{ font-family:'Playfair Display',serif; font-size:16px; color:var(--white); margin-bottom:16px; }}
+.footer-col p {{ font-size:13px; line-height:1.8; }}
+.footer-col ul {{ list-style:none; }}
+.footer-col ul li {{ margin-bottom:8px; }}
+.footer-col ul li a {{
+  text-decoration:none;
+  color:rgba(255,255,255,0.6);
+  font-size:13px;
+  transition:color 0.2s;
+}}
+.footer-col ul li a:hover {{ color:var(--cyan); }}
+.social-links {{ display:flex; gap:12px; margin-top:16px; }}
+.social-links a {{
+  width:36px; height:36px;
+  background:rgba(14,165,212,0.15);
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--cyan); transition:all 0.2s;
+}}
+.social-links a:hover {{ background:var(--cyan); color:var(--blue-dark); }}
+.footer-bottom {{
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:24px;
+  text-align:center;
+  font-size:12px;
+}}
 
-/* ===== SCROLL ANIMATION ===== */
-.fade-in{
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.6s ease-out;
-}
-.fade-in.visible{
-  opacity: 1;
-  transform: translateY(0);
-}
+/* ── FADE-IN ANIMATION ── */
+.fade-in {{ opacity:0; transform:translateY(16px); transition:all 0.55s ease-out; }}
+.fade-in.visible {{ opacity:1; transform:translateY(0); }}
+
+/* ── RESPONSIVE ── */
+@media (max-width:900px) {{
+  nav {{ display:none; }}
+  .hero-inner {{ grid-template-columns:1fr; }}
+  .hero-title {{ font-size:44px; }}
+  .hero-stats {{ grid-template-columns:1fr 1fr; }}
+  .bps-grid {{ grid-template-columns:1fr; }}
+  .about-inner {{ grid-template-columns:1fr; }}
+  .gallery-grid {{ grid-template-columns:1fr 1fr; }}
+  .section-title {{ font-size:30px; }}
+  .video-wrap iframe {{ height:280px; }}
+}}
+@media (max-width:560px) {{
+  .gallery-grid {{ grid-template-columns:1fr; }}
+  .hero-stats {{ grid-template-columns:1fr; }}
+}}
 </style>
 </head>
-
 <body>
 
-<!-- AUDIO BACKGROUND -->
 <audio id="bgAudio" loop>
   <source src="https://assets.mixkit.co/active_storage/musics/873-6d4f3032-e39e-42c4-afe7-ae0da0a55cce.mp3" type="audio/mpeg">
 </audio>
 
-<!-- TICKER BAR -->
+<!-- TICKER -->
 <div class="ticker-bar">
   <div class="ticker-inner">
-    <div class="ticker-label">UPDATE TERBARU</div>
+    <div class="ticker-label">Update Terbaru</div>
     <div class="ticker-track">
       <div class="ticker-content">
-        <span>🌿 Desa Wisata Ponggok - Destinasi Unggulan Kabupaten Klaten Jawa Tengah</span>
-        <span>🌿 Desa Wisata Ponggok - Destinasi Unggulan Kabupaten Klaten Jawa Tengah</span>
+        <span>🌊 Desa Wisata Ponggok — Destinasi Unggulan Kabupaten Klaten, Jawa Tengah</span>
+        <span>🏆 Desa Mandiri dengan IDM 0,8286 — Destinasi Peringatan Hari Desa Nasional 2025</span>
+        <span>💧 Umbul Ponggok — Snorkeling Air Tawar Terpopuler di Indonesia</span>
+        <span>🌊 Desa Wisata Ponggok — Destinasi Unggulan Kabupaten Klaten, Jawa Tengah</span>
+        <span>🏆 Desa Mandiri dengan IDM 0,8286 — Destinasi Peringatan Hari Desa Nasional 2025</span>
+        <span>💧 Umbul Ponggok — Snorkeling Air Tawar Terpopuler di Indonesia</span>
       </div>
     </div>
   </div>
@@ -1057,11 +708,14 @@ footer{
 <!-- HEADER -->
 <header>
   <div class="header-inner">
-    <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-      <div class="logo-emblem">🏞️</div>
+    <div class="logo" onclick="window.scrollTo({{top:0,behavior:'smooth'}})">
+      <img src="data:image/jpeg;base64,{IMAGES['logo']}" alt="Logo Desa Ponggok">
+      <div class="logo-divider"></div>
+      <img src="data:image/jpeg;base64,{IMAGES['logo_klaten']}" alt="Logo Klaten" class="logo-klaten">
+      <div class="logo-divider"></div>
       <div class="logo-text">
-        <h1>Ponggok</h1>
-        <p>Desa Wisata</p>
+        <h1>Desa Ponggok</h1>
+        <p>Kecamatan Polanharjo · Klaten</p>
       </div>
     </div>
     <nav>
@@ -1075,42 +729,43 @@ footer{
   </div>
 </header>
 
-<!-- WEATHER WIDGET -->
+<!-- WEATHER -->
 <div class="weather-widget">
   <div class="weather-icon" id="weather-icon">🌤️</div>
   <div class="weather-temp" id="weather-temp">--°C</div>
-  <div class="weather-desc" id="weather-desc">Loading...</div>
-  <div class="weather-label">CUACA LOKAL</div>
+  <div class="weather-desc" id="weather-desc">Memuat...</div>
+  <div class="weather-label">Cuaca Lokal</div>
 </div>
 
-<!-- MUSIC PLAYER WIDGET -->
+<!-- MUSIC -->
 <div class="music-player">
-  <button class="music-btn" id="musicBtn" title="Toggle Music">
+  <button class="music-btn" id="musicBtn" title="Putar Musik">
     <i class="fas fa-music"></i>
   </button>
 </div>
 
-<!-- CLOCK WIDGET -->
+<!-- CLOCK -->
 <div class="clock-widget">
   <div class="clock-time" id="clock-time">00:00</div>
   <div class="clock-date" id="clock-date">00/00/0000</div>
   <div class="clock-day" id="clock-day">Hari</div>
-  <div class="clock-label">WAKTU LOKAL</div>
+  <div class="clock-label">Waktu Lokal</div>
 </div>
 
-<!-- HERO SECTION -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-bg-text">Ponggok</div>
+  <div class="hero-bg"></div>
   <div class="hero-inner">
     <div>
       <div class="hero-badge">
-        <span>✨ Destinasi Wisata Unggulan</span>
+        <div class="hero-badge-dot"></div>
+        <span>Destinasi Wisata Unggulan</span>
       </div>
-      <h1 class="hero-title">Selamat Datang<span>Desa Ponggok</span></h1>
+      <h1 class="hero-title">Selamat Datang<span>di Desa Ponggok</span></h1>
       <p class="hero-sub">Jelajahi keindahan alam dan budaya autentik Indonesia</p>
-      <p class="hero-desc">Desa Wisata Ponggok menawarkan pengalaman wisata yang tak terlupakan dengan pemandangan alam yang memukau, aktivitas seru di Umbul Ponggok, dan kehangatan budaya lokal yang autentik di Kecamatan Polanharjo, Kabupaten Klaten, Jawa Tengah.</p>
+      <p class="hero-desc">Desa Wisata Ponggok menawarkan pengalaman wisata tak terlupakan dengan pemandangan alam memukau, aktivitas seru di Umbul Ponggok, dan kehangatan budaya lokal yang autentik di Kecamatan Polanharjo, Kabupaten Klaten, Jawa Tengah.</p>
       <div class="hero-actions">
-        <a href="#map" class="btn-primary">🗺️ Jelajahi Peta Interaktif</a>
+        <a href="#map" class="btn-primary">🗺️ Peta Interaktif</a>
         <a href="#gallery" class="btn-secondary">🖼️ Lihat Galeri</a>
       </div>
     </div>
@@ -1139,336 +794,260 @@ footer{
   </div>
 </section>
 
-<!-- HIGHLIGHTS SECTION -->
-<section class="highlights" id="highlights">
-  <div class="section-heading">
-    <span class="section-tag">Keunggulan Kami</span>
-    <h2 class="section-title">Mengapa Memilih Ponggok?</h2>
-    <p class="section-subtitle">Desa wisata dengan fasilitas lengkap dan pengalaman wisata yang berkesan</p>
-  </div>
-  <div class="highlights-grid">
-    <div class="highlight-card fade-in">
-      <div class="hc-icon">🏞️</div>
-      <h3 class="hc-title">Umbul Ponggok</h3>
-      <p class="hc-desc">Mata air alami yang jernih dan melimpah, menjadi destinasi snorkeling air tawar yang terkenal di Indonesia.</p>
+<!-- HIGHLIGHTS -->
+<section class="section bg-gray" id="highlights">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="section-tag">Keunggulan Kami</span>
+      <h2 class="section-title">Mengapa Memilih Ponggok?</h2>
+      <p class="section-subtitle">Desa wisata dengan fasilitas lengkap dan pengalaman yang berkesan</p>
     </div>
-    <div class="highlight-card fade-in">
-      <div class="hc-icon">💧</div>
-      <h3 class="hc-title">Sumber Air Alami</h3>
-      <p class="hc-desc">Umbul-umbul seperti Umbul Besuki dan Umbul Kapilaler merupakan kekayaan alam yang melimpah.</p>
-    </div>
-    <div class="highlight-card fade-in">
-      <div class="hc-icon">🌾</div>
-      <h3 class="hc-title">Pertanian Subur</h3>
-      <p class="hc-desc">Lahan pertanian yang subur cocok untuk berbagai jenis tanaman, khususnya padi dan palawija.</p>
-    </div>
-    <div class="highlight-card fade-in">
-      <div class="hc-icon">👥</div>
-      <h3 class="hc-title">Masyarakat Ramah</h3>
-      <p class="hc-desc">Penduduk lokal yang hangat dan terbuka menyambut wisatawan dengan sepenuh hati.</p>
-    </div>
-    <div class="highlight-card fade-in">
-      <div class="hc-icon">🎭</div>
-      <h3 class="hc-title">Budaya Autentik</h3>
-      <p class="hc-desc">Budaya Jawa yang kaya dengan tradisi dan kearifan lokal masih terjaga dengan baik.</p>
-    </div>
-    <div class="highlight-card fade-in">
-      <div class="hc-icon">🏆</div>
-      <h3 class="hc-title">Penghargaan</h3>
-      <p class="hc-desc">Pengakuan sebagai Desa Mandiri dengan IDM 0,8286 dan Desa Wisata Terbaik.</p>
-    </div>
-  </div>
-</section>
-
-<!-- GALLERY SECTION -->
-<section class="gallery" id="gallery">
-  <div class="section-heading">
-    <span class="section-tag">Koleksi Kami</span>
-    <h2 class="section-title">Galeri Foto</h2>
-    <p class="section-subtitle">Lihat keindahan Desa Wisata Ponggok melalui dokumentasi visual kami</p>
-  </div>
-  <div class="gallery-grid">
-    <div class="gallery-item fade-in">
-      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop" alt="Pemandangan Alam">
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-icon">🔍</div>
+    <div class="highlights-grid">
+      <div class="highlight-card fade-in">
+        <div class="hc-icon">🏞️</div>
+        <h3 class="hc-title">Umbul Ponggok</h3>
+        <p class="hc-desc">Mata air alami yang jernih dan melimpah, menjadi destinasi snorkeling air tawar terkenal di Indonesia.</p>
       </div>
-    </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.unsplash.com/photo-1469022563149-aa64dbd37dae?w=500&h=500&fit=crop" alt="Sawah Hijau">
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-icon">🔍</div>
+      <div class="highlight-card fade-in">
+        <div class="hc-icon">💧</div>
+        <h3 class="hc-title">Sumber Air Alami</h3>
+        <p class="hc-desc">Umbul Besuki dan Umbul Kapilaler merupakan kekayaan alam yang melimpah dan menjadi ikon desa.</p>
       </div>
-    </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=500&h=500&fit=crop" alt="Tradisional">
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-icon">🔍</div>
+      <div class="highlight-card fade-in">
+        <div class="hc-icon">🌾</div>
+        <h3 class="hc-title">Pertanian Subur</h3>
+        <p class="hc-desc">Lahan pertanian yang subur cocok untuk berbagai jenis tanaman, khususnya padi dan palawija.</p>
       </div>
-    </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.unsplash.com/photo-1522092995904-d7a6c0e6e79a?w=500&h=500&fit=crop" alt="Aktivitas">
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-icon">🔍</div>
+      <div class="highlight-card fade-in">
+        <div class="hc-icon">👥</div>
+        <h3 class="hc-title">Masyarakat Ramah</h3>
+        <p class="hc-desc">Penduduk lokal yang hangat dan terbuka menyambut wisatawan dengan sepenuh hati.</p>
       </div>
-    </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&h=500&fit=crop" alt="Pantai">
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-icon">🔍</div>
+      <div class="highlight-card fade-in">
+        <div class="hc-icon">🎭</div>
+        <h3 class="hc-title">Budaya Autentik</h3>
+        <p class="hc-desc">Budaya Jawa yang kaya dengan tradisi dan kearifan lokal yang masih terjaga dengan baik.</p>
       </div>
-    </div>
-    <div class="gallery-item fade-in">
-      <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=500&h=500&fit=crop" alt="Matahari Terbenam">
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-icon">🔍</div>
+      <div class="highlight-card fade-in">
+        <div class="hc-icon">🏆</div>
+        <h3 class="hc-title">Penghargaan</h3>
+        <p class="hc-desc">Desa Mandiri dengan IDM 0,8286 dan pengakuan sebagai Desa Wisata Terbaik Jawa Tengah.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- VIDEO PROFIL SECTION -->
-<section class="video-section" id="video">
-  <div class="section-heading">
-    <span class="section-tag">Media</span>
-    <h2 class="section-title">Profil Wilayah Video</h2>
-    <p class="section-subtitle">Saksikan keindahan dan kehidupan di Desa Wisata Ponggok melalui video dokumentasi</p>
-  </div>
-  <div class="video-container">
-    <iframe src="https://www.youtube.com/embed/qtT3APyW-VA?t=1s" allowfullscreen="" loading="lazy"></iframe>
-  </div>
-</section>
-
-<!-- DATA BPS SECTION -->
-<section class="data-bps" id="data">
-  <div class="section-heading">
-    <span class="section-tag">Statistik</span>
-    <h2 class="section-title">Data Kecamatan Polanharjo</h2>
-    <p class="section-subtitle">Informasi demografis dan statistik dari Badan Pusat Statistik (BPS)</p>
-  </div>
-  
-  <div class="bps-grid">
-    <div class="bps-chart-container fade-in">
-      <h3 class="bps-chart-title">Populasi & Kepadatan</h3>
-      <canvas id="populasiChart"></canvas>
+<!-- GALLERY -->
+<section class="section" id="gallery">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="section-tag">Dokumentasi</span>
+      <h2 class="section-title">Galeri Foto</h2>
+      <p class="section-subtitle">Keindahan Desa Wisata Ponggok dalam dokumentasi visual kami</p>
     </div>
-    <div class="bps-chart-container fade-in">
-      <h3 class="bps-chart-title">Kondisi Geografis</h3>
-      <canvas id="geografisChart"></canvas>
-    </div>
-  </div>
-
-  <table class="data-table fade-in">
-    <thead>
-      <tr>
-        <th>Parameter</th>
-        <th>Nilai</th>
-        <th>Satuan</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Luas Wilayah</td>
-        <td>77.2255</td>
-        <td>Hektar</td>
-      </tr>
-      <tr>
-        <td>Populasi Tahun 2024</td>
-        <td>2.152</td>
-        <td>Jiwa</td>
-      </tr>
-      <tr>
-        <td>Kepadatan Penduduk</td>
-        <td>2.786</td>
-        <td>Jiwa/Km²</td>
-      </tr>
-      <tr>
-        <td>Ketinggian dari Permukaan Laut</td>
-        <td>225</td>
-        <td>Meter</td>
-      </tr>
-      <tr>
-        <td>Curah Hujan Minimum</td>
-        <td>15</td>
-        <td>mm</td>
-      </tr>
-      <tr>
-        <td>Curah Hujan Maksimum</td>
-        <td>429</td>
-        <td>mm</td>
-      </tr>
-      <tr>
-        <td>Jarak ke Kecamatan</td>
-        <td>2.5</td>
-        <td>Km</td>
-      </tr>
-      <tr>
-        <td>Waktu Tempuh ke Kecamatan</td>
-        <td>5</td>
-        <td>Menit</td>
-      </tr>
-      <tr>
-        <td>Jarak ke Kabupaten</td>
-        <td>14</td>
-        <td>Km</td>
-      </tr>
-      <tr>
-        <td>Waktu Tempuh ke Kabupaten</td>
-        <td>25</td>
-        <td>Menit</td>
-      </tr>
-      <tr>
-        <td>Jarak ke Provinsi</td>
-        <td>90</td>
-        <td>Km</td>
-      </tr>
-      <tr>
-        <td>Waktu Tempuh ke Provinsi</td>
-        <td>120</td>
-        <td>Menit</td>
-      </tr>
-      <tr>
-        <td>Jumlah Dusun</td>
-        <td>4</td>
-        <td>Unit</td>
-      </tr>
-      <tr>
-        <td>Jumlah RW</td>
-        <td>6</td>
-        <td>Unit</td>
-      </tr>
-      <tr>
-        <td>Jumlah RT</td>
-        <td>12</td>
-        <td>Unit</td>
-      </tr>
-      <tr>
-        <td>Tingkat Pendidikan</td>
-        <td>Cukup Baik</td>
-        <td>Kategori</td>
-      </tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- MAP SECTION -->
-<section class="map-section" id="map">
-  <div class="section-heading">
-    <span class="section-tag">Eksplorasi</span>
-    <h2 class="section-title">Peta Interaktif</h2>
-    <p class="section-subtitle">Jelajahi Desa Ponggok dengan detail dan informasi lengkap melalui WebGIS interaktif</p>
-  </div>
-  <div class="map-container fade-in">
-    <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" rel="noopener noreferrer">
-      <div class="map-content">
-        <div class="map-icon">🗺️</div>
-        <div>Buka Peta Interaktif WebGIS<br><span style="font-size: 14px; opacity: 0.8;">Klik untuk menjelajahi Desa Ponggok secara detail</span></div>
+    <div class="gallery-grid">
+      <div class="gallery-item fade-in">
+        <img src="data:image/jpeg;base64,{IMAGES['umbul']}" alt="Umbul Ponggok">
+        <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
       </div>
-    </a>
-  </div>
-</section>
-
-<!-- ABOUT SECTION -->
-<section class="about" id="about">
-  <div class="section-heading">
-    <span class="section-tag">Tentang Kami</span>
-    <h2 class="section-title">Profil Desa Ponggok</h2>
-  </div>
-  <div class="about-inner">
-    <div class="about-content">
-      <h3>Sejarah & Visi Kami</h3>
-      <p>Desa Ponggok terletak di Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah. Desa ini dikenal dengan kekayaan sumber daya alamnya, terutama air yang melimpah dari berbagai umbul (mata air), seperti Umbul Ponggok yang terkenal. Desa Ponggok memadukan keindahan alam dengan inovasi lokal, menjadikannya salah satu desa wisata unggulan di Kabupaten Klaten pada khususnya dan Jawa Tengah pada umumnya.</p>
-      
-      <h3 style="margin-top: 24px;">Asal-Usul Ponggok</h3>
-      <p>Asal-usul Ponggok berawal dari kawasan Desa-Desa masa Mataram Kuno yang didalamnya menyimpan air yang melimpah serta kondisi arkeologis kawasan ponggok berada di timur Gunung Merapi dan kawasan Pesangrahan, merupakan kesatuan peradaban Shiva-Buda dengan ditemukannya banyak arca di kawasan Ponggok. Ponggok bermakna pusat, inti, sumber, jantung, nunggak semi, kelestarian yang berkaitan dengan sumber air yang tidak pernah habis.</p>
-      
-      <p>Tempat tersebut pada masa lampau digunakan untuk meditasi dan penyepuhan senjata pusaka serta untuk pengobatan bagi kuda dan kerbau. Karakteristik geografis desa ini yang sejak dahulu menjadi pusat aktivitas masyarakat berbasis air.</p>
-      
-      <h3 style="margin-top: 24px;">Transformasi Modern</h3>
-      <p>Pada era kolonial, Desa Ponggok menjadi salah satu kawasan industri dengan adanya Pabrik Gula Cokro Tulung. Setelah kemerdekaan, desa ini mengalami berbagai dinamika, hingga akhirnya pada awal 2000-an mulai fokus pada pengembangan potensi wisata berbasis sumber daya air.</p>
-      
-      <p>Transformasi Desa Ponggok menjadi desa wisata yang mandiri dan sejahtera tidak terlepas dari peran kepemimpinan yang visioner dan partisipasi aktif masyarakat dalam mengelola potensi lokal. Kerjasama dengan pihak swasta terutama dengan perusahaan air minum Aqua telah membantu pengembangan desa yang berkelanjutan.</p>
-      
-      <ul class="about-list">
-        <li>Status Desa Mandiri dengan Nilai IDM 0,8286 (Tahun 2023)</li>
-        <li>Penghargaan Desa Wisata Terbaik</li>
-        <li>Pengelolaan Keuangan Desa Terbaik</li>
-        <li>Destinasi Peringatan Hari Desa Nasional 2025</li>
-        <li>Program Pemberdayaan Masyarakat Aktif</li>
-      </ul>
-    </div>
-    <div class="about-image">
-      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop" alt="Desa Wisata Ponggok">
+      <div class="gallery-item fade-in">
+        <img src="data:image/jpeg;base64,{IMAGES['wisata']}" alt="Wisata Ponggok">
+        <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+      </div>
+      <div class="gallery-item fade-in">
+        <img src="data:image/jpeg;base64,{IMAGES['wisata_lain']}" alt="Fasilitas Wisata">
+        <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+      </div>
+      <div class="gallery-item fade-in">
+        <img src="data:image/jpeg;base64,{IMAGES['kantor2']}" alt="Kantor Desa Ponggok">
+        <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+      </div>
+      <div class="gallery-item fade-in">
+        <img src="data:image/jpeg;base64,{IMAGES['kantor1']}" alt="Kantor Desa">
+        <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+      </div>
+      <div class="gallery-item fade-in">
+        <img src="data:image/jpeg;base64,{IMAGES['icon']}" alt="Icon Ponggok">
+        <div class="gallery-overlay"><div class="gallery-overlay-icon">🔍</div></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- TESTIMONIAL SECTION -->
-<section class="testimonials">
-  <div class="section-heading">
-    <span class="section-tag">Pengalaman Tamu</span>
-    <h2 class="section-title">Testimoni & Ulasan</h2>
-    <p class="section-subtitle">Apa kata pengunjung kami tentang pengalaman di Desa Wisata Ponggok</p>
+<!-- VIDEO -->
+<section class="section bg-gray" id="video">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="section-tag">Media</span>
+      <h2 class="section-title">Video Profil Wilayah</h2>
+      <p class="section-subtitle">Saksikan keindahan dan kehidupan Desa Wisata Ponggok melalui video dokumentasi</p>
+    </div>
+    <div class="video-wrap fade-in">
+      <iframe src="https://www.youtube.com/embed/qtT3APyW-VA?t=1s" allowfullscreen loading="lazy"></iframe>
+    </div>
   </div>
-  <div class="testimonials-grid">
-    <div class="testimonial-card fade-in">
-      <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-      <p class="testimonial-text">"Pengalaman luar biasa! Pemandangannya sangat indah dan masyarakat lokal sangat ramah. Snorkeling di Umbul Ponggok tidak akan pernah saya lupakan!"</p>
-      <div class="testimonial-author">
-        <div class="testimonial-avatar">👩</div>
-        <div class="testimonial-info">
-          <h4>Siti Nurhaliza</h4>
-          <p>Jakarta</p>
+</section>
+
+<!-- DATA BPS -->
+<section class="section" id="data">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="section-tag">Statistik BPS</span>
+      <h2 class="section-title">Data Kecamatan Polanharjo</h2>
+      <p class="section-subtitle">Informasi demografis dan statistik dari Badan Pusat Statistik</p>
+    </div>
+    <div class="bps-grid fade-in">
+      <div class="bps-chart-box">
+        <h3 class="bps-chart-title">Populasi & Perbandingan</h3>
+        <canvas id="populasiChart"></canvas>
+      </div>
+      <div class="bps-chart-box">
+        <h3 class="bps-chart-title">Kondisi Geografis</h3>
+        <canvas id="geografisChart"></canvas>
+      </div>
+    </div>
+    <table class="data-table fade-in">
+      <thead>
+        <tr><th>Parameter</th><th>Nilai</th><th>Satuan</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Luas Wilayah</td><td>77.2255</td><td>Hektar</td></tr>
+        <tr><td>Populasi Tahun 2024</td><td>2.152</td><td>Jiwa</td></tr>
+        <tr><td>Kepadatan Penduduk</td><td>2.786</td><td>Jiwa/Km²</td></tr>
+        <tr><td>Ketinggian dari Permukaan Laut</td><td>225</td><td>Meter</td></tr>
+        <tr><td>Curah Hujan Minimum</td><td>15</td><td>mm</td></tr>
+        <tr><td>Curah Hujan Maksimum</td><td>429</td><td>mm</td></tr>
+        <tr><td>Jarak ke Kecamatan</td><td>2.5</td><td>Km</td></tr>
+        <tr><td>Waktu Tempuh ke Kecamatan</td><td>5</td><td>Menit</td></tr>
+        <tr><td>Jarak ke Kabupaten</td><td>14</td><td>Km</td></tr>
+        <tr><td>Waktu Tempuh ke Kabupaten</td><td>25</td><td>Menit</td></tr>
+        <tr><td>Jarak ke Provinsi</td><td>90</td><td>Km</td></tr>
+        <tr><td>Waktu Tempuh ke Provinsi</td><td>120</td><td>Menit</td></tr>
+        <tr><td>Jumlah Dusun</td><td>4</td><td>Unit</td></tr>
+        <tr><td>Jumlah RW</td><td>6</td><td>Unit</td></tr>
+        <tr><td>Jumlah RT</td><td>12</td><td>Unit</td></tr>
+        <tr><td>Tingkat Pendidikan</td><td>Cukup Baik</td><td>Kategori</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="section bg-gray" id="map">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="section-tag">Eksplorasi</span>
+      <h2 class="section-title">Peta Interaktif WebGIS</h2>
+      <p class="section-subtitle">Jelajahi Desa Ponggok secara detail melalui sistem informasi geografis interaktif</p>
+    </div>
+    <div class="map-btn-wrap fade-in">
+      <a href="https://aovmn.github.io/Ponggok-Webgis/" target="_blank" rel="noopener noreferrer">
+        <div class="map-content">
+          <div class="map-icon">🗺️</div>
+          <div class="map-text">Buka Peta Interaktif WebGIS</div>
+          <div class="map-subtext">Klik untuk menjelajahi Desa Ponggok secara detail</div>
         </div>
-      </div>
+      </a>
     </div>
-    <div class="testimonial-card fade-in">
-      <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-      <p class="testimonial-text">"Destinasi tersembunyi yang sayang kalau dilewatkan. Aktivitasnya seru, fotogenic banget, dan harganya super terjangkau!"</p>
-      <div class="testimonial-author">
-        <div class="testimonial-avatar">👨</div>
-        <div class="testimonial-info">
-          <h4>Budi Santoso</h4>
-          <p>Surabaya</p>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="section-tag">Tentang Kami</span>
+      <h2 class="section-title">Profil Desa Ponggok</h2>
+    </div>
+    <div class="about-inner">
+      <div class="about-content">
+        <h3>Sejarah & Visi Kami</h3>
+        <p>Desa Ponggok terletak di Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah. Desa ini dikenal dengan kekayaan sumber daya alamnya, terutama air yang melimpah dari berbagai umbul (mata air), seperti Umbul Ponggok yang terkenal.</p>
+        <h3>Asal-Usul Ponggok</h3>
+        <p>Asal-usul Ponggok berawal dari kawasan Desa masa Mataram Kuno yang menyimpan air melimpah. Kawasan Ponggok berada di timur Gunung Merapi dengan kondisi arkeologis berupa banyaknya arca yang ditemukan. Ponggok bermakna <em>pusat, inti, sumber, jantung</em> — berkaitan dengan sumber air yang tidak pernah habis.</p>
+        <h3>Transformasi Modern</h3>
+        <p>Pada era kolonial, Desa Ponggok menjadi kawasan industri dengan Pabrik Gula Cokro Tulung. Kini, transformasinya menjadi desa wisata mandiri dan sejahtera tak lepas dari kepemimpinan visioner dan partisipasi aktif masyarakat, termasuk kerjasama strategis dengan Aqua untuk pembangunan berkelanjutan.</p>
+        <ul class="about-list">
+          <li>Status Desa Mandiri dengan Nilai IDM 0,8286 (Tahun 2023)</li>
+          <li>Penghargaan Desa Wisata Terbaik</li>
+          <li>Pengelolaan Keuangan Desa Terbaik</li>
+          <li>Destinasi Peringatan Hari Desa Nasional 2025</li>
+          <li>Program Pemberdayaan Masyarakat Aktif</li>
+        </ul>
+      </div>
+      <div class="about-img-stack">
+        <div class="about-img">
+          <img src="data:image/jpeg;base64,{IMAGES['kantor2']}" alt="Kantor Desa Ponggok" style="height:220px;">
         </div>
-      </div>
-    </div>
-    <div class="testimonial-card fade-in">
-      <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-      <p class="testimonial-text">"Menarik sekali untuk belajar tentang sejarah dan budaya lokal. Pemandangan alamnya yang asri membuat hati jadi tenang dan damai."</p>
-      <div class="testimonial-author">
-        <div class="testimonial-avatar">👩</div>
-        <div class="testimonial-info">
-          <h4>Maya Wulandari</h4>
-          <p>Bandung</p>
+        <div class="about-img">
+          <img src="data:image/jpeg;base64,{IMAGES['kantor1']}" alt="Pemandangan Desa" style="height:200px;">
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT SECTION -->
-<section class="contact" id="contact">
-  <div class="section-heading">
-    <span class="section-tag">Hubungi Kami</span>
-    <h2 class="section-title">Informasi Kontak</h2>
-    <p class="section-subtitle">Hubungi kami untuk pertanyaan atau informasi lebih lanjut</p>
+<!-- TESTIMONIALS -->
+<section class="section bg-gray">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="section-tag">Pengalaman Tamu</span>
+      <h2 class="section-title">Testimoni & Ulasan</h2>
+      <p class="section-subtitle">Apa kata pengunjung kami tentang pengalaman di Desa Wisata Ponggok</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">"Pengalaman luar biasa! Pemandangannya sangat indah dan masyarakat lokal sangat ramah. Snorkeling di Umbul Ponggok tidak akan pernah saya lupakan!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👩</div>
+          <div class="testimonial-info"><h4>Siti Nurhaliza</h4><p>Jakarta</p></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">"Destinasi tersembunyi yang sayang dilewatkan. Aktivitasnya seru, fotogenik banget, dan harganya super terjangkau!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👨</div>
+          <div class="testimonial-info"><h4>Budi Santoso</h4><p>Surabaya</p></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-in">
+        <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">"Menarik sekali untuk belajar sejarah dan budaya lokal. Pemandangan alamnya yang asri membuat hati jadi tenang dan damai."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👩</div>
+          <div class="testimonial-info"><h4>Maya Wulandari</h4><p>Bandung</p></div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="contact-grid">
-    <div class="contact-card fade-in">
-      <div class="contact-card-icon">📍</div>
-      <h3>Alamat</h3>
-      <p>Desa Ponggok<br>Kecamatan Polanharjo<br>Kabupaten Klaten<br>Jawa Tengah, Indonesia</p>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="section-tag">Hubungi Kami</span>
+      <h2 class="section-title">Informasi Kontak</h2>
+      <p class="section-subtitle">Hubungi kami untuk pertanyaan atau informasi lebih lanjut</p>
     </div>
-    <div class="contact-card fade-in">
-      <div class="contact-card-icon">📞</div>
-      <h3>Telepon</h3>
-      <p>+62 (0) 272 xxx xxxx<br>+62 (0) 812 xxx xxxx<br>Tersedia 24/7</p>
-    </div>
-    <div class="contact-card fade-in">
-      <div class="contact-card-icon">✉️</div>
-      <h3>Email</h3>
-      <p>info@desawisataponggok.com<br>bumdes@desawisataponggok.com<br>support@desawisataponggok.com</p>
+    <div class="contact-grid">
+      <div class="contact-card fade-in">
+        <div class="contact-icon">📍</div>
+        <h3>Alamat</h3>
+        <p>Desa Ponggok<br>Kecamatan Polanharjo<br>Kabupaten Klaten<br>Jawa Tengah, Indonesia</p>
+      </div>
+      <div class="contact-card fade-in">
+        <div class="contact-icon">📞</div>
+        <h3>Telepon</h3>
+        <p>+62 (0) 272 xxx xxxx<br>+62 (0) 812 xxx xxxx<br>Tersedia 24/7</p>
+      </div>
+      <div class="contact-card fade-in">
+        <div class="contact-icon">✉️</div>
+        <h3>Email</h3>
+        <p>info@desawisataponggok.com<br>bumdes@desawisataponggok.com<br>support@desawisataponggok.com</p>
+      </div>
     </div>
   </div>
 </section>
@@ -1479,8 +1058,8 @@ footer{
     <div class="footer-grid">
       <div class="footer-col">
         <h4>Desa Wisata Ponggok</h4>
-        <p>Destinasi wisata terbaik dengan pemandangan alam menakjubkan, mata air jernih, dan pengalaman budaya autentik Indonesia yang tak terlupakan.</p>
-        <div class="social-links" style="margin-top: 20px;">
+        <p>Destinasi wisata terbaik dengan mata air jernih, pemandangan alam menakjubkan, dan pengalaman budaya autentik Indonesia.</p>
+        <div class="social-links">
           <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
           <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
           <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
@@ -1519,246 +1098,151 @@ footer{
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2025 Desa Wisata Ponggok. Semua Hak Dilindungi. | Dikembangkan dengan ❤️ untuk pengalaman wisata terbaik | BUMDes Tirta Mandiri</p>
+      <p>&copy; 2025 Desa Wisata Ponggok. Semua Hak Dilindungi. | BUMDes Tirta Mandiri</p>
     </div>
   </div>
 </footer>
 
-<!-- SCRIPTS -->
 <script>
-// Clock Widget
-function updateClock() {
+// Clock
+function updateClock() {{
   const now = new Date();
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-  const day = days[now.getDay()];
-  const date = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-  
-  document.getElementById('clock-time').textContent = `${hours}:${minutes}`;
-  document.getElementById('clock-date').textContent = date;
-  document.getElementById('clock-day').textContent = day;
-}
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const d = String(now.getDate()).padStart(2,'0');
+  const mo = String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('clock-time').textContent = h+':'+m;
+  document.getElementById('clock-date').textContent = d+'/'+mo+'/'+now.getFullYear();
+  document.getElementById('clock-day').textContent = days[now.getDay()];
+}}
+setInterval(updateClock,1000); updateClock();
 
-setInterval(updateClock, 1000);
-updateClock();
+// Weather (Open-Meteo, Klaten)
+async function updateWeather() {{
+  try {{
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-7.7833&longitude=110.5831&current=temperature_2m,weather_code&timezone=Asia/Jakarta');
+    const d = await r.json();
+    const temp = Math.round(d.current.temperature_2m);
+    const code = d.current.weather_code;
+    const emojis = {{0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',61:'🌧️',80:'🌧️',95:'⛈️'}};
+    const descs = {{0:'Cerah',1:'Sebagian Berawan',2:'Berawan',3:'Mendung',45:'Berkabut',51:'Hujan Ringan',61:'Hujan',80:'Hujan Lebat',95:'Badai'}};
+    document.getElementById('weather-icon').textContent = emojis[code]||'🌤️';
+    document.getElementById('weather-temp').textContent = temp+'°C';
+    document.getElementById('weather-desc').textContent = descs[code]||'Cerah';
+  }} catch(e) {{
+    document.getElementById('weather-temp').textContent='28°C';
+    document.getElementById('weather-desc').textContent='Cerah';
+  }}
+}}
+updateWeather(); setInterval(updateWeather,600000);
 
-// Weather Widget - Real-time Weather (Klaten coordinates)
-async function updateWeather() {
-  try {
-    // Using Open-Meteo API (free, no API key needed)
-    const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-7.7833&longitude=110.5831&current=temperature_2m,weather_code,relative_humidity&timezone=Asia/Jakarta');
-    const data = await response.json();
-    
-    const temp = Math.round(data.current.temperature_2m);
-    const weatherCode = data.current.weather_code;
-    
-    // Map weather codes to emojis
-    const weatherEmojis = {
-      0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 48: '🌫️',
-      51: '🌧️', 53: '🌧️', 55: '🌧️', 61: '🌧️', 63: '⛈️', 65: '⛈️',
-      71: '❄️', 73: '❄️', 75: '❄️', 77: '❄️', 80: '🌧️', 81: '⛈️', 82: '⛈️',
-      85: '❄️', 86: '❄️', 95: '⛈️', 96: '⛈️', 99: '⛈️'
-    };
-    
-    const emoji = weatherEmojis[weatherCode] || '🌤️';
-    const descriptions = {
-      0: 'Cerah', 1: 'Sebagian Berawan', 2: 'Berawan', 3: 'Mendung',
-      45: 'Berkabut', 51: 'Hujan Ringan', 61: 'Hujan', 80: 'Hujan Lebat', 95: 'Badai'
-    };
-    const desc = descriptions[weatherCode] || 'Cerah';
-    
-    document.getElementById('weather-icon').textContent = emoji;
-    document.getElementById('weather-temp').textContent = `${temp}°C`;
-    document.getElementById('weather-desc').textContent = desc;
-  } catch (error) {
-    console.log('Weather API unavailable, using default');
-    document.getElementById('weather-icon').textContent = '🌤️';
-    document.getElementById('weather-temp').textContent = '28°C';
-    document.getElementById('weather-desc').textContent = 'Cerah';
-  }
-}
+// Counter
+function animateCounter(el) {{
+  const target = parseInt(el.dataset.target);
+  const inc = target/30; let cur=0;
+  const t = setInterval(()=>{{
+    cur+=inc;
+    if(cur>=target){{el.textContent=target;clearInterval(t);}}
+    else el.textContent=Math.floor(cur);
+  }},30);
+}}
 
-updateWeather();
-setInterval(updateWeather, 600000); // Update every 10 minutes
+// Scroll animations
+function onScroll() {{
+  document.querySelectorAll('.fade-in').forEach(el=>{{
+    if(el.getBoundingClientRect().top < window.innerHeight-80) el.classList.add('visible');
+  }});
+  document.querySelectorAll('.counter').forEach(el=>{{
+    if(el.getBoundingClientRect().top < window.innerHeight && !el.classList.contains('animated')){{
+      el.classList.add('animated'); animateCounter(el);
+    }}
+  }});
+}}
+window.addEventListener('scroll',onScroll); onScroll();
 
-// Counter Animation
-function animateCounter(element) {
-  const target = parseInt(element.dataset.target);
-  const increment = target / 30;
-  let current = 0;
-  
-  const timer = setInterval(() => {
-    current += increment;
-    if (current >= target) {
-      element.textContent = target;
-      clearInterval(timer);
-    } else {
-      element.textContent = Math.floor(current);
-    }
-  }, 30);
-}
+// Charts
+setTimeout(()=>{{
+  const c1 = document.getElementById('populasiChart');
+  const c2 = document.getElementById('geografisChart');
+  if(c1) new Chart(c1,{{
+    type:'doughnut',
+    data:{{
+      labels:['Populasi Ponggok','Rata-rata Desa'],
+      datasets:[{{
+        data:[2152,3500],
+        backgroundColor:['rgba(14,165,212,0.8)','rgba(245,158,11,0.7)'],
+        borderColor:['#0ea5d4','#f59e0b'],
+        borderWidth:2
+      }}]
+    }},
+    options:{{responsive:true,plugins:{{legend:{{position:'bottom',labels:{{padding:16,font:{{family:'Inter'}}}}}}}}}},
+  }});
+  if(c2) new Chart(c2,{{
+    type:'bar',
+    data:{{
+      labels:['Luas Area (Ha)','Ketinggian (m)','Kepadatan (jiwa/km²)'],
+      datasets:[{{
+        label:'Nilai',
+        data:[77.23,225,2.786],
+        backgroundColor:['rgba(26,79,139,0.8)','rgba(14,165,212,0.8)','rgba(16,185,129,0.8)'],
+        borderColor:['#1a4f8b','#0ea5d4','#10b981'],
+        borderWidth:2,
+        borderRadius:6
+      }}]
+    }},
+    options:{{indexAxis:'y',responsive:true,plugins:{{legend:{{display:false}}}},scales:{{x:{{beginAtZero:true}}}}}},
+  }});
+}},500);
 
-// Scroll Animation
-function handleScroll() {
-  const elements = document.querySelectorAll('.fade-in');
-  
-  elements.forEach(element => {
-    const rect = element.getBoundingClientRect();
-    if (rect.top < window.innerHeight - 100) {
-      element.classList.add('visible');
-    }
-  });
-  
-  // Animate counters when visible
-  const counters = document.querySelectorAll('.counter');
-  counters.forEach(counter => {
-    const rect = counter.getBoundingClientRect();
-    if (rect.top < window.innerHeight && !counter.classList.contains('animated')) {
-      counter.classList.add('animated');
-      animateCounter(counter);
-    }
-  });
-}
+// Music
+const audio = document.getElementById('bgAudio');
+const btn = document.getElementById('musicBtn');
+btn.addEventListener('click',()=>{{
+  if(audio.paused){{
+    audio.play(); audio.volume=0.3;
+    btn.innerHTML='<i class="fas fa-pause"></i>';
+    btn.style.background='#e74c3c';
+  }} else {{
+    audio.pause();
+    btn.innerHTML='<i class="fas fa-music"></i>';
+    btn.style.background='';
+  }}
+}});
 
-window.addEventListener('scroll', handleScroll);
-handleScroll();
-
-// Chart.js - Populasi dan Data Geografis
-function initCharts() {
-  const ctx1 = document.getElementById('populasiChart');
-  const ctx2 = document.getElementById('geografisChart');
-  
-  if (ctx1) {
-    new Chart(ctx1, {
-      type: 'doughnut',
-      data: {
-        labels: ['Populasi Ponggok', 'Rata-rata Desa'],
-        datasets: [{
-          data: [2152, 3500],
-          backgroundColor: [
-            'rgba(46, 201, 126, 0.8)',
-            'rgba(232, 201, 106, 0.8)'
-          ],
-          borderColor: [
-            'rgba(26, 122, 94, 1)',
-            'rgba(232, 201, 106, 1)'
-          ],
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              font: { family: "'DM Sans', sans-serif" },
-              padding: 20
-            }
-          }
-        }
-      }
-    });
-  }
-  
-  if (ctx2) {
-    new Chart(ctx2, {
-      type: 'bar',
-      data: {
-        labels: ['Luas Area', 'Ketinggian', 'Kepadatan'],
-        datasets: [{
-          label: 'Nilai',
-          data: [77.23, 225, 2.786],
-          backgroundColor: [
-            'rgba(26, 122, 94, 0.8)',
-            'rgba(46, 201, 126, 0.8)',
-            'rgba(232, 201, 106, 0.8)'
-          ],
-          borderColor: [
-            'rgba(26, 122, 94, 1)',
-            'rgba(46, 201, 126, 1)',
-            'rgba(232, 201, 106, 1)'
-          ],
-          borderWidth: 2
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        scales: {
-          x: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  }
-}
-
-setTimeout(initCharts, 500);
-
-// Music Player
-const bgAudio = document.getElementById('bgAudio');
-const musicBtn = document.getElementById('musicBtn');
-
-musicBtn.addEventListener('click', function() {
-  if (bgAudio.paused) {
-    bgAudio.play();
-    musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
-    musicBtn.style.backgroundColor = 'var(--red-accent)';
-  } else {
-    bgAudio.pause();
-    musicBtn.innerHTML = '<i class="fas fa-music"></i>';
-    musicBtn.style.backgroundColor = 'var(--green-accent)';
-  }
-});
-
-// Auto-play music on page load (may be blocked by browser)
-window.addEventListener('load', function() {
-  bgAudio.volume = 0.3;
-  // Browsers may block autoplay, so we'll let users click instead
-});
-
-// Smooth Scroll for Navigation
-document.querySelectorAll('nav a, a[href^="#"]').forEach(link => {
-  link.addEventListener('click', function(e) {
-    const href = this.getAttribute('href');
-    if (href.startsWith('#') && href !== '#') {
-      e.preventDefault();
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  });
-});
-
-// Gallery Lightbox
-document.querySelectorAll('.gallery-item').forEach(item => {
-  item.addEventListener('click', function() {
-    const img = this.querySelector('img');
+// Gallery lightbox
+document.querySelectorAll('.gallery-item').forEach(item=>{{
+  item.addEventListener('click',()=>{{
+    const img = item.querySelector('img');
     const modal = document.createElement('div');
-    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;cursor:pointer;';
-    
-    const image = document.createElement('img');
-    image.src = img.src;
-    image.style.cssText = 'max-width:90%;max-height:90%;border-radius:8px;';
-    
-    modal.appendChild(image);
+    modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;z-index:9999;cursor:pointer;';
+    const i = document.createElement('img');
+    i.src=img.src;
+    i.style.cssText='max-width:90%;max-height:90%;border-radius:10px;';
+    modal.appendChild(i);
     document.body.appendChild(modal);
-    
-    modal.addEventListener('click', () => {
-      modal.remove();
-    });
-  });
-});
-</script>
+    modal.addEventListener('click',()=>modal.remove());
+  }});
+}});
 
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{{
+  a.addEventListener('click',e=>{{
+    const h=a.getAttribute('href');
+    if(h!=='#'){{
+      e.preventDefault();
+      const t=document.querySelector(h);
+      if(t) t.scrollIntoView({{behavior:'smooth'}});
+    }}
+  }});
+}});
+</script>
 </body>
-</html>
+</html>"""
+
+with open('/mnt/user-data/outputs/index.html', 'w', encoding='utf-8') as f:
+    f.write(html)
+
+size = len(html.encode('utf-8'))
+print(f"File written: {size/1024/1024:.2f} MB")
+PYEOF
