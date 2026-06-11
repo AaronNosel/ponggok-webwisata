@@ -481,17 +481,19 @@
     .doc-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+      gap: 24px;
     }
     .doc-card {
-      background: var(--bg-base);
+      background: #F8FAFC;
       border-radius: 12px;
-      overflow: hidden;
+      padding: 24px;
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--border);
       transition: var(--transition);
       display: flex;
       flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
     }
     .doc-card:hover {
       transform: translateY(-4px);
@@ -499,22 +501,24 @@
       border-color: var(--accent);
       background: #FFFFFF;
     }
-    .doc-img-wrapper {
-      aspect-ratio: 16/10;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border);
-    }
-    .doc-img-wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .doc-icon-container {
+      width: 50px;
+      height: 50px;
+      background: var(--emerald-light);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--primary);
       transition: var(--transition);
     }
-    .doc-card:hover .doc-img-wrapper img {
-      transform: scale(1.04);
+    .doc-card:hover .doc-icon-container {
+      background: var(--primary);
+      color: #FFFFFF;
     }
     .doc-info {
-      padding: 20px;
+      padding: 0;
       flex-grow: 1;
     }
     .doc-info h3 {
@@ -525,10 +529,11 @@
       font-weight: 700;
     }
     .doc-info p {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-mid);
-      line-height: 1.5;
+      line-height: 1.6;
     }
+
 
     /* ===== VIDEO SECTION ===== */
     .video-container {
@@ -561,6 +566,11 @@
       padding: 24px;
       border: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .bps-chart-container:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(30, 58, 138, 0.2);
     }
     .bps-chart-title {
       font-family: 'Playfair Display', serif;
@@ -570,8 +580,41 @@
       text-align: center;
       font-weight: 700;
     }
+    .table-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      background: #F1F5F9;
+      color: var(--text-mid);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover {
+      background: rgba(30, 58, 138, 0.05);
+      color: var(--primary);
+      border-color: var(--primary-light);
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+    }
     .data-table-container {
-      margin-top: 30px;
+      margin-top: 20px;
       overflow-x: auto;
       border-radius: 12px;
       border: 1px solid var(--border);
@@ -584,7 +627,7 @@
       font-size: 13.5px;
     }
     .data-table thead {
-      background: var(--primary-dark);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
       color: #FFFFFF;
     }
     .data-table th,
@@ -593,22 +636,32 @@
       text-align: left;
     }
     .data-table th {
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-size: 11px;
     }
     .data-table tbody tr {
       border-bottom: 1px solid var(--border);
+      border-left: 3px solid transparent;
       transition: var(--transition);
     }
     .data-table tbody tr:nth-child(even) {
       background: #F8FAFC;
     }
     .data-table tbody tr:hover {
-      background: var(--emerald-light);
+      background: rgba(37, 99, 235, 0.05);
+      border-left: 3px solid var(--primary-light);
+      color: var(--primary-dark);
     }
     .data-table tbody tr:last-child {
       border-bottom: none;
     }
+    @keyframes fadeInRow {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
 
     /* ===== MAP SECTION ===== */
     .map-container {
@@ -695,60 +748,74 @@
 
     /* ===== ABOUT SECTION ===== */
     .about-layout {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 48px;
-      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
       margin-top: 30px;
     }
-    .about-content {
-      background: var(--bg-card);
-      border-radius: 12px;
-      padding: 0;
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
     }
     .about-section-block {
-      margin-bottom: 30px;
+      background: #F8FAFC;
+      border-radius: 12px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      transition: var(--transition);
     }
-    .about-section-block:last-child {
-      margin-bottom: 0;
+    .about-section-block:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+      background: #FFFFFF;
     }
-    .about-content h3 {
+    .about-section-block h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 24px;
+      font-size: 20px;
       color: var(--primary-dark);
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 10px;
+      border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+      padding-bottom: 8px;
     }
-    .about-content h3 i {
+    .about-section-block h3 i {
       font-size: 18px;
       color: var(--accent);
     }
-    .about-content p {
+    .about-section-block p {
       font-size: 14px;
       color: var(--text-mid);
       line-height: 1.7;
       margin-bottom: 12px;
       text-align: justify;
     }
-    .about-content p:last-of-type {
+    .about-section-block p:last-of-type {
       margin-bottom: 0;
+    }
+    .about-meta-info {
+      background: #F8FAFC;
+      border-radius: 12px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
     }
     .about-list {
       list-style: none;
-      margin-top: 20px;
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
     }
     .about-list li {
       display: flex;
       gap: 10px;
-      font-size: 13.5px;
+      font-size: 14px;
       color: var(--text-dark);
-      font-weight: 500;
+      font-weight: 600;
       align-items: center;
     }
     .about-list li::before {
@@ -756,26 +823,10 @@
       font-family: 'Font Awesome 6 Free';
       font-weight: 900;
       color: var(--emerald);
-      font-size: 14px;
+      font-size: 16px;
       flex-shrink: 0;
     }
-    .about-media {
-      position: sticky;
-      top: 90px;
-    }
-    .about-image {
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border);
-      aspect-ratio: 4/3;
-    }
-    .about-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+
 
     /* ===== CONTACT SECTION ===== */
     .contact-grid {
@@ -1098,6 +1149,14 @@
       </div>
     </div>
 
+    <!-- Tab Controls for BPS Table -->
+    <div class="table-tabs fade-in">
+      <button class="tab-btn active" onclick="filterTable('all')"><i class="fa-solid fa-list"></i> Semua Data</button>
+      <button class="tab-btn" onclick="filterTable('kependudukan')"><i class="fa-solid fa-users"></i> Kependudukan & Wilayah</button>
+      <button class="tab-btn" onclick="filterTable('geografis')"><i class="fa-solid fa-mountain-sun"></i> Fisik & Geografis</button>
+      <button class="tab-btn" onclick="filterTable('aksesibilitas')"><i class="fa-solid fa-route"></i> Akses & Jarak</button>
+    </div>
+
     <div class="data-table-container fade-in">
       <table class="data-table">
         <thead>
@@ -1108,82 +1167,82 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr data-category="kependudukan">
             <td>Luas Wilayah</td>
             <td>77.2255</td>
             <td>Hektar</td>
           </tr>
-          <tr>
+          <tr data-category="kependudukan">
             <td>Populasi Tahun 2024</td>
             <td>2.152</td>
             <td>Jiwa</td>
           </tr>
-          <tr>
+          <tr data-category="kependudukan">
             <td>Kepadatan Penduduk</td>
             <td>2.786</td>
             <td>Jiwa/Km²</td>
           </tr>
-          <tr>
+          <tr data-category="geografis">
             <td>Ketinggian dari Permukaan Laut</td>
             <td>225</td>
             <td>Meter</td>
           </tr>
-          <tr>
+          <tr data-category="geografis">
             <td>Curah Hujan Minimum</td>
             <td>15</td>
             <td>mm</td>
           </tr>
-          <tr>
+          <tr data-category="geografis">
             <td>Curah Hujan Maksimum</td>
             <td>429</td>
             <td>mm</td>
           </tr>
-          <tr>
+          <tr data-category="aksesibilitas">
             <td>Jarak ke Kecamatan</td>
             <td>2.5</td>
             <td>Km</td>
           </tr>
-          <tr>
+          <tr data-category="aksesibilitas">
             <td>Waktu Tempuh ke Kecamatan</td>
             <td>5</td>
             <td>Menit</td>
           </tr>
-          <tr>
+          <tr data-category="aksesibilitas">
             <td>Jarak ke Kabupaten</td>
             <td>14</td>
             <td>Km</td>
           </tr>
-          <tr>
+          <tr data-category="aksesibilitas">
             <td>Waktu Tempuh ke Kabupaten</td>
             <td>25</td>
             <td>Menit</td>
           </tr>
-          <tr>
+          <tr data-category="aksesibilitas">
             <td>Jarak ke Provinsi</td>
             <td>90</td>
             <td>Km</td>
           </tr>
-          <tr>
+          <tr data-category="aksesibilitas">
             <td>Waktu Tempuh ke Provinsi</td>
             <td>120</td>
             <td>Menit</td>
           </tr>
-          <tr>
+          <tr data-category="kependudukan">
             <td>Jumlah Dusun</td>
             <td>4</td>
             <td>Unit</td>
           </tr>
-          <tr>
+          <tr data-category="kependudukan">
             <td>Jumlah RW</td>
             <td>6</td>
             <td>Unit</td>
           </tr>
-          <tr>
+          <tr data-category="kependudukan">
             <td>Jumlah RT</td>
             <td>12</td>
             <td>Unit</td>
           </tr>
-          <tr>
+          <tr data-category="kependudukan">
             <td>Tingkat Pendidikan</td>
             <td>Cukup Baik</td>
             <td>Kategori</td>
@@ -1193,14 +1252,15 @@
     </div>
   </section>
 
-  <!-- 3. SEJARAH & PROFIL SECTION (Integrating local photos inside) -->
+  <!-- 3. SEJARAH & PROFIL SECTION -->
   <section class="section-card" id="about">
     <div class="section-heading">
       <span class="section-tag">Tentang Kami</span>
       <h2 class="section-title">Profil & Sejarah Desa Ponggok</h2>
     </div>
     <div class="about-layout">
-      <div class="about-content fade-in">
+      <!-- Grid 3 Kolom untuk Blok Sejarah & Informasi -->
+      <div class="about-grid fade-in">
         <div class="about-section-block">
           <h3><i class="fa-solid fa-landmark"></i> Sejarah & Visi Kami</h3>
           <p>Desa Ponggok terletak di Kecamatan Polanharjo, Kabupaten Klaten, Provinsi Jawa Tengah. Desa ini dikenal dengan kekayaan sumber daya alamnya, terutama air yang melimpah dari berbagai umbul (mata air), seperti Umbul Ponggok yang terkenal. Desa Ponggok memadukan keindahan alam dengan inovasi lokal, menjadikannya salah satu desa wisata unggulan di Kabupaten Klaten pada khususnya dan Jawa Tengah pada umumnya.</p>
@@ -1217,7 +1277,10 @@
           <p>Pada era kolonial, Desa Ponggok menjadi salah satu kawasan industri dengan adanya Pabrik Gula Cokro Tulung. Setelah kemerdekaan, desa ini mengalami berbagai dinamika, hingga akhirnya pada awal 2000-an mulai fokus pada pengembangan potensi wisata berbasis sumber daya air.</p>
           <p>Transformasi Desa Ponggok menjadi desa wisata yang mandiri dan sejahtera tidak terlepas dari peran kepemimpinan yang visioner dan partisipasi aktif masyarakat dalam mengelola potensi lokal. Kerjasama dengan pihak swasta terutama dengan perusahaan air minum Aqua telah membantu pengembangan desa yang berkelanjutan.</p>
         </div>
-        
+      </div>
+      
+      <!-- Blok Informasi Tambahan di Bagian Bawah -->
+      <div class="about-meta-info fade-in">
         <ul class="about-list">
           <li>Status Desa Mandiri dengan Nilai IDM 0,8286 (Tahun 2023)</li>
           <li>Penghargaan Desa Wisata Terbaik</li>
@@ -1226,22 +1289,16 @@
           <li>Program Pemberdayaan Masyarakat Aktif</li>
         </ul>
       </div>
-      
-      <div class="about-media fade-in">
-        <div class="about-image">
-          <img src="img/balai_desa.jpg" alt="Gedung Kantor Desa Ponggok">
-        </div>
-      </div>
     </div>
 
-    <!-- Integrated Local Documentation photos grid -->
+    <!-- Landmark & Informasi Wilayah Deskriptif (Tanpa Gambar) -->
     <div style="margin-top: 48px; border-top: 1px solid var(--border); padding-top: 36px;">
-      <h4 style="font-family: 'Playfair Display', serif; font-size: 22px; color: var(--primary-dark); margin-bottom: 20px; font-weight: 700; text-align: center;">Landmark & Dokumentasi Pendukung</h4>
+      <h4 style="font-family: 'Playfair Display', serif; font-size: 22px; color: var(--primary-dark); margin-bottom: 24px; font-weight: 700; text-align: center;">Landmark & Informasi Wilayah</h4>
       <div class="doc-grid">
         <!-- Card 1 -->
         <div class="doc-card fade-in">
-          <div class="doc-img-wrapper">
-            <img src="img/patung_arjuna.png" alt="Ikon Patung Memanah">
+          <div class="doc-icon-container">
+            <i class="fa-solid fa-chess-knight"></i>
           </div>
           <div class="doc-info">
             <h3>Ikon Patung Memanah</h3>
@@ -1250,8 +1307,8 @@
         </div>
         <!-- Card 2 -->
         <div class="doc-card fade-in">
-          <div class="doc-img-wrapper">
-            <img src="img/balai_desa.jpg" alt="Gedung Kantor Desa Ponggok">
+          <div class="doc-icon-container">
+            <i class="fa-solid fa-building-flag"></i>
           </div>
           <div class="doc-info">
             <h3>Kantor Pemerintah Desa</h3>
@@ -1260,8 +1317,8 @@
         </div>
         <!-- Card 3 -->
         <div class="doc-card fade-in">
-          <div class="doc-img-wrapper">
-            <img src="img/kantor_desa_plang.jpg" alt="Landmark Gerbang Kantor Desa">
+          <div class="doc-icon-container">
+            <i class="fa-solid fa-archway"></i>
           </div>
           <div class="doc-info">
             <h3>Pilar Gerbang Kantor Desa</h3>
@@ -1298,16 +1355,14 @@
         <p>Desa Ponggok<br>Kecamatan Polanharjo<br>Kabupaten Klaten<br>Jawa Tengah, Indonesia</p>
       </div>
       <div class="contact-card fade-in">
-        <div class="contact-card-icon"><i class="fa-solid fa-phone"></i></div>
-        <h3>Telepon</h3>
-        <p>+62 (0) 272 xxx xxxx<br>+62 (0) 812 xxx xxxx<br>Tersedia 24/7</p>
+        <div class="contact-card-icon"><i class="fa-brands fa-instagram"></i></div>
+        <h3>Instagram</h3>
+        <p><a href="https://www.instagram.com/studio.poland" target="_blank" rel="noopener noreferrer" style="color: var(--primary-light); text-decoration: none; font-weight: 600; transition: var(--transition);">@studio.poland</a></p>
       </div>
-      <div class="contact-grid">
-        <div class="contact-card fade-in">
-          <div class="contact-card-icon"><i class="fa-solid fa-envelope"></i></div>
-          <h3>Email</h3>
-          <p>info@desawisataponggok.com<br>bumdes@desawisataponggok.com<br>support@desawisataponggok.com</p>
-        </div>
+      <div class="contact-card fade-in">
+        <div class="contact-card-icon"><i class="fa-solid fa-envelope"></i></div>
+        <h3>Email</h3>
+        <p><a href="mailto:bankdata2@gmail.com" style="color: var(--primary-light); text-decoration: none; font-weight: 600; transition: var(--transition);">bankdata2@gmail.com</a></p>
       </div>
     </div>
   </section>
@@ -1321,7 +1376,7 @@
           <p style="margin-bottom: 20px; line-height: 1.6;">Destinasi wisata terbaik dengan pemandangan alam menakjubkan, mata air jernih, dan pengalaman budaya autentik Indonesia yang tak terlupakan.</p>
           <div class="social-links">
             <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.instagram.com/studio.poland" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
             <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
           </div>
@@ -1469,21 +1524,26 @@
       const ctx2 = document.getElementById('geografisChart');
       
       if (ctx1) {
+        const c1 = ctx1.getContext('2d');
+        // Membuat gradasi warna untuk Doughnut Chart
+        const gradPopulasi = c1.createLinearGradient(0, 0, 0, 250);
+        gradPopulasi.addColorStop(0, '#1E3A8A');       // Javanese Royal Blue
+        gradPopulasi.addColorStop(1, '#3B82F6');       // Bright Blue
+
+        const gradRata = c1.createLinearGradient(0, 0, 0, 250);
+        gradRata.addColorStop(0, '#D4AF37');           // Elegant Gold
+        gradRata.addColorStop(1, '#FBBF24');           // Light Gold
+
         new Chart(ctx1, {
           type: 'doughnut',
           data: {
             labels: ['Populasi Ponggok', 'Rata-rata Desa'],
             datasets: [{
               data: [2152, 3500],
-              backgroundColor: [
-                'rgba(30, 58, 138, 0.85)',
-                'rgba(212, 175, 55, 0.5)'
-              ],
-              borderColor: [
-                '#1E3A8A',
-                '#D4AF37'
-              ],
-              borderWidth: 1.5
+              backgroundColor: [gradPopulasi, gradRata],
+              borderColor: ['#1E3A8A', '#D4AF37'],
+              borderWidth: 2,
+              hoverOffset: 8
             }]
           },
           options: {
@@ -1505,6 +1565,20 @@
       }
       
       if (ctx2) {
+        const c2 = ctx2.getContext('2d');
+        // Membuat gradasi warna horizontal untuk Bar Chart
+        const gradBar1 = c2.createLinearGradient(0, 0, 350, 0);
+        gradBar1.addColorStop(0, '#0B1B3D');
+        gradBar1.addColorStop(1, '#1E3A8A');
+        
+        const gradBar2 = c2.createLinearGradient(0, 0, 350, 0);
+        gradBar2.addColorStop(0, '#1E3A8A');
+        gradBar2.addColorStop(1, '#3B82F6');
+        
+        const gradBar3 = c2.createLinearGradient(0, 0, 350, 0);
+        gradBar3.addColorStop(0, '#D4AF37');
+        gradBar3.addColorStop(1, '#FBBF24');
+
         new Chart(ctx2, {
           type: 'bar',
           data: {
@@ -1512,17 +1586,11 @@
             datasets: [{
               label: 'Nilai',
               data: [77.23, 225, 2.786],
-              backgroundColor: [
-                'rgba(11, 27, 61, 0.85)',
-                'rgba(30, 58, 138, 0.85)',
-                'rgba(212, 175, 55, 0.85)'
-              ],
-              borderColor: [
-                '#0B1B3D',
-                '#1E3A8A',
-                '#D4AF37'
-              ],
-              borderWidth: 1.5
+              backgroundColor: [gradBar1, gradBar2, gradBar3],
+              borderColor: ['#0B1B3D', '#1E3A8A', '#D4AF37'],
+              borderWidth: 1.5,
+              borderRadius: 6,
+              borderSkipped: false
             }]
           },
           options: {
@@ -1564,6 +1632,32 @@
     }
 
     setTimeout(initCharts, 500);
+
+    // Fungsi Filter Tabel BPS
+    function filterTable(category) {
+      // Perbarui tombol tab yang aktif
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => {
+        if (btn.getAttribute('onclick').includes(`'${category}'`)) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Saring baris tabel
+      const rows = document.querySelectorAll('.data-table tbody tr');
+      rows.forEach(row => {
+        const cat = row.getAttribute('data-category');
+        if (category === 'all' || cat === category) {
+          row.style.display = '';
+          row.style.animation = 'fadeInRow 0.4s ease forwards';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
 
     // Music Player
     const bgAudio = document.getElementById('bgAudio');
